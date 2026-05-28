@@ -10,18 +10,18 @@ let currentFilter = "all";
 let toastTimer = null;
 
 // ─── DOM Refs ────────────────────────────────────────────────
-const taskList      = document.getElementById("taskList");
-const taskInput     = document.getElementById("taskInput");
-const addBtn        = document.getElementById("addBtn");
-const emptyState    = document.getElementById("emptyState");
-const totalCount    = document.getElementById("totalCount");
-const doneCount     = document.getElementById("doneCount");
-const activeCount   = document.getElementById("activeCount");
-const progressFill  = document.getElementById("progressFill");
-const progressLabel = document.getElementById("progressLabel");
-const actionsBar    = document.getElementById("actionsBar");
-const clearBtn      = document.getElementById("clearCompleted");
-const currentDate   = document.getElementById("currentDate");
+const taskList      = document.getElementById("task-list");
+const taskInput     = document.getElementById("todo-input");
+const addBtn        = document.getElementById("add-btn");
+const emptyState    = document.getElementById("empty-state");
+const totalCount    = document.getElementById("total-tasks");
+const doneCount     = document.getElementById("completed-tasks");
+const activeCount   = document.getElementById("remaining-count");
+const progressFill  = document.getElementById("progress-fill");
+const progressLabel = document.getElementById("progress-label");
+const actionsBar    = document.getElementById("actions-bar");
+const clearBtn      = document.getElementById("clear-completed");
+const currentDate   = document.getElementById("current-date");
 const toast         = document.getElementById("toast");
 const filterBtns    = document.querySelectorAll(".filter-btn");
 
@@ -256,12 +256,11 @@ function escapeHtml(str) {
 
 // ─── Events ──────────────────────────────────────────────────
 function bindEvents() {
-  // Add on button click
-  addBtn.addEventListener("click", addTask);
-
-  // Add on Enter
-  taskInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") addTask();
+  // Handle form submission (handles both button click and Enter key)
+  const todoForm = document.getElementById("todo-form");
+  todoForm.addEventListener("submit", e => {
+    e.preventDefault();
+    addTask();
   });
 
   // Task list delegation
