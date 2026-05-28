@@ -16,9 +16,31 @@ const failedAudits = document.getElementById("failedAudits");
 
 const themeToggle = document.getElementById("themeToggle");
 
+const searchInput = document.getElementById("searchInput");
+
+const filterButtons = document.querySelectorAll(".filter-btn");
+
+let currentFilter = "all";
+
 /* Add Audit */
 
 addAuditBtn.addEventListener("click", addAudit);
+
+searchInput.addEventListener("input", renderAudits);
+
+filterButtons.forEach((btn) => {
+
+    btn.addEventListener("click", () => {
+
+        filterButtons.forEach((b) => b.classList.remove("active"));
+
+        btn.classList.add("active");
+
+        currentFilter = btn.dataset.filter;
+
+        renderAudits();
+    });
+});
 
 function addAudit(){
 
@@ -57,7 +79,21 @@ function renderAudits(){
 
     auditList.innerHTML = "";
 
-    audits.forEach((audit)=>{
+    const searchValue = searchInput.value.toLowerCase();
+
+const filteredAudits = audits.filter((audit)=>{
+
+    const matchesSearch =
+        audit.task.toLowerCase().includes(searchValue);
+
+    const matchesFilter =
+        currentFilter === "all" ||
+        audit.status === currentFilter;
+
+    return matchesSearch && matchesFilter;
+});
+
+filteredAudits.forEach((audit)=>{
 
         const card = document.createElement("div");
 
