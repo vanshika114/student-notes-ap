@@ -22,6 +22,20 @@ const updateStatus = (message) => {
   statusEl.textContent = message;
 };
 
+const triggerConfetti = () => {
+  const colors = ["#26ccff", "#a25afd", "#ff5e7e", "#88ff5a", "#fcff42", "#ffa62d", "#ff36ff"];
+  for (let i = 0; i < 100; i++) {
+    const confetti = document.createElement("div");
+    confetti.className = "confetti";
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.width = confetti.style.height = Math.random() * 8 + 6 + "px";
+    confetti.style.animation = `confetti-fall ${Math.random() * 3 + 2}s linear forwards`;
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+  }
+};
+
 const checkWinner = () => {
   for (const combo of winningCombos) {
     const [a, b, c] = combo;
@@ -49,6 +63,7 @@ const handleCellClick = (event) => {
     updateStatus(`Player ${winner} wins!`);
     isGameOver = true;
     boardEl.querySelectorAll("button").forEach((btn) => (btn.disabled = true));
+    triggerConfetti();
     return;
   }
 
