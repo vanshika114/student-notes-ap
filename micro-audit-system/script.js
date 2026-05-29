@@ -28,6 +28,8 @@ const filterButtons = document.querySelectorAll(".filter-btn");
 
 let currentFilter = "all";
 
+let editingAuditId = null;
+
 /* Add Audit */
 
 addAuditBtn.addEventListener("click", addAudit);
@@ -214,17 +216,86 @@ filteredAudits.forEach((audit)=>{
 
         const dueDateInfo = getDueDateInfo(audit);
 
+        const isEditing = editingAuditId === audit.id;
+
         const card = document.createElement("div");
 
-        card.className = dueDateInfo.badge === "OVERDUE"
-            ? "audit-card overdue-card"
-            : "audit-card";
+        card.className = [
+            "audit-card",
+            dueDateInfo.badge === "OVERDUE" ? "overdue-card" : "",
+            isEditing ? "editing-card" : ""
+        ].filter(Boolean).join(" ");
 
-        card.innerHTML = `
+        if(isEditing){
+
+            card.innerHTML = `
+
+            <div class="audit-info edit-audit-info">
+
+                <span class="edit-mode-badge">
+                    Editing Audit
+                </span>
+
+                <input
+                    type="text"
+                    id="editTask-${audit.id}"
+                    class="edit-input"
+                    value="${escapeHTML(audit.task)}"
+                    aria-label="Edit audit task name"
+                >
+
+                <select
+                    id="editPriority-${audit.id}"
+                    class="edit-input"
+                    aria-label="Edit priority level"
+                >
+                    <option value="Low" ${audit.priority === "Low" ? "selected" : ""}>
+                        Low Priority
+                    </option>
+                    <option value="Medium" ${audit.priority === "Medium" ? "selected" : ""}>
+                        Medium Priority
+                    </option>
+                    <option value="High" ${audit.priority === "High" ? "selected" : ""}>
+                        High Priority
+                    </option>
+                </select>
+
+                <input
+                    type="date"
+                    id="editDueDate-${audit.id}"
+                    class="edit-input"
+                    value="${audit.dueDate || ""}"
+                    aria-label="Edit due date"
+                >
+
+            </div>
+
+            <div class="audit-actions">
+
+                <button
+                    class="save-btn"
+                    onclick="saveEditAudit(${audit.id})"
+                >
+                    Save
+                </button>
+
+                <button
+                    class="cancel-btn"
+                    onclick="cancelEditAudit()"
+                >
+                    Cancel
+                </button>
+
+            </div>
+        `;
+
+        } else {
+
+            card.innerHTML = `
 
         <div class="audit-info">
 
-            <h3>${audit.task}</h3>
+            <h3>${escapeHTML(audit.task)}</h3>
 
             <div class="audit-meta">
 
@@ -291,6 +362,13 @@ filteredAudits.forEach((audit)=>{
                 </button>
 
                 <button 
+                    class="edit-btn"
+                    onclick="editAudit(${audit.id})"
+                >
+                    Edit
+                </button>
+
+                <button 
                     class="delete-btn"
                     onclick="deleteAudit(${audit.id})"
                 >
@@ -299,11 +377,80 @@ filteredAudits.forEach((audit)=>{
 
             </div>
         `;
+        }
 
         auditList.appendChild(card);
     });
 
     updateStats();
+}
+
+/* Edit Audit */
+
+function editAudit(id){
+
+    editingAuditId = id;
+
+    renderAudits();
+}
+
+function saveEditAudit(id){
+
+    const editTaskInput =
+        document.getElementById(`editTask-${id}`);
+
+    const editPrioritySelect =
+        document.getElementById(`editPriority-${id}`);
+
+    const editDueDateInput =
+        document.getElementById(`editDueDate-${id}`);
+
+    const updatedTask = editTaskInput.value.trim();
+
+    if(updatedTask === ""){
+
+        alert("Please enter an audit checkpoint");
+
+        return;
+    }
+
+    audits = audits.map((audit)=>{
+
+        if(audit.id === id){
+
+            return {
+                ...audit,
+                task: updatedTask,
+                priority: editPrioritySelect.value,
+                dueDate: editDueDateInput.value
+            };
+        }
+
+        return audit;
+    });
+
+    editingAuditId = null;
+
+    saveAudits();
+
+    renderAudits();
+}
+
+function cancelEditAudit(){
+
+    editingAuditId = null;
+
+    renderAudits();
+}
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
 }
 
 /* Mark Pass */

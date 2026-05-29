@@ -227,6 +227,12 @@ body{
         0px 8px 28px rgba(239,68,68,0.18);
 }
 
+.audit-card.editing-card{
+    border-color:#2563eb;
+
+    align-items:flex-start;
+}
+
 .audit-card:hover{
     transform:translateY(-3px);
 }
@@ -275,6 +281,67 @@ body{
     background:#0f172a;
 }
 
+.edit-btn{
+    background:#2563eb;
+}
+
+.save-btn{
+    background:#16a34a;
+}
+
+.cancel-btn{
+    background:#64748b;
+}
+
+.edit-audit-info{
+    display:flex;
+
+    flex:1;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+.edit-mode-badge{
+    align-self:flex-start;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:0.4px;
+}
+
+.edit-input{
+    width:100%;
+
+    padding:12px 14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:white;
+
+    color:#0f172a;
+
+    box-shadow:
+        0px 4px 20px rgba(0,0,0,0.05);
+
+    font-size:15px;
+
+    outline:none;
+}
+
 /* Dark Mode */
 
 body.dark-mode{
@@ -293,6 +360,25 @@ body.dark-mode .stat-card,
 body.dark-mode .audit-card,
 body.dark-mode #themeToggle{
     background:rgba(15,23,42,0.75);
+
+    color:white;
+
+    box-shadow:
+        0px 4px 20px rgba(255,255,255,0.05);
+}
+
+body.dark-mode .audit-card.editing-card{
+    border-color:#60a5fa;
+}
+
+body.dark-mode .edit-mode-badge{
+    background:rgba(37,99,235,0.22);
+
+    color:#bfdbfe;
+}
+
+body.dark-mode .edit-input{
+    background:rgba(2,6,23,0.75);
 
     color:white;
 
