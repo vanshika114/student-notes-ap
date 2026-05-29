@@ -2,10 +2,13 @@ const statusEl = document.getElementById("status");
 const boardEl = document.getElementById("board");
 const restartBtn = document.getElementById("restart");
 const cells = Array.from(document.querySelectorAll(".cell"));
+const scoreXEl = document.getElementById("score-x");
+const scoreOEl = document.getElementById("score-o");
 
 let currentPlayer = "X";
 let board = Array(9).fill("");
 let isGameOver = false;
+let scores = { X: 0, O: 0 };
 
 const winningCombos = [
   [0, 1, 2],
@@ -64,6 +67,9 @@ const handleCellClick = (event) => {
     isGameOver = true;
     boardEl.querySelectorAll("button").forEach((btn) => (btn.disabled = true));
     triggerConfetti();
+    scores[winner]++;
+    scoreXEl.textContent = scores.X;
+    scoreOEl.textContent = scores.O;
     return;
   }
 

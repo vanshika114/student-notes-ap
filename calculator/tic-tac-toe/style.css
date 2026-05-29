@@ -38,6 +38,35 @@ body {
   justify-items: center;
 }
 
+.scoreboard {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.score-card {
+  background: #f8fafb;
+  border: 1px solid #d2d7dd;
+  padding: 12px 24px;
+  border-radius: 14px;
+  text-align: center;
+  min-width: 100px;
+}
+
+.score-card p {
+  font-size: 0.75rem;
+  color: #5b6470;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.score-card span {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f4037;
+}
+
 .status {
   font-size: 1rem;
   color: #5b6470;
