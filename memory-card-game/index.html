@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Card Match Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+    }
+
+    /* ---- Header ---- */
+    .header { text-align: center; margin-bottom: 1.5rem; }
+    .header h1 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; color: #fff; }
+    .header h1 span { color: #a29bfe; }
+    .header p { font-size: 0.78rem; color: rgba(255,255,255,0.35); margin-top: 0.3rem; }
+
+    /* ---- Stats ---- */
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 0.6rem 1.2rem;
+      text-align: center;
+      min-width: 80px;
+    }
+    .stat-box .val { font-size: 1.4rem; font-weight: 700; color: #a29bfe; }
+    .stat-box .lbl { font-size: 0.65rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat-box.timer .val { color: #fd79a8; }
+    .stat-box.match .val { color: #00cec9; }
+
+    /* ---- Grid ---- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.7rem;
+      margin-bottom: 1.5rem;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* ---- Card ---- */
+    .card {
+      aspect-ratio: 1;
+      perspective: 600px;
+      cursor: pointer;
+    }
+    .card-inner {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 14px;
+    }
+    .card.flipped .card-inner,
+    .card.matched .card-inner { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      font-size: 1.6rem;
+      box-shadow: 0 4px 15px rgba(108,92,231,0.3);
+      color: rgba(255,255,255,0.4);
+      font-size: 1.4rem;
+    }
+    .card-front::after { content: '?'; font-weight: 700; color: rgba(255,255,255,0.5); font-size: 1.4rem; }
+
+    .card-back {
+      background: linear-gradient(135deg, #2d3436, #1e272e);
+      border: 2px solid rgba(162,155,254,0.3);
+      font-size: 2rem;
+      transform: rotateY(180deg);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .card.matched .card-back {
+      background: linear-gradient(135deg, #00b894, #00cec9);
+      border-color: #00cec9;
+      box-shadow: 0 4px 20px rgba(0,206,201,0.4);
+      animation: matchPop 0.4s ease;
+    }
+
+    @keyframes matchPop {
+      0%   { transform: rotateY(180deg) scale(1); }
+      50%  { transform: rotateY(180deg) scale(1.15); }
+      100% { transform: rotateY(180deg) scale(1); }
+    }
+
+    .card.wrong .card-back {
+      border-color: #e17055;
+      background: linear-gradient(135deg, #2d3436, #1e272e);
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%,100% { transform: rotateY(180deg) translateX(0); }
+      25%      { transform: rotateY(180deg) translateX(-5px); }
+      75%      { transform: rotateY(180deg) translateX(5px); }
+    }
+
+    /* ---- Buttons ---- */
+    .btn-row { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; }
+    .btn {
+      padding: 0.7rem 1.8rem;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn-primary {
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(108,92,231,0.35);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ---- Win overlay ---- */
+    .win-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: fadeIn 0.3s ease;
+    }
+    .win-overlay.show { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .win-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(162,155,254,0.4);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      animation: popIn 0.4s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .win-card .emoji { font-size: 3rem; margin-bottom: 0.8rem; display: block; }
+    .win-card h2 { font-size: 1.5rem; color: #a29bfe; margin-bottom: 0.5rem; }
+    .win-card p { font-size: 0.82rem; color: rgba(255,255,255,0.5); margin-bottom: 1.5rem; }
+    .win-stats { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 1.5rem; }
+    .win-stat .big { font-size: 1.8rem; font-weight: 700; color: #fff; }
+    .win-stat .sm  { font-size: 0.68rem; color: rgba(255,255,255,0.35); text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🧠 Memory <span>Card</span> Match</h1>
+    <p>Find all matching pairs to win! 🎯</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box timer">
+      <div class="val" id="timerVal">00:00</div>
+      <div class="lbl">Time</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="movesVal">0</div>
+      <div class="lbl">Moves</div>
+    </div>
+    <div class="stat-box match">
+      <div class="val" id="matchVal">0/8</div>
+      <div class="lbl">Matched</div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid" id="grid"></div>
+
+  <!-- Buttons -->
+  <div class="btn-row">
+    <button class="btn btn-primary"   onclick="startGame()">▶ New Game</button>
+    <button class="btn btn-secondary" onclick="startGame()">↺ Restart</button>
+  </div>
+
+  <!-- Win Overlay -->
+  <div class="win-overlay" id="winOverlay">
+    <div class="win-card">
+      <span class="emoji">🎉</span>
+      <h2>You Won!</h2>
+      <p>Amazing! You found all the pairs!</p>
+      <div class="win-stats">
+        <div class="win-stat">
+          <div class="big" id="winMoves">0</div>
+          <div class="sm">Moves</div>
+        </div>
+        <div class="win-stat">
+          <div class="big" id="winTime">0s</div>
+          <div class="sm">Time</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="startGame(); document.getElementById('winOverlay').classList.remove('show')">
+        🔄 Play Again
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const emojis = ['📚','🔬','📐','💻','🌍','🎨','🏆','⚡'];
+    let cards = [], flipped = [], matched = 0, moves = 0;
+    let timer = null, seconds = 0, canFlip = true;
+
+    function shuffle(arr) {
+      return [...arr, ...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function startGame() {
+      clearInterval(timer);
+      seconds = 0; moves = 0; matched = 0; flipped = []; canFlip = true;
+      document.getElementById('timerVal').textContent = '00:00';
+      document.getElementById('movesVal').textContent = '0';
+      document.getElementById('matchVal').textContent = '0/8';
+
+      const deck = shuffle(emojis);
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+
+      cards = deck.map((emoji, i) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.emoji = emoji;
+        card.dataset.index = i;
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front"></div>
+            <div class="card-back">${emoji}</div>
+          </div>`;
+        card.addEventListener('click', () => flipCard(card));
+        grid.appendChild(card);
+        return card;
+      });
+
+      // start timer on first flip — handled in flipCard
+    }
+
+    function flipCard(card) {
+      if (!canFlip) return;
+      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+      if (flipped.length === 2) return;
+
+      // start timer on first move
+      if (moves === 0 && flipped.length === 0) {
+        timer = setInterval(() => {
+          seconds++;
+          const m = String(Math.floor(seconds/60)).padStart(2,'0');
+          const s = String(seconds % 60).padStart(2,'0');
+          document.getElementById('timerVal').textContent = `${m}:${s}`;
+        }, 1000);
+      }
+
+      card.classList.add('flipped');
+      flipped.push(card);
+
+      if (flipped.length === 2) {
+        moves++;
+        document.getElementById('movesVal').textContent = moves;
+        canFlip = false;
+
+        if (flipped[0].dataset.emoji === flipped[1].dataset.emoji) {
+          // Match!
+          setTimeout(() => {
+            flipped.forEach(c => { c.classList.add('matched'); c.classList.remove('flipped'); });
+            flipped = [];
+            matched++;
+            document.getElementById('matchVal').textContent = `${matched}/8`;
+            canFlip = true;
+            if (matched === 8) showWin();
+          }, 500);
+        } else {
+          // No match
+          flipped.forEach(c => c.classList.add('wrong'));
+          setTimeout(() => {
+            flipped.forEach(c => { c.classList.remove('flipped', 'wrong'); });
+            flipped = [];
+            canFlip = true;
+          }, 900);
+        }
+      }
+    }
+
+    function showWin() {
+      clearInterval(timer);
+      const m = String(Math.floor(seconds/60)).padStart(2,'0');
+      const s = String(seconds % 60).padStart(2,'0');
+      document.getElementById('winMoves').textContent = moves;
+      document.getElementById('winTime').textContent  = `${m}:${s}`;
+      document.getElementById('winOverlay').classList.add('show');
+    }
+
+    // Init
+    startGame();
+  </script>
+
+</body>
+</html>
