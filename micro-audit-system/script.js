@@ -29,6 +29,8 @@ const themeToggle = document.getElementById("themeToggle");
 
 const searchInput = document.getElementById("searchInput");
 
+const sortSelect = document.getElementById("sortSelect");
+
 const filterButtons = document.querySelectorAll(".filter-btn");
 
 let currentFilter = "all";
@@ -40,6 +42,8 @@ let editingAuditId = null;
 addAuditBtn.addEventListener("click", addAudit);
 
 searchInput.addEventListener("input", renderAudits);
+
+sortSelect.addEventListener("change", renderAudits);
 
 filterButtons.forEach((btn) => {
 
@@ -197,6 +201,43 @@ function getDueDateInfo(audit){
     };
 }
 
+/* Sorting Helpers */
+
+function getPriorityValue(priority){
+
+    const priorityValues = {
+        High: 3,
+        Medium: 2,
+        Low: 1
+    };
+
+    return priorityValues[priority] || priorityValues.Low;
+}
+
+function sortAuditsByPriority(filteredAudits){
+
+    if(sortSelect.value === "default"){
+
+        return filteredAudits;
+    }
+
+    return [...filteredAudits].sort((firstAudit, secondAudit)=>{
+
+        const firstPriority =
+            getPriorityValue(firstAudit.priority || "Low");
+
+        const secondPriority =
+            getPriorityValue(secondAudit.priority || "Low");
+
+        if(sortSelect.value === "high-low"){
+
+            return secondPriority - firstPriority;
+        }
+
+        return firstPriority - secondPriority;
+    });
+}
+
 /* Render Audits */
 
 function renderAudits(){
@@ -217,7 +258,9 @@ const filteredAudits = audits.filter((audit)=>{
     return matchesSearch && matchesFilter;
 });
 
-filteredAudits.forEach((audit)=>{
+const sortedAudits = sortAuditsByPriority(filteredAudits);
+
+sortedAudits.forEach((audit)=>{
 
         const dueDateInfo = getDueDateInfo(audit);
 
