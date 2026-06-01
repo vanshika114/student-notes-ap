@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Study Group Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --surface: #fdfaf4;
+      --border: #d8d0c0;
+      --border2: #c8bfa8;
+      --ink: #1a1710;
+      --muted: #7a7260;
+      --accent: #e84f2b;
+      --accent2: #2b7de8;
+      --accent3: #2bc47a;
+      --accent4: #e8a62b;
+      --shadow: rgba(26,23,16,0.10);
+      --r: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(232,79,43,.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(43,125,232,.04) 0%, transparent 50%);
+      color: var(--ink);
+      font-family: 'Inconsolata', monospace;
+      min-height: 100vh;
+      padding: 28px 16px 64px;
+    }
+
+    /* Header */
+    header {
+      max-width: 820px;
+      margin: 0 auto 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+    .brand h1 em { color: var(--accent); font-style: normal; }
+    .brand p { color: var(--muted); font-size: 0.72rem; margin-top: 3px; }
+    .count-badge {
+      background: var(--ink);
+      color: var(--bg);
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .count-badge.pop { animation: pop 0.35s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
+
+    /* Layout */
+    .layout {
+      max-width: 820px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Form Panel */
+    .form-panel {
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      border-radius: var(--r);
+      box-shadow: 0 4px 24px var(--shadow);
+      overflow: hidden;
+      position: sticky;
+      top: 20px;
+    }
+    .panel-title {
+      padding: 14px 20px;
+      border-bottom: 1.5px solid var(--border);
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--bg);
+      letter-spacing: 0.5px;
+    }
+    .form-body { padding: 20px; }
+
+    label {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    input, textarea, select {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--ink);
+      font-family: 'Inconsolata', monospace;
+      font-size: 0.85rem;
+      padding: 9px 12px;
+      outline: none;
+      margin-bottom: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(232,79,43,.12);
+    }
+    select option { background: var(--surface); }
+    textarea { height: 70px; }
+
+    .color-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .color-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .color-dot:hover { transform: scale(1.15); }
+    .color-dot.selected { border-color: var(--ink); transform: scale(1.15); }
+
+    .submit-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:active { transform: scale(0.98); }
+
+    /* Groups Panel */
+    .groups-panel { display: flex; flex-direction: column; gap: 14px; }
+
+    .empty-state {
+      background: var(--surface);
+      border: 1.5px dashed var(--border2);
+      border-radius: var(--r);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-state .big { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+    .empty-state p { font-size: 0.8rem; }
+
+    /* Group Card */
+    .group-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: 0 2px 12px var(--shadow);
+      overflow: hidden;
+      animation: cardIn 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-stripe {
+      height: 5px;
+      width: 100%;
+    }
+    .card-body { padding: 16px 18px; }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .card-subject {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+    .card-topic {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .del-btn {
+      background: none;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      border-radius: 7px;
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: 'Inconsolata', monospace;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .del-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,79,43,.06); }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      padding: 3px 9px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--bg);
+    }
+
+    .members-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .member-tag {
+      font-size: 0.67rem;
+      padding: 2px 9px;
+      border-radius: 99px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--ink);
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .filter-btn {
+      padding: 5px 14px;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      font-family: 'Inconsolata', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--bg);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .layout { grid-template-columns: 1fr; }
+      .form-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>Study<em>Group</em> Planner</h1>
+    <p>// organise · collaborate · study smarter</p>
+  </div>
+  <div class="count-badge" id="countBadge">0</div>
+</header>
+
+<div class="layout">
+
+  <!-- Form -->
+  <div class="form-panel">
+    <div class="panel-title">📚 Create New Group</div>
+    <div class="form-body">
+      <label>Subject</label>
+      <input type="text" id="subject" placeholder="e.g. Data Structures, Physics…"/>
+
+      <label>Topic / Agenda</label>
+      <input type="text" id="topic" placeholder="e.g. Trees & Graphs, Chapter 5…"/>
+
+      <label>Members (comma separated)</label>
+      <textarea id="members" placeholder="Shivam, Priya, Rahul, Ananya…"></textarea>
+
+      <label>Meeting Date & Time</label>
+      <input type="datetime-local" id="meetTime"/>
+
+      <label>Meeting Mode</label>
+      <select id="mode">
+        <option value="Online">🌐 Online</option>
+        <option value="Offline">🏫 Offline</option>
+        <option value="Hybrid">⚡ Hybrid</option>
+      </select>
+
+      <label>Group Color</label>
+      <div class="color-row" id="colorRow">
+        <div class="color-dot selected" data-color="#e84f2b" style="background:#e84f2b"></div>
+        <div class="color-dot" data-color="#2b7de8" style="background:#2b7de8"></div>
+        <div class="color-dot" data-color="#2bc47a" style="background:#2bc47a"></div>
+        <div class="color-dot" data-color="#e8a62b" style="background:#e8a62b"></div>
+        <div class="color-dot" data-color="#9b5de5" style="background:#9b5de5"></div>
+        <div class="color-dot" data-color="#1a1710" style="background:#1a1710"></div>
+      </div>
+
+      <button class="submit-btn" onclick="createGroup()">CREATE GROUP →</button>
+    </div>
+  </div>
+
+  <!-- Groups -->
+  <div>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" onclick="setFilter('All')">All</button>
+      <button class="filter-btn" onclick="setFilter('Online')">🌐 Online</button>
+      <button class="filter-btn" onclick="setFilter('Offline')">🏫 Offline</button>
+      <button class="filter-btn" onclick="setFilter('Hybrid')">⚡ Hybrid</button>
+    </div>
+    <div style="height:14px"></div>
+    <div class="groups-panel" id="groupsPanel"></div>
+  </div>
+
+</div>
+
+<script>
+  let groups = JSON.parse(localStorage.getItem('sgp_groups') || '[]');
+  let selectedColor = '#e84f2b';
+  let activeFilter = 'All';
+
+  // Datetime default
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  document.getElementById('meetTime').value = now.toISOString().slice(0,16);
+
+  // Color picker
+  document.getElementById('colorRow').addEventListener('click', e => {
+    const dot = e.target.closest('.color-dot');
+    if (!dot) return;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    dot.classList.add('selected');
+    selectedColor = dot.dataset.color;
+  });
+
+  function setFilter(f) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.includes(f) || (f==='All' && b.textContent==='All'));
+    });
+    render();
+  }
+
+  function createGroup() {
+    const subject = document.getElementById('subject').value.trim();
+    const topic   = document.getElementById('topic').value.trim();
+    const members = document.getElementById('members').value.trim();
+    const meetTime= document.getElementById('meetTime').value;
+    const mode    = document.getElementById('mode').value;
+
+    if (!subject) return highlight('subject');
+    if (!members) return highlight('members');
+
+    groups.unshift({
+      id: Date.now(),
+      subject, topic, members, meetTime, mode,
+      color: selectedColor,
+      created: new Date().toISOString()
+    });
+    save(); render();
+
+    document.getElementById('subject').value = '';
+    document.getElementById('topic').value   = '';
+    document.getElementById('members').value = '';
+
+    const badge = document.getElementById('countBadge');
+    badge.classList.remove('pop');
+    void badge.offsetWidth;
+    badge.classList.add('pop');
+  }
+
+  function deleteGroup(id) {
+    groups = groups.filter(g => g.id !== id);
+    save(); render();
+  }
+
+  function highlight(id) {
+    const el = document.getElementById(id);
+    el.style.borderColor = '#e84f2b';
+    el.style.boxShadow = '0 0 0 3px rgba(232,79,43,.15)';
+    setTimeout(() => { el.style.borderColor=''; el.style.boxShadow=''; }, 700);
+  }
+
+  function save() { localStorage.setItem('sgp_groups', JSON.stringify(groups)); }
+
+  function fmtDate(dt) {
+    if (!dt) return '—';
+    return new Date(dt).toLocaleString('en-IN', {
+      day:'numeric', month:'short', year:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    });
+  }
+
+  function render() {
+    const badge = document.getElementById('countBadge');
+    badge.textContent = groups.length;
+
+    const filtered = activeFilter === 'All' ? groups : groups.filter(g => g.mode === activeFilter);
+    const panel = document.getElementById('groupsPanel');
+
+    if (!filtered.length) {
+      panel.innerHTML = `<div class="empty-state">
+        <span class="big">📖</span>
+        <p>${activeFilter === 'All' ? 'No groups yet. Create your first study group!' : 'No ' + activeFilter + ' groups found.'}</p>
+      </div>`;
+      return;
+    }
+
+    panel.innerHTML = filtered.map(g => {
+      const memberList = g.members.split(',').map(m => m.trim()).filter(Boolean);
+      const modeEmoji  = g.mode === 'Online' ? '🌐' : g.mode === 'Offline' ? '🏫' : '⚡';
+      return `<div class="group-card">
+        <div class="card-stripe" style="background:${g.color}"></div>
+        <div class="card-body">
+          <div class="card-top">
+            <div>
+              <div class="card-subject">${g.subject}</div>
+              ${g.topic ? `<div class="card-topic">📌 ${g.topic}</div>` : ''}
+            </div>
+            <button class="del-btn" onclick="deleteGroup(${g.id})">✕ Delete</button>
+          </div>
+          <div class="card-meta">
+            <span class="meta-chip">${modeEmoji} ${g.mode}</span>
+            <span class="meta-chip">🕐 ${fmtDate(g.meetTime)}</span>
+            <span class="meta-chip">👥 ${memberList.length} member${memberList.length !== 1 ? 's' : ''}</span>
+          </div>
+          <div class="members-row">
+            ${memberList.map(m => `<span class="member-tag">${m}</span>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  render();
+</script>
+</body>
+</html>
