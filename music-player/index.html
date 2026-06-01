@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Music Player</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <h1>Music Player</h1>
+    <div class="search-row">
+      <input id="searchInput" placeholder="Search songs, albums, or artists..." />
+      <select id="searchType">
+        <option value="song">Song</option>
+        <option value="album">Album</option>
+        <option value="artist">Artist</option>
+      </select>
+      <button id="searchBtn">Search</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <aside class="sidebar">
+      <button id="favoritesBtn" class="aside-btn">Favorites</button>
+      <button id="recentBtn" class="aside-btn">Recently Played</button>
+      <div id="personalized" class="panel">
+        <h3>Personalized</h3>
+        <div id="recommendations"></div>
+      </div>
+    </aside>
+
+    <section class="results">
+      <div id="resultsList" class="list"></div>
+    </section>
+  </main>
+
+  <footer class="player">
+    <div class="player-info">
+      <img id="playerArtwork" src="" alt="artwork" />
+      <div>
+        <div id="playerTitle">Not Playing</div>
+        <div id="playerArtist"></div>
+      </div>
+    </div>
+    <div class="player-controls">
+      <button id="playPause">Play</button>
+      <input id="seek" type="range" min="0" max="100" value="0">
+      <div id="time">0:00</div>
+    </div>
+  </footer>
+
+  <audio id="audio" preload="none"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>
