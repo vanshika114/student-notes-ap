@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typing Speed Test</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: #0f0f1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+    }
+
+    /* ---- Header ---- */
+    .header { text-align: center; margin-bottom: 2rem; }
+    .header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: #fff;
+    }
+    .header h1 span { color: #f7b731; }
+    .header p { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-top: 0.3rem; }
+
+    /* ---- Stats Row ---- */
+    .stats {
+      display: flex;
+      gap: 1.2rem;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .stat-box {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 0.8rem 1.4rem;
+      text-align: center;
+      min-width: 90px;
+    }
+    .stat-box .val {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #f7b731;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat-box .lbl {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .stat-box.timer .val { color: #e94560; }
+    .stat-box.acc   .val { color: #00c878; }
+
+    /* ---- Paragraph box ---- */
+    .para-box {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 680px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      line-height: 1.9;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.03em;
+      min-height: 110px;
+      word-break: break-word;
+    }
+
+    .para-box .char { color: rgba(255,255,255,0.3); }
+    .para-box .correct { color: #00c878; }
+    .para-box .wrong { color: #e94560; text-decoration: underline; }
+    .para-box .cursor {
+      border-left: 2px solid #f7b731;
+      animation: blink 0.8s step-end infinite;
+      margin-left: -1px;
+    }
+    @keyframes blink {
+      0%, 100% { border-color: #f7b731; }
+      50% { border-color: transparent; }
+    }
+
+    /* ---- Input ---- */
+    .input-wrap {
+      width: 100%;
+      max-width: 680px;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .type-input {
+      width: 100%;
+      padding: 1rem 1.3rem;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: #1a1a2e;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+      caret-color: #f7b731;
+    }
+    .type-input:focus { border-color: #f7b731; }
+    .type-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ---- Buttons ---- */
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .btn {
+      padding: 0.75rem 2rem;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-start {
+      background: linear-gradient(135deg, #f7b731, #e67e22);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(247,183,49,0.3);
+    }
+    .btn-restart {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ---- Result card ---- */
+    .result {
+      display: none;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(247,183,49,0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      width: 100%;
+      max-width: 680px;
+      animation: popIn 0.4s ease;
+    }
+    .result.show { display: block; }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .result h2 { font-size: 1.5rem; color: #f7b731; margin-bottom: 1rem; }
+    .result-grid {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+    .result-item .big { font-size: 2rem; font-weight: 700; color: #fff; font-family: 'JetBrains Mono', monospace; }
+    .result-item .small { font-size: 0.72rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* difficulty tabs */
+    .diff-tabs {
+      display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem;
+    }
+    .diff-tab {
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.6);
+      font-size: 0.75rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .diff-tab.active { background: #f7b731; border-color: #f7b731; color: #000; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>⌨️ Typing <span>Speed</span> Test</h1>
+    <p>Test your typing speed and accuracy 🚀</p>
+  </div>
+
+  <!-- Difficulty -->
+  <div class="diff-tabs" id="diffTabs">
+    <button class="diff-tab active" onclick="setDiff('easy')">🟢 Easy</button>
+    <button class="diff-tab"        onclick="setDiff('medium')">🟡 Medium</button>
+    <button class="diff-tab"        onclick="setDiff('hard')">🔴 Hard</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box timer">
+      <div class="val" id="timerVal">60</div>
+      <div class="lbl">Seconds</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="wpmVal">0</div>
+      <div class="lbl">WPM</div>
+    </div>
+    <div class="stat-box acc">
+      <div class="val" id="accVal">100%</div>
+      <div class="lbl">Accuracy</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="errVal">0</div>
+      <div class="lbl">Errors</div>
+    </div>
+  </div>
+
+  <!-- Paragraph -->
+  <div class="para-box" id="paraBox"></div>
+
+  <!-- Input -->
+  <div class="input-wrap">
+    <input class="type-input" id="typeInput" placeholder="Click Start and begin typing..." disabled autocomplete="off" spellcheck="false" />
+  </div>
+
+  <!-- Buttons -->
+  <div class="btn-row">
+    <button class="btn btn-start"   id="startBtn"   onclick="startTest()">▶ Start</button>
+    <button class="btn btn-restart" onclick="resetTest()">↺ Restart</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result" id="resultBox">
+    <h2>🎉 Test Complete!</h2>
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="big" id="rWpm">0</div>
+        <div class="small">WPM</div>
+      </div>
+      <div class="result-item">
+        <div class="big" id="rAcc">0%</div>
+        <div class="small">Accuracy</div>
+      </div>
+      <div class="result-item">
+        <div class="big" id="rErr">0</div>
+        <div class="small">Errors</div>
+      </div>
+      <div class="result-item">
+        <div class="big" id="rWords">0</div>
+        <div class="small">Words</div>
+      </div>
+    </div>
+    <button class="btn btn-start" onclick="resetTest()">↺ Try Again</button>
+  </div>
+
+  <script>
+    const paragraphs = {
+      easy: [
+        "the cat sat on the mat and looked at the sun",
+        "she likes to read books and drink tea every day",
+        "the dog ran fast and jumped over the small fence",
+        "we went to the park and played games all day long",
+      ],
+      medium: [
+        "learning to type faster can greatly improve your productivity and save valuable time every single day",
+        "students who practice typing regularly find it easier to complete their assignments and take notes in class",
+        "the quick brown fox jumps over the lazy dog near the riverbank on a cold winter morning",
+        "technology has changed the way we learn communicate and share information with people around the world",
+      ],
+      hard: [
+        "proficient typists develop muscle memory through consistent practice allowing them to type without consciously thinking about each keystroke",
+        "the ability to type quickly and accurately is an essential skill in todays digital world where keyboards are used for almost everything",
+        "achieving a typing speed of over ninety words per minute requires dedication patience and thousands of hours of deliberate focused practice",
+        "modern programming languages require precise syntax and even a single misplaced character can cause an entire application to fail unexpectedly",
+      ]
+    };
+
+    let difficulty  = 'easy';
+    let currentPara = '';
+    let timer       = null;
+    let timeLeft    = 60;
+    let started     = false;
+    let errors      = 0;
+    let totalTyped  = 0;
+
+    function setDiff(d) {
+      difficulty = d;
+      document.querySelectorAll('.diff-tab').forEach((t,i) => {
+        t.classList.toggle('active', ['easy','medium','hard'][i] === d);
+      });
+      resetTest();
+    }
+
+    function getPara() {
+      const arr = paragraphs[difficulty];
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function renderPara(typed) {
+      let html = '';
+      for (let i = 0; i < currentPara.length; i++) {
+        if (i < typed.length) {
+          if (typed[i] === currentPara[i]) {
+            html += `<span class="correct">${currentPara[i]}</span>`;
+          } else {
+            html += `<span class="wrong">${currentPara[i]}</span>`;
+          }
+        } else if (i === typed.length) {
+          html += `<span class="char cursor">${currentPara[i]}</span>`;
+        } else {
+          html += `<span class="char">${currentPara[i]}</span>`;
+        }
+      }
+      document.getElementById('paraBox').innerHTML = html;
+    }
+
+    function startTest() {
+      if (started) return;
+      started = true;
+      currentPara = getPara();
+      renderPara('');
+
+      const input = document.getElementById('typeInput');
+      input.disabled = false;
+      input.value = '';
+      input.focus();
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('resultBox').classList.remove('show');
+
+      timeLeft = 60;
+      document.getElementById('timerVal').textContent = timeLeft;
+
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timerVal').textContent = timeLeft;
+        updateWPM();
+        if (timeLeft <= 0) endTest();
+      }, 1000);
+    }
+
+    document.getElementById('typeInput').addEventListener('input', function() {
+      if (!started) return;
+      const typed = this.value;
+      totalTyped = typed.length;
+      errors = 0;
+      for (let i = 0; i < typed.length; i++) {
+        if (typed[i] !== currentPara[i]) errors++;
+      }
+      document.getElementById('errVal').textContent = errors;
+      renderPara(typed);
+      updateAcc(typed.length);
+      updateWPM();
+
+      // auto finish
+      if (typed.length >= currentPara.length) endTest();
+    });
+
+    function updateWPM() {
+      const elapsed = (60 - timeLeft) || 1;
+      const words   = document.getElementById('typeInput').value.trim().split(/\s+/).filter(Boolean).length;
+      const wpm     = Math.round((words / elapsed) * 60);
+      document.getElementById('wpmVal').textContent = wpm || 0;
+    }
+
+    function updateAcc(typedLen) {
+      if (typedLen === 0) { document.getElementById('accVal').textContent = '100%'; return; }
+      const acc = Math.max(0, Math.round(((typedLen - errors) / typedLen) * 100));
+      document.getElementById('accVal').textContent = acc + '%';
+    }
+
+    function endTest() {
+      clearInterval(timer);
+      document.getElementById('typeInput').disabled = true;
+      started = false;
+
+      const typed   = document.getElementById('typeInput').value;
+      const words   = typed.trim().split(/\s+/).filter(Boolean).length;
+      const elapsed = (60 - timeLeft) || 1;
+      const wpm     = Math.round((words / elapsed) * 60);
+      const acc     = typed.length > 0 ? Math.max(0, Math.round(((typed.length - errors) / typed.length) * 100)) : 0;
+
+      document.getElementById('rWpm').textContent   = wpm;
+      document.getElementById('rAcc').textContent   = acc + '%';
+      document.getElementById('rErr').textContent   = errors;
+      document.getElementById('rWords').textContent = words;
+      document.getElementById('resultBox').classList.add('show');
+    }
+
+    function resetTest() {
+      clearInterval(timer);
+      started   = false;
+      timeLeft  = 60;
+      errors    = 0;
+      totalTyped = 0;
+
+      currentPara = getPara();
+      renderPara('');
+
+      const input = document.getElementById('typeInput');
+      input.value = '';
+      input.disabled = true;
+
+      document.getElementById('timerVal').textContent = '60';
+      document.getElementById('wpmVal').textContent   = '0';
+      document.getElementById('accVal').textContent   = '100%';
+      document.getElementById('errVal').textContent   = '0';
+      document.getElementById('startBtn').disabled    = false;
+      document.getElementById('resultBox').classList.remove('show');
+    }
+
+    // Init
+    currentPara = getPara();
+    renderPara('');
+  </script>
+
+</body>
+</html>
