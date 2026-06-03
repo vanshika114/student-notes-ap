@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraBoard — Premium Digital Vision Board & Goal Tracker</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  
+  <!-- Backdrop Blur Graphics -->
+  <div class="glow-bg">
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <div class="logo-text">
+          <h1>AuraBoard</h1>
+          <span>Visualize & Achieve</span>
+        </div>
+      </div>
+
+      <nav class="nav-controls">
+        <div class="theme-switch" id="themeToggle" title="Toggle Theme">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+        </div>
+        <button class="btn btn-primary" id="btnNewGoal">
+          <i data-lucide="plus"></i> New Vision Card
+        </button>
+      </nav>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="dashboard-layout">
+      
+      <!-- Left Column: Sidebar Statistics, Quotes, Achievements -->
+      <aside class="dashboard-sidebar">
+        <!-- Daily Motivation Card -->
+        <section class="card motivation-card glass">
+          <div class="quote-header">
+            <h3>Daily Spark</h3>
+            <i data-lucide="quote"></i>
+          </div>
+          <p id="motivationalQuote" class="quote-text">"The future belongs to those who believe in the beauty of their dreams."</p>
+          <span id="quoteAuthor" class="quote-author">— Eleanor Roosevelt</span>
+          <button class="btn btn-icon btn-small" id="btnNextQuote" title="Next Quote">
+            <i data-lucide="refresh-cw"></i>
+          </button>
+        </section>
+
+        <!-- Board Background Customization -->
+        <section class="card customization-card glass">
+          <h3>Board Mood</h3>
+          <div class="bg-options">
+            <button class="bg-btn bg-default active" data-bg="default" title="Deep space glow"></button>
+            <button class="bg-btn bg-sunset" data-bg="sunset" title="Sunset gradient"></button>
+            <button class="bg-btn bg-forest" data-bg="forest" title="Forest calm"></button>
+            <button class="bg-btn bg-ocean" data-bg="ocean" title="Ocean depth"></button>
+            <button class="bg-btn bg-sakura" data-bg="sakura" title="Cherry bloom"></button>
+          </div>
+        </section>
+
+        <!-- Progress Overview -->
+        <section class="card progress-card glass">
+          <h3>Board Analytics</h3>
+          <div class="progress-radial-wrapper">
+            <svg class="radial-progress-svg" viewBox="0 0 100 100">
+              <circle class="radial-bg" cx="50" cy="50" r="40"></circle>
+              <circle class="radial-bar" id="radialProgress" cx="50" cy="50" r="40" style="stroke-dashoffset: 251.2; stroke-dasharray: 251.2;"></circle>
+            </svg>
+            <div class="radial-progress-text">
+              <span id="txtProgressPercent">0%</span>
+              <span class="sub">Completed</span>
+            </div>
+          </div>
+          
+          <div class="stat-list">
+            <div class="stat-item">
+              <span class="stat-label">Active Goals</span>
+              <span class="stat-val" id="activeGoalCount">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Board Cards</span>
+              <span class="stat-val" id="totalGoalCount">0</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Daily Habits Streak -->
+        <section class="card habit-card glass">
+          <div class="habit-header">
+            <h3>Habit Streaks</h3>
+            <span class="streak-badge"><i data-lucide="flame"></i> <span id="streakCount">0</span> Day Streak</span>
+          </div>
+          <p class="section-desc">Consistent action generates momentum.</p>
+          <div class="habit-list" id="habitList">
+            <!-- Dynamically populated habits -->
+          </div>
+          <button class="btn btn-outline btn-full btn-small" id="btnAddHabit">
+            <i data-lucide="plus"></i> Add Daily Action
+          </button>
+        </section>
+
+        <!-- Achievement Badges -->
+        <section class="card achievements-card glass">
+          <h3>Achievements</h3>
+          <div class="badge-grid" id="badgeContainer">
+            <!-- Loaded Badges -->
+          </div>
+        </section>
+      </aside>
+
+      <!-- Right Column: Filter Control & The Board Workspace -->
+      <section class="board-workspace">
+        <div class="workspace-header glass">
+          <!-- Filtering & Categorization Options -->
+          <div class="filter-bar">
+            <button class="filter-tab active" data-filter="all">All Goals</button>
+            <button class="filter-tab" data-filter="career">
+              <i data-lucide="briefcase"></i> Career
+            </button>
+            <button class="filter-tab" data-filter="health">
+              <i data-lucide="heart"></i> Health
+            </button>
+            <button class="filter-tab" data-filter="travel">
+              <i data-lucide="compass"></i> Travel
+            </button>
+            <button class="filter-tab" data-filter="learning">
+              <i data-lucide="book-open"></i> Learning
+            </button>
+            <button class="filter-tab" data-filter="personal">
+              <i data-lucide="smile"></i> Personal
+            </button>
+          </div>
+
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="goalSearch" placeholder="Search aspirations...">
+          </div>
+        </div>
+
+        <!-- Vision Board Grid -->
+        <div class="board-grid" id="boardGrid">
+          <!-- Dynamically populated cards -->
+          <!-- Empty State -->
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">
+              <i data-lucide="image"></i>
+            </div>
+            <h2>Begin Your Manifestation</h2>
+            <p>Your vision board is a blank canvas. Start anchoring your dreams with image-enriched goal cards.</p>
+            <button class="btn btn-primary" id="btnEmptyCreate">Create First Card</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Create/Edit Modal Dialog -->
+  <div class="modal-overlay" id="goalModal">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h2 id="modalTitle">Create Vision Card</h2>
+        <button class="btn-close" id="btnModalClose">&times;</button>
+      </div>
+      <form id="goalForm">
+        <input type="hidden" id="editGoalId">
+        
+        <div class="form-group">
+          <label for="goalTitleInput">Aspiration / Goal Title *</label>
+          <input type="text" id="goalTitleInput" placeholder="e.g. Speak Fluent French, Climb Mt. Fuji" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="goalCategorySelect">Category</label>
+            <select id="goalCategorySelect">
+              <option value="career">Career / Finance</option>
+              <option value="health">Health / Fitness</option>
+              <option value="travel">Travel / Experience</option>
+              <option value="learning">Learning / Skills</option>
+              <option value="personal">Personal / Soul</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="goalTargetDate">Target Manifest Date</label>
+            <input type="date" id="goalTargetDate">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Inspirational Image (Visual Anchor)</label>
+          <div class="image-uploader" id="imageUploadArea">
+            <input type="file" id="goalImageFile" accept="image/*" class="file-input">
+            <div class="upload-placeholder" id="uploadPlaceholder">
+              <i data-lucide="cloud-upload"></i>
+              <p>Drag and drop or click to upload</p>
+              <span>Supports PNG, JPG, WEBP</span>
+            </div>
+            <div class="upload-preview-container" id="uploadPreviewContainer" style="display: none;">
+              <img id="uploadPreview" src="" alt="Anchor Preview">
+              <button type="button" class="btn btn-icon btn-danger remove-img-btn" id="btnRemoveImage">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="goalNotesInput">Motivational Note / Affirmation</label>
+          <textarea id="goalNotesInput" rows="3" placeholder="Write down why this matters to you or a daily affirmation..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="goalProgressRange">Current Progress (<span id="progressValueText">0%</span>)</label>
+          <input type="range" id="goalProgressRange" min="0" max="100" value="0">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="btnCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Anchor into Board</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Habit Creation Modal -->
+  <div class="modal-overlay" id="habitModal">
+    <div class="modal-content glass modal-small">
+      <div class="modal-header">
+        <h2>Add Daily Habit Action</h2>
+        <button class="btn-close" id="btnHabitModalClose">&times;</button>
+      </div>
+      <form id="habitForm">
+        <div class="form-group">
+          <label for="habitNameInput">Daily Action Name *</label>
+          <input type="text" id="habitNameInput" placeholder="e.g. Read 10 pages, Meditate, Code 1hr" required>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="btnHabitCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Javascript Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

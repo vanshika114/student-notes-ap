@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraHabit - Habit Tracker Dashboard & Weekly Analytics</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="AuraHabit is a premium habit tracker dashboard with streak tracking, weekly analytics, goal tracking, calendar heatmap, and achievements. Unlock your full potential.">
+  <meta name="keywords" content="habit tracker, streak tracker, weekly analytics, goal tracking, achievements, dashboard">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Chart.js and Confetti scripts loaded via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+</head>
+<body>
+
+  <!-- Layout Wrapper -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <i class="fa-solid fa-crown text-gold"></i>
+          </div>
+          <span class="logo-text">Aura<span class="gradient-text">Habit</span></span>
+        </div>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div class="user-profile-widget">
+        <div class="avatar-container">
+          <div class="avatar-glow"></div>
+          <div class="avatar-initials" id="profileInitials">AH</div>
+        </div>
+        <div class="user-details">
+          <h3 id="profileName">Elite Achiever</h3>
+          <p id="profileLevelDisplay">Level 1 Novice</p>
+        </div>
+        <div class="xp-bar-container">
+          <div class="xp-bar-fill" id="xpBarFill" style="width: 0%;"></div>
+          <span class="xp-text" id="xpText">0 / 100 XP</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a href="#" class="nav-link active" data-tab="dashboard" id="nav-dashboard">
+              <i class="fa-solid fa-table-columns"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-tab="habits" id="nav-habits">
+              <i class="fa-solid fa-list-check"></i>
+              <span>My Habits</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-tab="analytics" id="nav-analytics">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Analytics</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-tab="calendar" id="nav-calendar">
+              <i class="fa-solid fa-calendar-days"></i>
+              <span>Calendar</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-tab="achievements" id="nav-achievements">
+              <i class="fa-solid fa-trophy"></i>
+              <span>Achievements</span>
+              <span class="badge-count" id="badgeCount">0</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-tab="settings" id="nav-settings">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme">
+          <i class="fa-solid fa-moon moon-icon"></i>
+          <i class="fa-solid fa-sun sun-icon"></i>
+          <span id="themeToggleText">Dark Mode</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Navbar Header -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="date-display">
+            <h1 id="greetingText">Hello, Achiever</h1>
+            <p id="currentDateText">Wednesday, June 3, 2026</p>
+          </div>
+        </div>
+        
+        <div class="navbar-right">
+          <!-- Reward points & Level bubble -->
+          <div class="points-bubble">
+            <i class="fa-solid fa-star text-gold animate-pulse"></i>
+            <span id="pointsDisplay">0</span> <span class="points-label">Pts</span>
+          </div>
+
+          <button class="quick-add-btn" id="quickAddHabitBtn" aria-label="Create New Habit">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Habit</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Sections Container -->
+      <div class="content-body">
+        
+        <!-- SECTION 1: DASHBOARD (Active View by default) -->
+        <section id="tab-dashboard" class="tab-content active">
+          
+          <!-- Summary Cards Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon-wrapper purple-glow">
+                <i class="fa-solid fa-calendar-check text-purple"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Today's Progress</h3>
+                <p class="stat-value" id="todayProgressValue">0%</p>
+                <div class="mini-progress-bar">
+                  <div class="mini-progress-fill bg-purple" id="todayProgressFill" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrapper gold-glow">
+                <i class="fa-solid fa-fire text-gold"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Current Streak</h3>
+                <p class="stat-value" id="currentStreakValue">0 Days</p>
+                <p class="stat-subtext" id="longestStreakValue">Best streak: 0 days</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrapper blue-glow">
+                <i class="fa-solid fa-award text-blue"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Level Achieved</h3>
+                <p class="stat-value" id="userLevelValue">Level 1</p>
+                <p class="stat-subtext" id="xpRemainingText">100 XP to level up</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-wrapper pink-glow">
+                <i class="fa-solid fa-circle-check text-pink"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Weekly Success Rate</h3>
+                <p class="stat-value" id="weeklySuccessValue">0%</p>
+                <p class="stat-subtext" id="weeklyCompletionFraction">0 of 0 habits completed</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Dashboard Layout Grid (Habits checklist & Goals / Achievements previews) -->
+          <div class="dashboard-main-grid">
+            
+            <!-- Left Side: Today's Habits Checklist -->
+            <div class="dashboard-column card-glass">
+              <div class="card-header">
+                <div class="card-header-left">
+                  <h2>Today's Habits</h2>
+                  <span class="count-tag" id="todayHabitsCount">0 remaining</span>
+                </div>
+                <div class="filters-container">
+                  <select id="timeFilter" class="custom-select">
+                    <option value="all">All Times</option>
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Habit items list -->
+              <div class="habit-checklist" id="todayHabitChecklist">
+                <!-- Dynamically Populated -->
+                <div class="empty-state">
+                  <i class="fa-solid fa-mug-hot"></i>
+                  <p>No habits set for today. Start building your routine!</p>
+                  <button class="btn btn-primary" onclick="openHabitModal()">Create A Habit</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Weekly Targets & Achievement Status -->
+            <div class="dashboard-column gap-layout">
+              
+              <!-- Weekly Goals Progress Card -->
+              <div class="card-glass p-large">
+                <div class="card-header">
+                  <h2>Weekly Milestones</h2>
+                </div>
+                <div class="milestones-container">
+                  <div class="milestone-item">
+                    <div class="milestone-meta">
+                      <span>Habit Completions</span>
+                      <span id="weeklyCompletionsCount">0/10</span>
+                    </div>
+                    <div class="milestone-progress">
+                      <div class="milestone-fill progress-gradient-gold" id="weeklyCompletionsFill" style="width: 0%;"></div>
+                    </div>
+                  </div>
+                  
+                  <div class="milestone-item">
+                    <div class="milestone-meta">
+                      <span>Perfect Days</span>
+                      <span id="weeklyPerfectDaysCount">0/7</span>
+                    </div>
+                    <div class="milestone-progress">
+                      <div class="milestone-fill progress-gradient-purple" id="weeklyPerfectDaysFill" style="width: 0%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="milestone-item">
+                    <div class="milestone-meta">
+                      <span>XP Milestone (Weekly)</span>
+                      <span id="weeklyXpCount">0/500 XP</span>
+                    </div>
+                    <div class="milestone-progress">
+                      <div class="milestone-fill progress-gradient-blue" id="weeklyXpFill" style="width: 0%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Streak Badges Room Quick View -->
+              <div class="card-glass p-large">
+                <div class="card-header">
+                  <h2>Active Achievements</h2>
+                  <a href="#" class="view-all-link" id="viewAllBadgesLink">View Room</a>
+                </div>
+                <div class="badges-mini-list" id="badgesMiniShowcase">
+                  <!-- Dynamically Unlocked Badges shown here -->
+                </div>
+              </div>
+
+              <!-- Daily Motivation Quote -->
+              <div class="quote-card-glass">
+                <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+                <p class="quote-text" id="motivationQuote">"Quality is not an act, it is a habit."</p>
+                <span class="quote-author" id="motivationAuthor">— Aristotle</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- SECTION 2: HABIT MANAGEMENT -->
+        <section id="tab-habits" class="tab-content">
+          <div class="habits-header-row">
+            <div>
+              <h2>All Habits</h2>
+              <p>Manage, edit, archive and view your customized routines</p>
+            </div>
+            <button class="btn btn-primary" onclick="openHabitModal()">
+              <i class="fa-solid fa-plus"></i> Create Custom Habit
+            </button>
+          </div>
+
+          <!-- Filters Row -->
+          <div class="habits-filters-card card-glass">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="habitSearchInput" placeholder="Search habits by name, category...">
+            </div>
+            <div class="filters-group">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="active">Active</button>
+              <button class="filter-btn" data-filter="archived">Archived</button>
+            </div>
+            <div class="category-select-wrapper">
+              <select id="categoryFilter" class="custom-select">
+                <option value="all">All Categories</option>
+                <option value="health">Health & Fitness</option>
+                <option value="mind">Mind & Soul</option>
+                <option value="productivity">Productivity</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Habits Listing Grid -->
+          <div class="habits-list-grid" id="allHabitsGrid">
+            <!-- Dynamically Loaded -->
+          </div>
+        </section>
+
+        <!-- SECTION 3: ANALYTICS -->
+        <section id="tab-analytics" class="tab-content">
+          <h2>Weekly Analytics & Performance Insights</h2>
+          <p class="sub-heading">Visualize your consistency patterns, success ratios, and productivity streaks</p>
+
+          <div class="analytics-charts-grid">
+            <!-- Weekly Completion Rate Bar Chart -->
+            <div class="card-glass chart-card">
+              <div class="chart-header">
+                <h3>Weekly Completion Consistency</h3>
+                <span class="chart-period">Last 7 Days</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="weeklyChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Category Distribution Doughnut -->
+            <div class="card-glass chart-card">
+              <div class="chart-header">
+                <h3>Habit Category Density</h3>
+                <span class="chart-period">All Active Habits</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="categoryChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Monthly Progress Timeline -->
+            <div class="card-glass chart-card full-width-chart">
+              <div class="chart-header">
+                <h3>Daily Check-ins History (Progress Map)</h3>
+                <span class="chart-period">Monthly Trend</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="monthlyTrendChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Insights section -->
+          <div class="insights-container">
+            <h3 class="insights-title"><i class="fa-solid fa-wand-magic-sparkles text-gold"></i> AI Persona & Habits Insights</h3>
+            <div class="insights-grid" id="insightsCardGrid">
+              <!-- Dynamically Populated Analytics Insights -->
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: CALENDAR HEATMAP -->
+        <section id="tab-calendar" class="tab-content">
+          <h2>Routine Consistency Heatmap</h2>
+          <p class="sub-heading">Your visual matrix of daily check-ins. Darker colored cells indicate higher routine completion ratios.</p>
+
+          <div class="card-glass p-large heatmap-section">
+            <div class="heatmap-header">
+              <div class="legend-scale">
+                <span>Less Completed</span>
+                <div class="legend-boxes">
+                  <span class="box level-0"></span>
+                  <span class="box level-1"></span>
+                  <span class="box level-2"></span>
+                  <span class="box level-3"></span>
+                  <span class="box level-4"></span>
+                </div>
+                <span>More Completed</span>
+              </div>
+            </div>
+            
+            <!-- Heatmap calendar grid -->
+            <div class="heatmap-wrapper">
+              <div class="heatmap-months-row" id="heatmapMonthsRow">
+                <!-- Months headers -->
+              </div>
+              <div class="heatmap-body">
+                <div class="heatmap-days-labels">
+                  <span>Mon</span>
+                  <span>Wed</span>
+                  <span>Fri</span>
+                  <span>Sun</span>
+                </div>
+                <div class="heatmap-grid" id="heatmapGridContainer">
+                  <!-- Generated dynamic cells for the last 52 weeks -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Monthly Calendar View -->
+          <div class="calendar-detail-view card-glass p-large">
+            <div class="calendar-nav-header">
+              <button class="btn btn-secondary-icon" id="prevMonthBtn" aria-label="Previous Month"><i class="fa-solid fa-chevron-left"></i></button>
+              <h3 id="calendarMonthYearTitle">June 2026</h3>
+              <button class="btn btn-secondary-icon" id="nextMonthBtn" aria-label="Next Month"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="calendar-grid-header">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="calendar-grid-body" id="calendarDaysGrid">
+              <!-- Calendar grid cells -->
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: ACHIEVEMENTS -->
+        <section id="tab-achievements" class="tab-content">
+          <div class="achievements-header">
+            <div>
+              <h2>Badges & Accomplishments Room</h2>
+              <p>Collect reward points, level up, and unlock medals by staying dedicated to your habits</p>
+            </div>
+            <div class="xp-summary-badge">
+              <div class="points-circle">
+                <span id="achievementsTotalPoints">0</span>
+                <p>Points</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Badges Grid -->
+          <div class="badges-grid" id="badgesFullGrid">
+            <!-- Badges cards dynamically rendered (unlocked vs locked) -->
+          </div>
+        </section>
+
+        <!-- SECTION 6: SETTINGS -->
+        <section id="tab-settings" class="tab-content">
+          <h2>Application Settings</h2>
+          <p class="sub-heading">Tailor the dashboard experience and manage your personal habit tracking backups</p>
+
+          <div class="settings-grid">
+            
+            <!-- Account & Profile -->
+            <div class="card-glass p-large settings-card">
+              <h3><i class="fa-solid fa-user-gear text-purple"></i> Profile Personalization</h3>
+              <div class="form-group margin-top-m">
+                <label for="settingsProfileName">Display Name</label>
+                <input type="text" id="settingsProfileName" class="form-control" value="Elite Achiever">
+              </div>
+              <button class="btn btn-primary margin-top-s" id="saveProfileBtn">Update Profile Name</button>
+            </div>
+
+            <!-- sound and alerts -->
+            <div class="card-glass p-large settings-card">
+              <h3><i class="fa-solid fa-circle-nodes text-blue"></i> Preferences</h3>
+              <div class="toggle-setting-row margin-top-m">
+                <div>
+                  <span class="setting-label">Sound Effects</span>
+                  <p class="setting-desc">Play rewarding sound alerts upon habit checks and level ups</p>
+                </div>
+                <label class="switch-toggle">
+                  <input type="checkbox" id="soundToggle" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-setting-row margin-top-s">
+                <div>
+                  <span class="setting-label">Browser Notifications</span>
+                  <p class="setting-desc">Push reminders on mornings/evenings to keep active habits updated</p>
+                </div>
+                <label class="switch-toggle">
+                  <input type="checkbox" id="notificationsToggle">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Backup and export -->
+            <div class="card-glass p-large settings-card">
+              <h3><i class="fa-solid fa-database text-gold"></i> Data Backups & Reset</h3>
+              <p class="setting-desc margin-top-s">Export your completed logs to move to another device, or reset all logs to clear your streak records.</p>
+              
+              <div class="settings-actions-row margin-top-m">
+                <button class="btn btn-secondary" id="exportDataBtn">
+                  <i class="fa-solid fa-download"></i> Export Data (JSON)
+                </button>
+                <label for="importDataFileInput" class="btn btn-secondary cursor-pointer">
+                  <i class="fa-solid fa-upload"></i> Import Backup
+                </label>
+                <input type="file" id="importDataFileInput" accept=".json" style="display: none;">
+                <button class="btn btn-danger" id="resetDataBtn">
+                  <i class="fa-solid fa-trash-can"></i> Reset All Data
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Habit Mock Data Generator for ease of demoing -->
+            <div class="card-glass p-large settings-card">
+              <h3><i class="fa-solid fa-flask text-pink"></i> Developer Tools (Demo Sync)</h3>
+              <p class="setting-desc margin-top-s">Quickly populate the dashboard with 30 days of mock history to verify heatmaps, streaks, and analytics dashboard immediately.</p>
+              <button class="btn btn-primary margin-top-m" id="generateMockDataBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Populate 30-Day Mock Habits & Streaks
+              </button>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Create/Edit Habit Modal Dialog -->
+  <div class="modal-overlay" id="habitModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="habitModalTitle">Create Custom Habit</h2>
+        <button class="modal-close-btn" onclick="closeHabitModal()" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="habitForm">
+        <input type="hidden" id="editHabitId">
+        
+        <div class="form-group">
+          <label for="habitName">Habit Name *</label>
+          <input type="text" id="habitName" class="form-control" placeholder="e.g. Read Book, Drink Water, Coding" required>
+        </div>
+
+        <div class="form-group">
+          <label for="habitDesc">Description / Notes</label>
+          <textarea id="habitDesc" class="form-control" placeholder="e.g. Read 15 pages of structural engineering book" rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="habitCategory">Category *</label>
+            <select id="habitCategory" class="form-control" required>
+              <option value="health">Health & Fitness</option>
+              <option value="mind">Mind & Soul</option>
+              <option value="productivity">Productivity</option>
+              <option value="custom">Custom Routine</option>
+            </select>
+          </div>
+          
+          <div class="form-group half-width">
+            <label for="habitDifficulty">Difficulty Level *</label>
+            <select id="habitDifficulty" class="form-control" required>
+              <option value="easy">Easy (10 XP / Pt)</option>
+              <option value="medium" selected>Medium (20 XP / Pt)</option>
+              <option value="hard">Hard (30 XP / Pt)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="habitTimeOfDay">Preferred Time *</label>
+            <select id="habitTimeOfDay" class="form-control" required>
+              <option value="morning">Morning (6 AM - 12 PM)</option>
+              <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+              <option value="evening">Evening (5 PM - 10 PM)</option>
+            </select>
+          </div>
+
+          <div class="form-group half-width">
+            <label for="habitColor">Card Color Theme</label>
+            <div class="color-picker-grid" id="colorPickerGrid">
+              <!-- Populated by JS -->
+            </div>
+            <input type="hidden" id="habitColor" value="#FFD700"> <!-- Default Gold -->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Schedule Target *</label>
+          <div class="frequency-tabs">
+            <button type="button" class="freq-tab active" data-freq="daily">Everyday</button>
+            <button type="button" class="freq-tab" data-freq="weekly">Weekly Frequency</button>
+            <button type="button" class="freq-tab" data-freq="specific">Specific Days</button>
+          </div>
+          
+          <!-- Weekly Target Option (hidden by default) -->
+          <div id="weeklyTargetContainer" class="freq-sub-container hidden">
+            <label for="weeklyFrequencyCount">Target completions per week:</label>
+            <select id="weeklyFrequencyCount" class="form-control">
+              <option value="1">1 time a week</option>
+              <option value="2">2 times a week</option>
+              <option value="3">3 times a week</option>
+              <option value="4">4 times a week</option>
+              <option value="5">5 times a week</option>
+              <option value="6">6 times a week</option>
+            </select>
+          </div>
+
+          <!-- Specific Days Grid Option (hidden by default) -->
+          <div id="specificDaysContainer" class="freq-sub-container hidden">
+            <label>Select active weekdays:</label>
+            <div class="days-select-grid">
+              <button type="button" class="day-select-btn" data-day="1">M</button>
+              <button type="button" class="day-select-btn" data-day="2">T</button>
+              <button type="button" class="day-select-btn" data-day="3">W</button>
+              <button type="button" class="day-select-btn" data-day="4">T</button>
+              <button type="button" class="day-select-btn" data-day="5">F</button>
+              <button type="button" class="day-select-btn" data-day="6">S</button>
+              <button type="button" class="day-select-btn" data-day="0">S</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeHabitModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveHabitBtn">Create Habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Habit Detail Info & History Modal -->
+  <div class="modal-overlay" id="habitDetailModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="detailHabitName">Habit Title</h2>
+        <button class="modal-close-btn" onclick="closeDetailModal()" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="detail-body">
+        <div class="detail-meta-row">
+          <span class="detail-tag" id="detailCategoryTag"><i class="fa-solid fa-layer-group"></i> Health</span>
+          <span class="detail-tag" id="detailTimeTag"><i class="fa-solid fa-clock"></i> Morning</span>
+          <span class="detail-tag" id="detailDiffTag"><i class="fa-solid fa-bolt"></i> Medium</span>
+        </div>
+        
+        <p class="detail-description" id="detailDescription">No description notes available.</p>
+
+        <div class="detail-stats-grid">
+          <div class="d-stat-box">
+            <span class="d-stat-label">Current Streak</span>
+            <span class="d-stat-val text-gold" id="detailCurrentStreak">0 Days</span>
+          </div>
+          <div class="d-stat-box">
+            <span class="d-stat-label">Longest Streak</span>
+            <span class="d-stat-val text-purple" id="detailLongestStreak">0 Days</span>
+          </div>
+          <div class="d-stat-box">
+            <span class="d-stat-label">Completions</span>
+            <span class="d-stat-val text-blue" id="detailTotalCompletions">0</span>
+          </div>
+          <div class="d-stat-box">
+            <span class="d-stat-label">Completion %</span>
+            <span class="d-stat-val text-green" id="detailCompletionRate">0%</span>
+          </div>
+        </div>
+
+        <!-- Custom calendar month tracker inside detail -->
+        <h3 class="margin-top-m">Last 30 Days Activity Log</h3>
+        <div class="calendar-detail-minigrid" id="detailHistoryGrid">
+          <!-- Populated in JS with last 30 circles -->
+        </div>
+
+        <div class="detail-footer-actions">
+          <button class="btn btn-secondary" id="detailEditBtn">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Habit
+          </button>
+          <button class="btn btn-secondary" id="detailArchiveBtn">
+            <i class="fa-solid fa-box-archive"></i> Archive Habit
+          </button>
+          <button class="btn btn-danger" id="detailDeleteBtn">
+            <i class="fa-solid fa-trash-can"></i> Delete Habit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Banner Toast -->
+  <div class="notification-toast" id="achievementToast">
+    <div class="toast-icon">
+      <i class="fa-solid fa-trophy text-gold"></i>
+    </div>
+    <div class="toast-body">
+      <h4>Achievement Unlocked!</h4>
+      <p id="toastBadgeName">Consistency King</p>
+    </div>
+  </div>
+
+  <!-- JS Logic Script -->
+  <script src="app.js" defer></script>
+</body>
+</html>
