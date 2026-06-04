@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clue Chain — The Bright Mystery</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap');
+
+        :root {
+            --bg: #ffefcd;
+            --card: #ffffff;
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --text: #2f2f2f;
+            --border: #2f2f2f;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Fredoka', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .game-card {
+            background: var(--card);
+            border: 4px solid var(--border);
+            border-radius: 40px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 12px 12px 0px var(--border);
+            text-align: center;
+            position: relative;
+            transform: rotate(-1deg);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0 0 20px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border);
+            border-radius: 50%;
+            background: white;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .dot.done {
+            background: var(--secondary);
+        }
+
+        .clue-box {
+            background: #f8f9fa;
+            border: 3px solid var(--border);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+            font-size: 1.3rem;
+            line-height: 1.4;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input {
+            padding: 15px 20px;
+            border: 4px solid var(--border);
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 1.2rem;
+            text-align: center;
+            outline: none;
+            transition: transform 0.2s;
+        }
+
+        input:focus {
+            transform: scale(1.02);
+            background: var(--accent);
+        }
+
+        .btn-unlock {
+            background: var(--primary);
+            color: white;
+            border: 4px solid var(--border);
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 6px 6px 0px var(--border);
+            transition: all 0.1s;
+        }
+
+        .btn-unlock:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px var(--border);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 24px;
+        }
+
+        .hidden { display: none !important; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        .won { animation: bounce 0.5s infinite; }
+    </style>
+</head>
+<body>
+
+    <div class="game-card" id="card">
+        <h1>Clue Chain</h1>
+        
+        <div class="progress-dots" id="dots"></div>
+
+        <div class="clue-box" id="clue-display">
+            Loading the first link...
+        </div>
+
+        <div class="input-group" id="controls">
+            <input type="text" id="answer-input" placeholder="Type answer here..." autocomplete="off">
+            <button class="btn-unlock" onclick="checkAnswer()">Unlock Next Clue</button>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script>
+        const CHAIN = [
+            { q: "I have a face but no eyes, hands but no arms. What am I?", a: "clock" },
+            { q: "The more of me there is, the less you see. What am I?", a: "darkness" },
+            { q: "I have keys, but no locks. I have a space, but no room. What am I?", a: "keyboard" },
+            { q: "What is full of holes but still holds water?", a: "sponge" },
+            { q: "I'm tall when I'm young, and I'm short when I'm old. What am I?", a: "candle" }
+        ];
+
+        let currentStep = 0;
+
+        function init() {
+            const dotsContainer = document.getElementById('dots');
+            dotsContainer.innerHTML = CHAIN.map(() => `<div class="dot"></div>`).join('');
+            updateUI();
+        }
+
+        function updateUI() {
+            if (currentStep >= CHAIN.length) return win();
+
+            document.getElementById('clue-display').innerText = CHAIN[currentStep].q;
+            document.getElementById('answer-input').value = "";
+            document.getElementById('answer-input').focus();
+            
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.className = 'dot';
+                if (i < currentStep) dot.classList.add('done');
+                if (i === currentStep) dot.classList.add('active');
+            });
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('answer-input').value.trim().toLowerCase();
+            const feedback = document.getElementById('feedback');
+
+            if (input === CHAIN[currentStep].a) {
+                currentStep++;
+                feedback.innerText = "CLICK! Link unlocked! 🎉";
+                feedback.style.color = "var(--secondary)";
+                setTimeout(() => {
+                    feedback.innerText = "";
+                    updateUI();
+                }, 1000);
+            } else {
+                feedback.innerText = "NOPE! Try again! 🧐";
+                feedback.style.color = "var(--primary)";
+                document.getElementById('card').style.animation = "none";
+                document.getElementById('card').offsetHeight; // Trigger reflow
+                document.getElementById('card').style.animation = "bounce 0.2s 2";
+            }
+        }
+
+        function win() {
+            document.getElementById('clue-display').innerHTML = "<h2>Chain Completed!</h2><p>You solved the mystery of the chain!</p>";
+            document.getElementById('controls').classList.add('hidden');
+            document.getElementById('card').classList.add('won');
+            document.getElementById('feedback').innerText = "FREEDOM!";
+        }
+
+        document.getElementById('answer-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkAnswer();
+        });
+
+        init();
+    </script>
+</body>
+</html>
