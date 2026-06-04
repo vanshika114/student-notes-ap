@@ -1,0 +1,17 @@
+{
+  "title": "Habit Matrix — Tracker",
+  "description": "A premium dark-glassmorphism habit tracker with 7-day matrix tracking, streak engine, completion analytics, localStorage persistence, and undo-based delete recovery.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "habits",
+    "tracker",
+    "vanilla-js",
+    "glassmorphism",
+    "productivity"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}

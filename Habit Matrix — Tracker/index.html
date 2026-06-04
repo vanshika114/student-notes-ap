@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit Matrix — Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Dashboard Header ─── -->
+  <header class="dashboard">
+    <div class="dash-top">
+      <h1 class="logo">⟁ HABIT MATRIX</h1>
+      <div class="dash-stats">
+        <div class="stat-card">
+          <span class="stat-icon">⊡</span>
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Active Habits</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">◉</span>
+          <span class="stat-value" id="stat-today-rate">0%</span>
+          <span class="stat-label">Today's Rate</span>
+        </div>
+        <div class="stat-card quote-card">
+          <span class="stat-icon">❝</span>
+          <p class="quote-text" id="quote-text">The secret of getting ahead is getting started.</p>
+          <button class="quote-refresh" id="quote-refresh" aria-label="New quote">⟳</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Add Habit Bar ─── -->
+  <section class="add-bar">
+    <form id="habit-form" autocomplete="off">
+      <div class="input-group">
+        <input
+          type="text"
+          id="habit-title"
+          placeholder="e.g. Morning run, 10 pages read ..."
+          required
+          maxlength="60"
+        />
+      </div>
+      <div class="select-group">
+        <select id="habit-frequency" aria-label="Frequency">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <select id="habit-category" aria-label="Category">
+          <option value="Health">● Health</option>
+          <option value="Mind">● Mind</option>
+          <option value="Fitness">● Fitness</option>
+          <option value="Productivity">● Productivity</option>
+          <option value="Social">● Social</option>
+          <option value="Creative">● Creative</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-add">+ Add Habit</button>
+    </form>
+  </section>
+
+  <!-- ─── Habit Tracking Grid ─── -->
+  <main class="grid-container">
+    <div class="grid-header-row">
+      <span class="gh-habit">Habit</span>
+      <span class="gh-streak">Streak</span>
+      <span class="gh-rate">Rate</span>
+      <span class="gh-days" id="day-labels"></span>
+      <span class="gh-actions"></span>
+    </div>
+    <div id="habit-grid" class="habit-grid">
+      <!-- rendered by JS -->
+    </div>
+    <div id="empty-state" class="empty-state">
+      <div class="empty-icon">◇</div>
+      <p>No habits yet.<br />Create your first one above.</p>
+    </div>
+  </main>
+
+  <!-- ─── Insights Modal ─── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+      <h2 id="modal-title" class="modal-title">Habit Insights</h2>
+      <div class="modal-body" id="modal-body">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Undo Toast ─── -->
+  <div class="toast-container" id="toast-container">
+    <div class="toast" id="toast">
+      <span class="toast-msg" id="toast-msg"></span>
+      <button class="toast-undo" id="toast-undo">Undo</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
