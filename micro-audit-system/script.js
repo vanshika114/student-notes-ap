@@ -15,6 +15,21 @@ const prioritySelect =
 const dueDateInput =
     document.getElementById("dueDateInput");
 
+const imageInput =
+    document.getElementById("imageInput");
+
+const imagePreview =
+    document.getElementById("imagePreview");
+
+const imagePreviewImg =
+    document.getElementById("imagePreviewImg");
+
+const imageValidationMessage =
+    document.getElementById("imageValidationMessage");
+
+const removeImageBtn =
+    document.getElementById("removeImageBtn");
+
 const auditList = document.getElementById("auditList");
 
 const totalAudits = document.getElementById("totalAudits");
@@ -52,6 +67,23 @@ const roleBadge = document.getElementById("roleBadge");
 let currentFilter = "all";
 
 let editingAuditId = null;
+
+let newAuditImageData = "";
+
+let editImageCache = {};
+
+const allowedImageTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+];
+
+const allowedImageExtensions = [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp"
+];
 
 const currentUser =
     JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -128,6 +160,16 @@ protectRoutes();
 if(addAuditBtn){
 
     addAuditBtn.addEventListener("click", addAudit);
+}
+
+if(imageInput){
+
+    imageInput.addEventListener("change", handleNewImageChange);
+}
+
+if(removeImageBtn){
+
+    removeImageBtn.addEventListener("click", clearNewImageState);
 }
 
 if(searchInput){
@@ -374,7 +416,9 @@ const audit = {
 
     dueDate: dueDateInput.value,
 
-    createdAt:new Date().toLocaleString()
+    createdAt:new Date().toLocaleString(),
+
+    image: newAuditImageData
 };
 
     audits.push(audit);
@@ -389,6 +433,124 @@ const audit = {
     }
 
     renderAudits();
+
+    clearNewImageState();
+}
+
+function setImageMessage(element, message, type){
+
+    if(!element){
+
+        return;
+    }
+
+    element.textContent = message;
+
+    element.className = `image-message ${type || ""}`;
+}
+
+function isSupportedImageFile(file){
+
+    if(!file){
+
+        return false;
+    }
+
+    const typeIsValid =
+        allowedImageTypes.includes(file.type);
+
+    const name = file.name.toLowerCase();
+
+    const extensionIsValid =
+        allowedImageExtensions.some((ext)=> name.endsWith(ext));
+
+    return typeIsValid || extensionIsValid;
+}
+
+function readImageFileAsDataUrl(file, callback){
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+
+        callback(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function updateNewImagePreview(imageData){
+
+    if(imagePreview && imagePreviewImg){
+
+        if(imageData){
+
+            imagePreviewImg.src = imageData;
+
+            imagePreview.classList.remove("hidden");
+        } else {
+
+            imagePreviewImg.removeAttribute("src");
+
+            imagePreview.classList.add("hidden");
+        }
+    }
+}
+
+function clearNewImageState(){
+
+    newAuditImageData = "";
+
+    if(imageInput){
+
+        imageInput.value = "";
+    }
+
+    updateNewImagePreview("");
+
+    setImageMessage(imageValidationMessage, "", "");
+}
+
+function handleNewImageChange(event){
+
+    const file = event.target.files[0];
+
+    if(!file){
+
+        clearNewImageState();
+
+        return;
+    }
+
+    if(!isSupportedImageFile(file)){
+
+        setImageMessage(
+            imageValidationMessage,
+            "Please upload a JPG, JPEG, PNG, or WEBP image.",
+            "error"
+        );
+
+        event.target.value = "";
+
+        updateNewImagePreview("");
+
+        newAuditImageData = "";
+
+        return;
+    }
+
+    readImageFileAsDataUrl(file, (imageData)=>{
+
+        newAuditImageData = imageData;
+
+        updateNewImagePreview(imageData);
+
+        setImageMessage(
+            imageValidationMessage,
+            "Image ready to save.",
+            "success"
+        );
+    });
 }
 
 /* Due Date Helpers */
@@ -566,6 +728,14 @@ sortedAudits.forEach((audit)=>{
 
         const isEditing = editingAuditId === audit.id;
 
+        const cachedEditImage = editImageCache[audit.id];
+
+        const previewImageSource = cachedEditImage
+            ? cachedEditImage.dataUrl
+            : audit.image || "";
+
+        const hasPreviewImage = Boolean(previewImageSource);
+
         const card = document.createElement("div");
 
         card.className = [
@@ -623,6 +793,47 @@ sortedAudits.forEach((audit)=>{
                     value="${audit.dueDate || ""}"
                     aria-label="Edit due date"
                 >
+
+                <div class="image-field">
+
+                    <label class="image-label" for="editImage-${audit.id}">
+                        Audit image (optional)
+                    </label>
+
+                    <input
+                        type="file"
+                        id="editImage-${audit.id}"
+                        class="edit-input image-input"
+                        accept="image/jpeg,image/png,image/webp"
+                        onchange="handleEditImageChange(${audit.id})"
+                    >
+
+                    <p
+                        id="editImageMessage-${audit.id}"
+                        class="image-message"
+                    ></p>
+
+                    <div
+                        id="editImagePreview-${audit.id}"
+                        class="image-preview ${hasPreviewImage ? "" : "hidden"}"
+                    >
+                        <img
+                            id="editImagePreviewImg-${audit.id}"
+                            src="${previewImageSource}"
+                            alt="Selected audit image preview"
+                        >
+                        <div class="image-actions">
+                            <button
+                                type="button"
+                                id="editImageRemove-${audit.id}"
+                                class="remove-image-btn ${hasPreviewImage ? "" : "hidden"}"
+                                onclick="removeEditImage(${audit.id})"
+                            >
+                                Remove Image
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -695,6 +906,18 @@ sortedAudits.forEach((audit)=>{
                 ? `<p class="audit-description">
                     ${escapeHTML(audit.description)}
                    </p>`
+                : ""
+            }
+
+            ${
+                audit.image
+                ? `<div class="audit-image">
+                    <img
+                        src="${audit.image}"
+                        alt="Audit attachment for ${escapeHTML(audit.task)}"
+                        loading="lazy"
+                    >
+                   </div>`
                 : ""
             }
 
@@ -815,6 +1038,12 @@ function saveEditAudit(id){
 
         if(audit.id === id){
 
+            const cachedImage = editImageCache[id];
+
+            const updatedImage = cachedImage
+                ? cachedImage.dataUrl
+                : audit.image || "";
+
             return {
                 ...audit,
                 task: updatedTask,
@@ -822,7 +1051,8 @@ function saveEditAudit(id){
                     ? editDescriptionInput.value.trim()
                     : "",
                 priority: editPrioritySelect.value,
-                dueDate: editDueDateInput.value
+                dueDate: editDueDateInput.value,
+                image: updatedImage
             };
         }
 
@@ -830,6 +1060,8 @@ function saveEditAudit(id){
     });
 
     editingAuditId = null;
+
+    delete editImageCache[id];
 
     saveAudits();
 
@@ -840,7 +1072,120 @@ function cancelEditAudit(){
 
     editingAuditId = null;
 
+    editImageCache = {};
+
     renderAudits();
+}
+
+function handleEditImageChange(id){
+
+    const editImageInput =
+        document.getElementById(`editImage-${id}`);
+
+    const editImagePreview =
+        document.getElementById(`editImagePreview-${id}`);
+
+    const editImagePreviewImg =
+        document.getElementById(`editImagePreviewImg-${id}`);
+
+    const editImageMessage =
+        document.getElementById(`editImageMessage-${id}`);
+
+    const editImageRemove =
+        document.getElementById(`editImageRemove-${id}`);
+
+    const file = editImageInput.files[0];
+
+    if(!file){
+
+        return;
+    }
+
+    if(!isSupportedImageFile(file)){
+
+        setImageMessage(
+            editImageMessage,
+            "Please upload a JPG, JPEG, PNG, or WEBP image.",
+            "error"
+        );
+
+        editImageInput.value = "";
+
+        return;
+    }
+
+    readImageFileAsDataUrl(file, (imageData)=>{
+
+        editImageCache[id] = {
+            dataUrl: imageData
+        };
+
+        if(editImagePreview && editImagePreviewImg){
+
+            editImagePreviewImg.src = imageData;
+
+            editImagePreview.classList.remove("hidden");
+        }
+
+        if(editImageRemove){
+
+            editImageRemove.classList.remove("hidden");
+        }
+
+        setImageMessage(
+            editImageMessage,
+            "Image ready to save.",
+            "success"
+        );
+    });
+}
+
+function removeEditImage(id){
+
+    const editImagePreview =
+        document.getElementById(`editImagePreview-${id}`);
+
+    const editImagePreviewImg =
+        document.getElementById(`editImagePreviewImg-${id}`);
+
+    const editImageMessage =
+        document.getElementById(`editImageMessage-${id}`);
+
+    const editImageInput =
+        document.getElementById(`editImage-${id}`);
+
+    const editImageRemove =
+        document.getElementById(`editImageRemove-${id}`);
+
+    editImageCache[id] = {
+        dataUrl: ""
+    };
+
+    if(editImageInput){
+
+        editImageInput.value = "";
+    }
+
+    if(editImagePreview){
+
+        editImagePreview.classList.add("hidden");
+    }
+
+    if(editImagePreviewImg){
+
+        editImagePreviewImg.removeAttribute("src");
+    }
+
+    if(editImageRemove){
+
+        editImageRemove.classList.add("hidden");
+    }
+
+    setImageMessage(
+        editImageMessage,
+        "Image will be removed after saving.",
+        "success"
+    );
 }
 
 function escapeHTML(value){

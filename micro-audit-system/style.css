@@ -345,6 +345,99 @@ body{
     background:#1d4ed8;
 }
 
+.image-field{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.image-label{
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#475569;
+}
+
+.image-input{
+    padding:12px 14px;
+}
+
+.image-message{
+    min-height:18px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#64748b;
+}
+
+.image-message.error{
+    color:#dc2626;
+}
+
+.image-message.success{
+    color:#16a34a;
+}
+
+.image-preview{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    padding:12px;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,0.7);
+
+    box-shadow:
+        0px 4px 16px rgba(0,0,0,0.05);
+}
+
+.image-preview img{
+    width:100%;
+
+    max-height:220px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+}
+
+.image-actions{
+    display:flex;
+
+    justify-content:flex-start;
+}
+
+.remove-image-btn{
+    border:none;
+
+    border-radius:12px;
+
+    padding:10px 14px;
+
+    background:#0f172a;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    transition:0.3s ease;
+}
+
+.remove-image-btn:hover{
+    background:#1e293b;
+}
+
 /* Stats */
 
 .stats-container{
@@ -465,6 +558,23 @@ body{
     white-space:pre-line;
 
     margin-bottom:10px;
+}
+
+.audit-image{
+    margin:12px 0;
+}
+
+.audit-image img{
+    width:100%;
+
+    max-height:240px;
+
+    object-fit:cover;
+
+    border-radius:14px;
+
+    box-shadow:
+        0px 4px 18px rgba(15,23,42,0.12);
 }
 
 /* Status Buttons */
@@ -615,6 +725,25 @@ body.dark-mode .audit-form textarea{
 
     box-shadow:
         0px 4px 20px rgba(255,255,255,0.05);
+}
+
+body.dark-mode .image-label{
+    color:#cbd5e1;
+}
+
+body.dark-mode .image-preview{
+    background:rgba(2,6,23,0.75);
+
+    box-shadow:
+        0px 4px 18px rgba(255,255,255,0.05);
+}
+
+body.dark-mode .remove-image-btn{
+    background:#334155;
+}
+
+body.dark-mode .remove-image-btn:hover{
+    background:#475569;
 }
 
 body.dark-mode .auth-form input,
