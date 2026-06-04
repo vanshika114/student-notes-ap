@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Logic Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Digital Logic Simulator</h1>
+
+    <div class="inputs">
+        <label>
+            Input A
+            <input type="checkbox" id="a">
+        </label>
+
+        <label>
+            Input B
+            <input type="checkbox" id="b">
+        </label>
+    </div>
+
+    <div class="controls">
+        <select id="gate">
+            <option value="AND">AND</option>
+            <option value="OR">OR</option>
+            <option value="XOR">XOR</option>
+            <option value="NAND">NAND</option>
+            <option value="NOR">NOR</option>
+        </select>
+
+        <button onclick="calculate()">Simulate</button>
+    </div>
+
+    <div class="result">
+        <div id="led" class="led"></div>
+        <h2>Output: <span id="output">0</span></h2>
+    </div>
+
+    <h2>Truth Table</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody id="truthTable"></tbody>
+    </table>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
