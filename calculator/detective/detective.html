@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystery Manor: The Stolen Star</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg: #020617;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #22d3ee;
+            --accent-glow: rgba(34, 211, 238, 0.4);
+            --primary: #818cf8;
+            --error: #f43f5e;
+            --success: #10b981;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top left, #1e1b4b 0%, #020617 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            width: 95%;
+            max-width: 800px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .main-view {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .scene-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .clue-spot {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            margin: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .clue-spot:hover {
+            background: rgba(34, 211, 238, 0.2);
+            transform: scale(1.05);
+        }
+
+        .clue-spot.found {
+            border-style: solid;
+            background: var(--success);
+            color: white;
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .suspect-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .suspect-btn:hover {
+            border-color: var(--primary);
+            background: rgba(129, 140, 248, 0.1);
+        }
+
+        .case-file {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .file-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .file-section h3 {
+            margin-top: 0;
+            color: var(--accent);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .clue-item {
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            color: var(--text-dim);
+        }
+
+        .accusation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .accuse-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .accuse-btn:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+        }
+
+        .hidden { display: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <header>
+            <h1>The Case of the Stolen Star</h1>
+            <p id="game-status" style="color: var(--text-dim); font-size: 0.9rem;">Investigate the Museum of Wonders.</p>
+        </header>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="switchTab('crime-scene')">Crime Scene</button>
+            <button class="nav-btn" onclick="switchTab('hallway')">Hallway</button>
+            <button class="nav-btn" onclick="switchTab('interviews')">Interview Room</button>
+            <button class="nav-btn" onclick="switchTab('deduction')">Deduction</button>
+        </div>
+
+        <main class="main-view">
+            <!-- Crime Scene Tab -->
+            <div id="crime-scene" class="scene-card tab-content">
+                <p>The "Midnight Star" diamond is missing from the pedestal. The glass was cut with precision. Shards are scattered on the floor.</p>
+                <div id="clue-fiber" class="clue-spot" onclick="collectClue('fiber', 'Blue Silk Fiber', 'A tiny blue thread found caught on the pedestal glass.')">Inspect Pedestal</div>
+                <div id="clue-footprint" class="clue-spot" onclick="collectClue('footprint', 'Size 10 Print', 'A faint muddy print near the vent. Looks like a professional work boot.')">Check Floor</div>
+            </div>
+
+            <!-- Hallway Tab -->
+            <div id="hallway" class="scene-card tab-content hidden">
+                <p>A long corridor lined with lockers. Security cameras are mounted at both ends.</p>
+                <div id="clue-log" class="clue-spot" onclick="collectClue('log', 'Security Log', 'Access log shows a maintenance override at 2:05 AM using Keycard #42.')">Check Terminal</div>
+                <div id="clue-receipt" class="clue-spot" onclick="collectClue('receipt', 'Coffee Receipt', 'Found in a bin. Dated last night, 1:50 AM, for a double espresso.')">Search Trash</div>
+            </div>
+
+            <!-- Interviews Tab -->
+            <div id="interviews" class="scene-card tab-content hidden">
+                <p>Question the staff present during the night shift.</p>
+                <button class="suspect-btn" onclick="interview('Arthur', 'The Guard', 'I was at my post. I wear a blue uniform, but I never left the main desk. I use Keycard #12.')">
+                    <strong>Arthur (Guard):</strong> "I was at my post all night."
+                </button>
+                <button class="suspect-btn" onclick="interview('Marla', 'The Janitor', 'I was cleaning the vents in the East Wing. I wear standard brown overalls. I lost my Keycard #42 yesterday.')">
+                    <strong>Marla (Janitor):</strong> "I was in the East Wing."
+                </button>
+                <button class="suspect-btn" onclick="interview('Viktor', 'The Technician', 'I came in late to fix a coffee machine. I don\'t have a keycard, someone must have let me in.')">
+                    <strong>Viktor (Technician):</strong> "I just fix the machines."
+                </button>
+            </div>
+
+            <!-- Deduction Tab -->
+            <div id="deduction" class="scene-card tab-content hidden">
+                <h3>Final Accusation</h3>
+                <p style="margin-bottom: 20px;">Review your case file. Who stole the Star?</p>
+                <div class="accusation-grid">
+                    <button class="accuse-btn" onclick="accuse('Arthur')">ACCUSE ARTHUR</button>
+                    <button class="accuse-btn" onclick="accuse('Marla')">ACCUSE MARLA</button>
+                    <button class="accuse-btn" onclick="accuse('Viktor')">ACCUSE VIKTOR</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Evidence Summary -->
+        <div class="case-file">
+            <div class="file-section">
+                <h3>Collected Clues</h3>
+                <div id="clue-list">Searching for evidence...</div>
+            </div>
+            <div class="file-section">
+                <h3>Suspect Statements</h3>
+                <div id="interview-list">No testimonies yet...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            clues: new Set(),
+            interviews: new Set(),
+            gameEnded: false
+        };
+
+        function switchTab(tabId) {
+            if (state.gameEnded) return;
+            
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active');
+                if (b.innerText.toLowerCase().includes(tabId.split('-')[0])) b.classList.add('active');
+            });
+        }
+
+        function collectClue(id, name, desc) {
+            if (state.clues.has(name)) return;
+            
+            state.clues.add(name);
+            document.getElementById(`clue-${id}`).classList.add('found');
+            document.getElementById(`clue-${id}`).innerText = "INSIGHT COLLECTED";
+            
+            updateCaseFile();
+            showStatus(`Found: ${name}`);
+        }
+
+        function interview(name, role, statement) {
+            const entry = `<strong>${name} (${role}):</strong> ${statement}`;
+            if (state.interviews.has(entry)) return;
+            
+            state.interviews.add(entry);
+            updateCaseFile();
+            showStatus(`Interviewed ${name}`);
+        }
+
+        function updateCaseFile() {
+            const clueBox = document.getElementById('clue-list');
+            const interviewBox = document.getElementById('interview-list');
+            
+            if (state.clues.size > 0) {
+                clueBox.innerHTML = Array.from(state.clues)
+                    .map(c => `<div class="clue-item">🔍 ${c}</div>`).join('');
+            }
+            
+            if (state.interviews.size > 0) {
+                interviewBox.innerHTML = Array.from(state.interviews)
+                    .map(i => `<div class="clue-item" style="border-bottom:1px solid rgba(255,255,255,0.05); padding: 5px 0;">${i}</div>`).join('');
+            }
+        }
+
+        function showStatus(msg) {
+            const status = document.getElementById('game-status');
+            status.innerText = msg;
+            status.style.color = 'var(--accent)';
+            setTimeout(() => {
+                status.style.color = 'var(--text-dim)';
+            }, 2000);
+        }
+
+        function accuse(culprit) {
+            state.gameEnded = true;
+            const main = document.querySelector('.main-view');
+            const nav = document.querySelector('.navigation');
+            nav.classList.add('hidden');
+
+            // LOGIC:
+            // The fiber was BLUE (Arthur wears Blue).
+            // The access was via Card #42 (Marla's lost card).
+            // The print was a work boot (Technicians and Janitors wear these).
+            // The coffee receipt links to Viktor (The double espresso).
+            // WINNER: Viktor. He stole Marla's card, used it to enter, and left a fiber from the Guard's spare uniform he wore as a disguise.
+
+            if (culprit === 'Viktor') {
+                main.innerHTML = `
+                    <div class="scene-card" style="border-color: var(--success); text-align: center;">
+                        <h2 style="color: var(--success)">CASE CLOSED!</h2>
+                        <p>Viktor was the thief! He stole Marla's keycard while "fixing" the staff breakroom. He wore a stolen Guard's jacket to evade detection (the blue fiber) and caffeinated himself for the late-night heist.</p>
+                        <button class="nav-btn" onclick="location.reload()" style="margin-top: 20px;">Restart Case</button>
+                    </div>
+                `;
+            } else {
+                main.innerHTML = `
+                    <div class="scene-card" style="border-color: var(--error); text-align: center;">
+                        <h2 style="color: var(--error)">FALSE ACCUSATION</h2>
+                        <p>You accused ${culprit}, but they had an alibi you missed. While you were distracted, the real thief sold the Midnight Star on the black market and vanished.</p>
+                        <p style="font-size: 0.8rem; margin-top: 10px;">Hint: Connect the Blue Fiber to the Guard's uniform, but note the coffee receipt and the stolen keycard.</p>
+                        <button class="nav-btn" onclick="location.reload()" style="margin-top: 20px;">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
