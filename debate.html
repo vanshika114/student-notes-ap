@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debate Arena — Rhetorical Combat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@700&display=swap');
+
+        :root {
+            --bg: #020617;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --user-color: #22d3ee;
+            --user-glow: rgba(34, 211, 238, 0.4);
+            --opponent-color: #f43f5e;
+            --opponent-glow: rgba(244, 63, 94, 0.4);
+            --accent: #facc15;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at center, #1e1b4b 0%, #020617 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .arena-container {
+            width: 95%;
+            max-width: 900px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 800px) {
+            .arena-container { grid-template-columns: 1fr; }
+        }
+
+        /* Battle HUD */
+        .battle-view {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .health-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .health-bar-container {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .health-fill {
+            height: 100%;
+            width: 100%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .user-hp { background: var(--user-color); box-shadow: 0 0 15px var(--user-glow); }
+        .opp-hp { background: var(--opponent-color); box-shadow: 0 0 15px var(--opponent-glow); }
+
+        .topic-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .topic-card h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--accent);
+        }
+
+        /* Input Area */
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1rem;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            border-color: var(--user-color);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-attack {
+            background: var(--user-color);
+            color: var(--bg);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-attack:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--user-glow);
+        }
+
+        /* Battle Log */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .battle-log {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 1rem;
+            font-size: 0.85rem;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            max-height: 400px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            line-height: 1.4;
+        }
+
+        .log-entry.user { color: var(--user-color); }
+        .log-entry.opp { color: var(--opponent-color); }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            z-index: 100;
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .hidden { display: none !important; }
+
+        .side-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px;
+            border-radius: 10px;
+            gap: 4px;
+        }
+
+        .side-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+        }
+
+        .side-btn.active {
+            background: var(--glass-border);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="arena-container">
+        <div id="start-overlay" class="overlay">
+            <h1 style="font-family: 'Space Grotesk'; font-size: 3rem; margin: 0; color: var(--accent);">DEBATE ARENA</h1>
+            <p style="color: var(--text-dim); margin: 1rem 0 2rem;">Destroy your opponent with pure logic and reasoning.</p>
+            <button class="btn-attack" onclick="startGame()">Enter Arena</button>
+        </div>
+
+        <main class="battle-view">
+            <div class="health-grid">
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                        <span>YOU (DEBATER)</span>
+                        <span id="user-hp-val">100</span>
+                    </div>
+                    <div class="health-bar-container"><div id="user-bar" class="health-fill user-hp"></div></div>
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                        <span>THE COUNTER-LOGIC</span>
+                        <span id="opp-hp-val">100</span>
+                    </div>
+                    <div class="health-bar-container"><div id="opp-bar" class="health-fill opp-hp"></div></div>
+                </div>
+            </div>
+
+            <div class="topic-card">
+                <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 8px;">Active Topic</div>
+                <h2 id="topic-display">Social media does more harm than good for teenagers.</h2>
+            </div>
+
+            <div class="input-box">
+                <div class="controls">
+                    <div class="side-toggle">
+                        <button id="pro-btn" class="side-btn active" onclick="setSide('PRO')">AFFIRMATIVE</button>
+                        <button id="con-btn" class="side-btn" onclick="setSide('CON')">NEGATIVE</button>
+                    </div>
+                    <span id="char-count" style="font-size: 0.8rem; color: var(--text-dim);">Min 50 chars</span>
+                </div>
+                <textarea id="argument-input" placeholder="Type your opening statement here... use logical connectors like 'however', 'because', or 'consequently' for more power."></textarea>
+                <button class="btn-attack" id="attack-btn" onclick="executeAttack()">Deploy Argument</button>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div style="font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Battle Log</div>
+            <div class="battle-log" id="battle-log">
+                <div class="log-entry">Waiting for opening statement...</div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const TOPICS = [
+            "Remote work is better for productivity than office work.",
+            "Artificial intelligence will replace most creative jobs.",
+            "Space exploration is a waste of resources.",
+            "Video games are a valid form of high art.",
+            "University degrees are becoming obsolete."
+        ];
+
+        const CONNECTORS = ['because', 'however', 'therefore', 'consequently', 'furthermore', 'nevertheless', 'moreover', 'although'];
+        
+        let state = {
+            userHP: 100,
+            oppHP: 100,
+            side: 'PRO'
+        };
+
+        function startGame() {
+            document.getElementById('start-overlay').classList.add('hidden');
+            document.getElementById('topic-display').innerText = TOPICS[Math.floor(Math.random() * TOPICS.length)];
+        }
+
+        function setSide(s) {
+            state.side = s;
+            document.getElementById('pro-btn').classList.toggle('active', s === 'PRO');
+            document.getElementById('con-btn').classList.toggle('active', s === 'CON');
+        }
+
+        function executeAttack() {
+            const input = document.getElementById('argument-input').value.trim();
+            if (input.length < 50) return alert("Argument too weak. Minimum 50 characters required.");
+
+            // Calculate Damage
+            let damage = 10; // Base damage
+            damage += (input.length / 50); // Length bonus
+            
+            CONNECTORS.forEach(c => {
+                if (input.toLowerCase().includes(c)) damage += 5; // Reasoning bonus
+            });
+
+            damage = Math.floor(damage);
+            state.oppHP = Math.max(0, state.oppHP - damage);
+            
+            updateUI();
+            log(`USER used ${state.side} Logic! Dealt ${damage} damage.`, 'user');
+            
+            document.getElementById('argument-input').value = "";
+            
+            if (state.oppHP > 0) {
+                setTimeout(opponentCounter, 1000);
+            } else {
+                endGame(true);
+            }
+        }
+
+        function opponentCounter() {
+            const counterDamage = Math.floor(Math.random() * 15) + 10;
+            state.userHP = Math.max(0, state.userHP - counterDamage);
+            updateUI();
+            log(`OPPONENT deployed Counter-Argument! Dealt ${counterDamage} damage.`, 'opp');
+            
+            if (state.userHP <= 0) endGame(false);
+        }
+
+        function updateUI() {
+            document.getElementById('user-hp-val').innerText = state.userHP;
+            document.getElementById('opp-hp-val').innerText = state.oppHP;
+            document.getElementById('user-bar').style.width = state.userHP + "%";
+            document.getElementById('opp-bar').style.width = state.oppHP + "%";
+        }
+
+        function log(msg, type) {
+            const log = document.getElementById('battle-log');
+            const div = document.createElement('div');
+            div.className = `log-entry ${type}`;
+            div.innerText = `> ${msg}`;
+            log.prepend(div);
+        }
+
+        function endGame(win) {
+            const overlay = document.getElementById('start-overlay');
+            overlay.classList.remove('hidden');
+            overlay.querySelector('h1').innerText = win ? "VICTORY" : "DEFEATED";
+            overlay.querySelector('h1').style.color = win ? "var(--user-color)" : "var(--opponent-color)";
+            overlay.querySelector('p').innerText = win ? "Your logic was impenetrable." : "Your reasoning was dismantled.";
+            overlay.querySelector('button').innerText = "Rematch";
+        }
+    </script>
+</body>
+</html>
