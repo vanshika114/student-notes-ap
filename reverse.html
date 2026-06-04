@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Dictionary — The Lexicon Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap');
+
+        :root {
+            --paper: #f4f1ea;
+            --ink: #2c2421;
+            --leather: #5d3a1a;
+            --gold: #d4af37;
+            --success: #2d5a27;
+            --error: #8b0000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1412;
+            background-image: radial-gradient(#3a2a21 1px, transparent 1px);
+            background-size: 30px 30px;
+            font-family: 'Crimson Pro', serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .desk {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 2000px;
+        }
+
+        .book {
+            width: 90%;
+            max-width: 900px;
+            height: 600px;
+            background: var(--leather);
+            border-radius: 10px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.5);
+            padding: 15px;
+            display: flex;
+            position: relative;
+            border: 4px solid #4a2510;
+        }
+
+        .book::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(0,0,0,0.3);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .page {
+            flex: 1;
+            background: var(--paper);
+            margin: 5px;
+            padding: 50px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page.left {
+            border-radius: 5px 0 0 5px;
+            border-right: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .page.right {
+            border-radius: 0 5px 5px 0;
+            border-left: 1px solid rgba(255,255,255,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--ink);
+            opacity: 0.6;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 10px;
+        }
+
+        .meaning-text {
+            font-size: 1.8rem;
+            line-height: 1.4;
+            color: var(--ink);
+            font-style: italic;
+            margin-top: 40px;
+        }
+
+        .input-group {
+            margin-top: 20px;
+        }
+
+        input {
+            width: 80%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--ink);
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--ink);
+            outline: none;
+            padding: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            padding: 15px 40px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid var(--gold);
+        }
+
+        button:hover {
+            background: #40342f;
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            height: 1.5rem;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--paper);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="desk">
+        <div class="book">
+            <div id="start-overlay" class="overlay">
+                <h2 style="font-family: 'Playfair Display'; font-size: 3rem; margin: 0;">Lexicon</h2>
+                <p style="font-size: 1.2rem; margin: 20px 0 40px;">I give you the meaning. You give me the word.</p>
+                <button onclick="startGame()">Open Book</button>
+            </div>
+
+            <div class="page left">
+                <h1>The Definition</h1>
+                <div class="meaning-text" id="meaning-display">...</div>
+                <div class="stats">Entry <span id="current-entry">1</span> of 8</div>
+            </div>
+
+            <div class="page right">
+                <h1>The Word</h1>
+                <div class="input-group">
+                    <input type="text" id="word-input" placeholder="Type here..." autocomplete="off" onkeydown="if(event.key==='Enter') checkAnswer()">
+                </div>
+                <button onclick="checkAnswer()">Identify</button>
+                <div id="feedback" class="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ENTRIES = [
+            { m: "The extreme fear of heights.", a: "acrophobia" },
+            { m: "A person who loves or collects books.", a: "bibliophile" },
+            { m: "The life story of a person written by that person.", a: "autobiography" },
+            { m: "A place where bees are kept; a collection of beehives.", a: "apiary" },
+            { m: "A word that has the same or nearly the same meaning as another.", a: "synonym" },
+            { m: "The scientific study of stars, planets, and the universe.", a: "astronomy" },
+            { m: "A person who travels in a spacecraft.", a: "astronaut" },
+            { m: "A large, natural stream of water flowing in a channel to the sea.", a: "river" }
+        ];
+
+        let current = 0;
+
+        function startGame() {
+            document.getElementById('start-overlay').classList.add('hidden');
+            loadEntry();
+        }
+
+        function loadEntry() {
+            if (current >= ENTRIES.length) {
+                document.getElementById('meaning-display').innerText = "Volume I Complete.";
+                document.querySelector('.input-group').classList.add('hidden');
+                document.querySelector('.right button').innerText = "Restart";
+                document.querySelector('.right button').onclick = () => location.reload();
+                return;
+            }
+            document.getElementById('meaning-display').innerText = `"${ENTRIES[current].m}"`;
+            document.getElementById('current-entry').innerText = current + 1;
+            document.getElementById('word-input').value = "";
+            document.getElementById('word-input').focus();
+            document.getElementById('feedback').innerText = "";
+        }
+
+        function checkAnswer() {
+            const val = document.getElementById('word-input').value.trim().toLowerCase();
+            const feedback = document.getElementById('feedback');
+            
+            if (val === ENTRIES[current].a) {
+                feedback.innerText = "Correct. Proceed.";
+                feedback.style.color = "var(--success)";
+                current++;
+                setTimeout(loadEntry, 1200);
+            } else {
+                feedback.innerText = "Incorrect identification.";
+                feedback.style.color = "var(--error)";
+                document.getElementById('word-input').select();
+            }
+        }
+    </script>
+</body>
+</html>
