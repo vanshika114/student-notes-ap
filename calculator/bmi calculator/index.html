@@ -1,36 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BMI Calculator</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <main class="app">
-      <header class="header">
-        <h1>BMI Calculator</h1>
-        <p>Calculate your body mass index.</p>
-      </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional BMI Calculator</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --bg-gradient: radial-gradient(circle at top left, #1e1b4b, #312e81, #1e1b4b);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #34d399;
+            --info: #60a5fa;
+            --warning: #fbbf24;
+            --danger: #f87171;
+        }
 
-      <form id="bmi-form" class="bmi-form">
-        <label>
-          Height (cm)
-          <input id="height" type="number" min="50" max="250" required />
-        </label>
-        <label>
-          Weight (kg)
-          <input id="weight" type="number" min="10" max="300" required />
-        </label>
-        <button type="submit">Calculate</button>
-      </form>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
 
-      <section id="result" class="result" hidden>
-        <h2>Your BMI</h2>
-        <p class="value"><span id="bmi-value">0</span></p>
-        <p id="bmi-category" class="category"></p>
-      </section>
+        .bmi-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 3rem 2.5rem;
+            border-radius: 1.5rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .bmi-card::before {
+            content: "";
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), transparent, var(--primary-light));
+            border-radius: 1.6rem;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.05em;
+        }
+
+        .header p {
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .unit-toggle {
+            display: flex;
+            background: rgba(0,0,0,0.2);
+            padding: 0.25rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .unit-toggle button {
+            flex: 1;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-dim);
+            background: transparent;
+        }
+
+        .unit-toggle button.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .label-row label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        .value-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.75rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--primary-light);
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+
+        .result-section {
+            margin-top: 2.5rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .result-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #bmi-display {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
+        }
+
+        #category-display {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .bmi-scale {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, var(--info), var(--success), var(--warning), var(--danger));
+            border-radius: 4px;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .needle {
+            position: absolute;
+            width: 4px;
+            height: 16px;
+            background: white;
+            top: -4px;
+            left: 50%;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .extra-info {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-around;
+            border: 1px solid var(--glass-border);
+        }
+
+        .extra-info strong {
+            display: block;
+            color: white;
+            font-size: 1rem;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <main class="bmi-card">
+        <div class="header">
+            <h1>BMI Calculator</h1>
+            <p>Advanced health monitoring</p>
+        </div>
+
+        <div class="unit-toggle">
+            <button id="btn-metric" class="active" onclick="setUnits('metric')">Metric</button>
+            <button id="btn-imperial" onclick="setUnits('imperial')">Imperial</button>
+        </div>
+
+        <div class="input-group">
+            <div class="label-row">
+                <label id="label-height">Height</label>
+                <span class="value-badge"><span id="val-height">170</span> <small id="unit-height">cm</small></span>
+            </div>
+            <input type="range" id="height" min="100" max="250" value="170" oninput="updateBMI()">
+        </div>
+
+        <div class="input-group">
+            <div class="label-row">
+                <label id="label-weight">Weight</label>
+                <span class="value-badge"><span id="val-weight">70</span> <small id="unit-weight">kg</small></span>
+            </div>
+            <input type="range" id="height" style="display:none"> <!-- Dummy to avoid ID conflict if any -->
+            <input type="range" id="weight" min="30" max="200" value="70" oninput="updateBMI()">
+        </div>
+
+        <section id="result-area" class="result-section">
+            <p id="category-display">HEALTHY</p>
+            <h2 id="bmi-display">22.4</h2>
+            
+            <div class="bmi-scale">
+                <div class="needle" id="needle"></div>
+            </div>
+
+            <div class="extra-info">
+                <div>Ideal Range <strong id="ideal-range">58 - 74 kg</strong></div>
+                <div>Healthy BMI <strong>18.5 - 25.0</strong></div>
+            </div>
+        </section>
     </main>
-    <script src="script.js"></script>
-  </body>
+
+    <script>
+        let currentUnit = 'metric';
+
+        function setUnits(unit) {
+            currentUnit = unit;
+            document.getElementById('btn-metric').classList.toggle('active', unit === 'metric');
+            document.getElementById('btn-imperial').classList.toggle('active', unit === 'imperial');
+            
+            const hInput = document.getElementById('height');
+            const wInput = document.getElementById('weight');
+            
+            if (unit === 'metric') {
+                hInput.min = 100; hInput.max = 250; hInput.value = 170;
+                wInput.min = 30; wInput.max = 200; wInput.value = 70;
+                document.getElementById('unit-height').innerText = 'cm';
+                document.getElementById('unit-weight').innerText = 'kg';
+            } else {
+                hInput.min = 40; hInput.max = 96; hInput.value = 67;
+                wInput.min = 50; wInput.max = 450; wInput.value = 150;
+                document.getElementById('unit-height').innerText = 'in';
+                document.getElementById('unit-weight').innerText = 'lbs';
+            }
+            
+            updateBMI();
+        }
+
+        function updateBMI() {
+            const h = parseFloat(document.getElementById('height').value);
+            const w = parseFloat(document.getElementById('weight').value);
+            document.getElementById('val-height').innerText = h;
+            document.getElementById('val-weight').innerText = w;
+
+            const resArea = document.getElementById('result-area');
+            const bmiText = document.getElementById('bmi-display');
+            const catText = document.getElementById('category-display');
+            const needle = document.getElementById('needle');
+            const idealText = document.getElementById('ideal-range');
+
+            let bmi = (currentUnit === 'metric') 
+                ? w / ((h / 100) ** 2) 
+                : (w / (h ** 2)) * 703;
+
+            bmiText.innerText = bmi.toFixed(1);
+            resArea.classList.add('visible');
+
+            // Calculate Scale Position (Clamp between 10 and 40 for visual)
+            let percent = ((bmi - 10) / (40 - 10)) * 100;
+            percent = Math.min(Math.max(percent, 0), 100);
+            needle.style.left = `${percent}%`;
+
+            // Ideal Weight Calculation
+            let idealMin, idealMax;
+            if (currentUnit === 'metric') {
+                idealMin = (18.5 * ((h / 100) ** 2)).toFixed(0);
+                idealMax = (25 * ((h / 100) ** 2)).toFixed(0);
+                idealText.innerText = `${idealMin} - ${idealMax} kg`;
+            } else {
+                idealMin = ((18.5 * (h ** 2)) / 703).toFixed(0);
+                idealMax = ((25 * (h ** 2)) / 703).toFixed(0);
+                idealText.innerText = `${idealMin} - ${idealMax} lbs`;
+            }
+
+            let color = '';
+            let category = '';
+
+            if (bmi < 18.5) { [category, color] = ['Underweight', 'var(--info)']; }
+            else if (bmi < 25) { [category, color] = ['Healthy', 'var(--success)']; }
+            else if (bmi < 30) { [category, color] = ['Overweight', 'var(--warning)']; }
+            else { [category, color] = ['Obese', 'var(--danger)']; }
+
+            bmiText.style.color = color;
+            catText.style.color = color;
+            catText.innerText = category;
+        }
+
+        // Init
+        updateBMI();
+    </script>
+</body>
 </html>
