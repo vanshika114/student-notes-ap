@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI vs Human — Turing Test</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Syncopate:wght@400;700&display=swap');
+
+        :root {
+            --bg: #050505;
+            --ai-glow: #00f2ff;
+            --human-glow: #ff007a;
+            --surface: #111111;
+            --text: #e0e0e0;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .ai-grid {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .glass-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--ai-glow), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        h1 {
+            font-family: 'Syncopate', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            color: var(--ai-glow);
+        }
+
+        .stats-hud {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .content-display {
+            min-height: 250px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .content-type-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--bg);
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--ai-glow);
+        }
+
+        #content-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        #content-img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .choice-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .choice-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-human:hover {
+            border-color: var(--human-glow);
+            box-shadow: 0 0 20px rgba(255, 0, 122, 0.2);
+            color: var(--human-glow);
+        }
+
+        .btn-ai:hover {
+            border-color: var(--ai-glow);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            color: var(--ai-glow);
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 40px;
+            border-radius: 24px;
+        }
+
+        .primary-btn {
+            background: var(--ai-glow);
+            color: var(--bg);
+            border: none;
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="ai-grid"></div>
+    <div class="container">
+        <div class="glass-panel">
+            <div id="start-screen" class="overlay">
+                <h1>AI vs Human</h1>
+                <p style="opacity: 0.6; margin-bottom: 30px;">Initialize the Turing sequence to test your perception.</p>
+                <button class="primary-btn" onclick="startGame()">Initialize</button>
+            </div>
+            <div id="end-screen" class="overlay hidden">
+                <h2 id="final-title">Test Complete</h2>
+                <p id="final-stats" style="margin-bottom: 30px; font-size: 1.2rem;"></p>
+                <button class="primary-btn" onclick="startGame()">Restart</button>
+            </div>
+            <div class="stats-hud">
+                <span>Sub-Round: <span id="round-val">1</span>/6</span>
+                <span>Acc: <span id="score-val">0</span>%</span>
+            </div>
+            <div class="content-display">
+                <div class="content-type-badge" id="category-label">Category</div>
+                <div id="content-text"></div>
+                <img id="content-img" class="hidden" src="">
+            </div>
+            <div class="choice-group">
+                <button class="choice-btn btn-human" onclick="checkChoice(false)">Biological</button>
+                <button class="choice-btn btn-ai" onclick="checkChoice(true)">Algorithmic</button>
+            </div>
+            <p id="feedback" style="margin-top: 20px; font-size: 0.8rem; color: var(--ai-glow); height: 1.2rem;"></p>
+        </div>
+    </div>
+    <script>
+        const CHALLENGES = [
+            { cat: "Poem", content: "The clock ticks on, a steady beat,\nIn circuits where the pulses meet.\nA ghost within the machine's heart,\nWhere logic ends and feelings start.", isAI: true, type: "text" },
+            { cat: "Poem", content: "Nature's first green is gold,\nHer hardest hue to hold.\nHer early leaf's a flower;\nBut only so an hour.", isAI: false, type: "text" },
+            { cat: "Story", content: "The horizon bled neon as the last organic signal flickered out. Somewhere in the silken clouds of the cloud-server, a child's laugh was archived as a corrupted .wav file.", isAI: true, type: "text" },
+            { cat: "Story", content: "In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it.", isAI: false, type: "text" },
+            { cat: "Drawing", content: "https://images.unsplash.com/photo-1675557009875-436f595b1611?w=600&q=80", isAI: true, type: "image" },
+            { cat: "Drawing", content: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80", isAI: false, type: "image" }
+        ];
+        let state = { round: 0, score: 0, shuffled: [] };
+        function startGame() {
+            state.round = 0; state.score = 0; state.shuffled = [...CHALLENGES].sort(() => Math.random() - 0.5);
+            document.getElementById('start-screen').classList.add('hidden'); document.getElementById('end-screen').classList.add('hidden');
+            loadRound();
+        }
+        function loadRound() {
+            if (state.round >= state.shuffled.length) return endGame();
+            const c = state.shuffled[state.round];
+            document.getElementById('round-val').innerText = state.round + 1;
+            document.getElementById('category-label').innerText = c.cat;
+            document.getElementById('score-val').innerText = Math.round((state.score / (state.round || 1)) * 100);
+            const textEl = document.getElementById('content-text'); const imgEl = document.getElementById('content-img');
+            if (c.type === 'text') { textEl.innerText = c.content; textEl.classList.remove('hidden'); imgEl.classList.add('hidden'); }
+            else { imgEl.src = c.content; imgEl.classList.remove('hidden'); textEl.classList.add('hidden'); }
+        }
+        function checkChoice(isAI) {
+            if (isAI === state.shuffled[state.round].isAI) state.score++;
+            state.round++; loadRound();
+        }
+        function endGame() {
+            document.getElementById('end-screen').classList.remove('hidden');
+            document.getElementById('final-stats').innerText = `Accuracy: ${Math.round((state.score / 6) * 100)}%`;
+        }
+    </script>
+</body>
+</html>
