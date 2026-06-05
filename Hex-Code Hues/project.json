@@ -1,0 +1,17 @@
+{
+  "title": "Hex-Code Hues",
+  "description": "A premium color-guessing game — match a hex code (#RRGGBB) to one of three circular swatches. Streak-based difficulty tightens color variance so high streaks become near-impossible. High scores saved to localStorage.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "color",
+    "hex",
+    "game",
+    "vanilla-js",
+    "cognitive"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}
