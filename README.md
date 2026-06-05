@@ -249,6 +249,15 @@ You are free to use:
 
 ## 📜 Contribution Guidelines
 
+### 📁 Where to Put Your Project
+To keep this repository organized, **all new projects must be placed in their own dedicated folder at the ROOT level of the repository.** **❌ DO NOT:**
+* Do not place your project inside the `calculator/` folder (or any other existing project's folder). 
+* Do not place your files loosely in the root directory without a containing folder.
+
+**✅ DO:**
+* Create a new folder at the root level named after your project (e.g., `student-notes-app/my-awesome-game/`).
+* Place all your HTML, CSS, and JS files strictly inside that new folder.
+
 Before submitting a PR:
 
 * Create a dedicated folder for your project.
