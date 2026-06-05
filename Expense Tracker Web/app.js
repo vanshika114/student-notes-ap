@@ -58,6 +58,16 @@ function saveState() {
     localStorage.setItem('aura_budgets', JSON.stringify(state.budgets));
 }
 
+function saveTransaction(transaction) {
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    transactions.push(transaction);
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+}
+
+function loadTransactions() {
+    return JSON.parse(localStorage.getItem('transactions')) || [];
+}
+
 // Seed mock data for a newly created user to showcase dashboard analytics
 function seedMockData(email) {
     const today = new Date();
@@ -809,6 +819,7 @@ function initTransactionForm() {
                 note
             };
             state.transactions.push(newTx);
+            saveTransaction(newTx);
             showToast('New transaction added.', 'success');
         }
 
@@ -872,6 +883,7 @@ function openTransactionModal(editId = null) {
 function deleteTransaction(txId) {
     if (confirm('Are you sure you want to delete this financial record?')) {
         state.transactions = state.transactions.filter(t => t.id !== txId);
+        localStorage.setItem('transactions', JSON.stringify(state.transactions));
         saveState();
         showToast('Transaction deleted successfully.', 'success');
         
@@ -1177,11 +1189,11 @@ function exportJSON() {
  */
 function toggleTheme() {
     const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const isDark = document.body.classList.toggle('dark');
+    const newTheme = isDark ? 'dark' : 'light';
     
     html.setAttribute('data-theme', newTheme);
-    localStorage.setItem('aura_theme', newTheme);
+    localStorage.setItem('theme', newTheme);
 
     // Sync switch in footer
     const themeSwitch = document.getElementById('theme-switch');
@@ -1200,8 +1212,14 @@ function toggleTheme() {
 }
 
 function initTheme() {
-    const savedTheme = localStorage.getItem('aura_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.body.classList.remove('dark');
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
     
     const themeSwitch = document.getElementById('theme-switch');
     if (themeSwitch) {
@@ -1300,5 +1318,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('header-date').textContent = dateStr;
 
     // 7. Check if user is already logged in
+    const savedTransactions = loadTransactions();
+    if (savedTransactions.length > 0) {
+        state.transactions = savedTransactions;
+    }
     checkAuthSession();
 });

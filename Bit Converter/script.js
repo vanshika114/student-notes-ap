@@ -25,19 +25,36 @@ function convertValues(value, base) {
         // Validate and Parse the input based on its base
         // We use BigInt to support larger bit conversions without precision loss
         let decimalValue;
+        const MAX_BIT_SIZE = 128; // Maximum 128-bit numbers
         
         if (base === 16) {
             // Validate Hex characters
             if (!/^[0-9A-Fa-f]+$/.test(value)) throw new Error("Invalid Hexadecimal");
+            if (value.length > 32) {
+                alert(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+                throw new Error(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+            }
             decimalValue = BigInt(`0x${value}`);
         } else if (base === 2) {
             if (!/^[01]+$/.test(value)) throw new Error("Invalid Binary");
+            if (value.length > 128) {
+                alert(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+                throw new Error(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+            }
             decimalValue = BigInt(`0b${value}`);
         } else if (base === 8) {
             if (!/^[0-7]+$/.test(value)) throw new Error("Invalid Octal");
+            if (value.length > 43) {
+                alert(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+                throw new Error(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+            }
             decimalValue = BigInt(`0o${value}`);
         } else {
             if (!/^\d+$/.test(value)) throw new Error("Invalid Decimal");
+            if (value.length > 40) {
+                alert(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+                throw new Error(`Number too large. Maximum ${MAX_BIT_SIZE} bits allowed.`);
+            }
             decimalValue = BigInt(value);
         }
 

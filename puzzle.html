@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petal Puzzle — Super Cute Learning</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;500;700&display=swap');
+
+        :root {
+            --primary: #ff85a2;
+            --primary-hover: #ff6b8d;
+            --primary-light: #ffb3c6;
+            --secondary: #7dd3fc;
+            --bg: #fff5f7;
+            --card: #ffffff;
+            --text: #5e4d52;
+            --border: #fce4ec;
+            --success: #b2f2bb;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(#ffcad4 0.8px, transparent 0.8px);
+            background-size: 24px 24px;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin: 0;
+            text-shadow: 4px 4px 0px white;
+            letter-spacing: -1px;
+        }
+
+        .container {
+            background: var(--card);
+            padding: clamp(15px, 5vw, 30px);
+            border-radius: 40px;
+            box-shadow: 0 20px 0px #f8bbd0;
+            border: 4px solid var(--border);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .puzzle-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: min(330px, 80vw);
+            height: min(330px, 80vw);
+            margin: 10px auto;
+            border: 6px dashed var(--primary-light);
+            border-radius: 20px;
+            background: #fffafa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slot {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 133, 162, 0.15);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .pieces-tray {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            padding: 25px;
+            background: #fef1f5;
+            border-radius: 30px;
+            min-height: 100px;
+            border: 2px solid var(--border);
+        }
+
+        .piece {
+            width: clamp(70px, 20vw, 90px);
+            height: clamp(70px, 20vw, 90px);
+            cursor: grab;
+            border-radius: 15px;
+            background-size: 300% 300%;
+            background-repeat: no-repeat;
+            background-color: #ffe0e9;
+            box-shadow: 0 8px 15px rgba(255, 133, 162, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s, width 0.3s, height 0.3s;
+            border: 3px solid white;
+            touch-action: none; /* Prevents scrolling while dragging */
+        }
+
+        .piece:hover { transform: scale(1.05) rotate(2deg); }
+        .piece:active { cursor: grabbing; transform: scale(1.1) rotate(0deg); }
+        .piece.dragging { opacity: 0.5; }
+        .piece.placed { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            border-radius: 0; 
+            box-shadow: none; 
+            cursor: default;
+        }
+
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .success-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .btn-cute {
+            background: linear-gradient(to bottom, var(--primary), var(--primary-hover));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 0px #d81b60;
+            transition: all 0.1s;
+            margin: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cute:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0px #d81b60;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            box-shadow: 0 8px 0px #0284c7;
+        }
+        .btn-secondary:active { box-shadow: 0 4px 0px #0284c7; }
+
+        .educational-fact {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
+            padding: 15px;
+            background: #fff9fa;
+            border-radius: 20px;
+            border: 2px solid var(--primary-light);
+        }
+
+        .hint {
+            font-size: 0.9rem;
+            color: #b0bec5;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .goal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            margin: 15px 0;
+        }
+
+        .reference-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .goal-thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            border: 3px solid var(--border);
+            object-fit: cover;
+        }
+
+        .goal-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        #preview-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 10;
+        }
+        #preview-img.visible { opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Petal Puzzle 🌸</h1>
+        <p>Piece together the magic of nature!</p>
+    </div>
+
+    <div class="container">
+        <div class="puzzle-board" id="board">
+            <!-- 9 slots -->
+            <div class="slot" data-index="0"></div>
+            <div class="slot" data-index="1"></div>
+            <div class="slot" data-index="2"></div>
+            <div class="slot" data-index="3"></div>
+            <div class="slot" data-index="4"></div>
+            <div class="slot" data-index="5"></div>
+            <div class="slot" data-index="6"></div>
+            <div class="slot" data-index="7"></div>
+            <div class="slot" data-index="8"></div>
+            <img id="preview-img" src="" alt="preview">
+        </div>
+
+        <div class="pieces-tray" id="tray"></div>
+        
+        <div class="educational-fact" id="fact">
+            Look at the <b>Goal Image</b> below and match the patterns! ✨
+        </div>
+
+        <div class="goal-container">
+            <div class="reference-box">
+                <span class="goal-label">Goal Image</span>
+                <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=400&q=80" class="goal-thumbnail" alt="Goal">
+            </div>
+        </div>
+        
+        <p class="hint">Tip: Match the colors and shapes of the petals!</p>
+        <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-cute btn-secondary" onmousedown="showPreview(true)" onmouseup="showPreview(false)" ontouchstart="showPreview(true)" ontouchend="showPreview(false)">👁️ Hold to Peek</button>
+            <button class="btn-cute" onclick="resetGame()">🎀 Shuffle</button>
+        </div>
+    </div>
+
+    <div class="success-overlay" id="overlay">
+        <h1 style="font-size: 4rem;">Perfect! 🌟</h1>
+        <p style="font-size: 1.5rem;">You are a puzzle master!</p>
+        <div class="educational-fact" style="max-width: 400px; margin: 20px;">
+            <strong>Did you know?</strong> Butterflies taste with their feet! They use sensors on their legs to find out if a leaf is a good place to lay eggs.
+        </div>
+        <button class="btn-cute" onclick="resetGame()">Play Again 🎀</button>
+    </div>
+
+    <script>
+        const tray = document.getElementById('tray');
+        const board = document.getElementById('board');
+        const overlay = document.getElementById('overlay');
+        const preview = document.getElementById('preview-img');
+        const factBox = document.getElementById('fact');
+        
+        const imageURL = "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=400&q=80"; // High-quality Pink Flower
+        preview.src = imageURL;
+
+        let pieces = [];
+        let placedCount = 0;
+
+        function initGame() {
+            pieces = [];
+            tray.innerHTML = '';
+            document.querySelectorAll('.slot').forEach(slot => slot.innerHTML = '');
+            placedCount = 0;
+            overlay.classList.remove('show');
+            factBox.innerText = "Drag the pieces to the right spot on the board! ✨";
+
+            // Create 9 pieces
+            for (let i = 0; i < 9; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'piece';
+                piece.draggable = true;
+                piece.id = `piece-${i}`;
+                piece.dataset.index = i;
+                
+                // Set background position logic (using percentage for responsiveness)
+                const x = (i % 3) * 50; // 0, 50, 100
+                const y = Math.floor(i / 3) * 50;
+                
+                piece.style.backgroundImage = `url(${imageURL})`;
+                piece.style.backgroundPosition = `${x}% ${y}%`;
+                
+                piece.addEventListener('dragstart', dragStart);
+                piece.addEventListener('dragend', dragEnd);
+                
+                pieces.push(piece);
+            }
+
+            // Shuffle and add to tray
+            pieces.sort(() => Math.random() - 0.5).forEach(p => tray.appendChild(p));
+        }
+
+        function showPreview(show) {
+            preview.classList.toggle('visible', show);
+        }
+
+        // Drag & Drop Logic
+        function dragStart(e) {
+            // Use e.currentTarget to ensure we get the piece even if we click the center
+            const target = e.currentTarget;
+            e.dataTransfer.setData('text/plain', target.id);
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => target.classList.add('dragging'), 0);
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        document.querySelectorAll('.slot').forEach(slot => {
+            slot.addEventListener('dragover', e => e.preventDefault());
+            slot.addEventListener('drop', dropPiece);
+        });
+
+        function dropPiece(e) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            const piece = document.getElementById(id);
+            const slot = e.target.closest('.slot');
+
+            if (slot && slot.children.length === 0) {
+                // Check if piece matches slot index
+                if (piece && piece.dataset.index === slot.dataset.index) {
+                    slot.appendChild(piece);
+                    piece.draggable = false;
+                    piece.classList.add('placed');
+                    
+                    placedCount++;
+                    
+                    if (placedCount === 9) {
+                        setTimeout(() => overlay.classList.add('show'), 500);
+                    }
+                } else {
+                    // Shake animation for wrong slot
+                    factBox.innerText = "Oops! That piece doesn't go there! 🌸";
+                    factBox.style.color = "#e91e63";
+                    slot.style.backgroundColor = '#ffebee';
+                    setTimeout(() => { slot.style.backgroundColor = 'transparent'; factBox.style.color = "var(--primary)"; }, 800);
+                }
+            }
+        }
+
+        function resetGame() {
+            initGame();
+        }
+
+        initGame();
+    </script>
+</body>
+</html>

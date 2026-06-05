@@ -3,21 +3,47 @@ let usernameinp = document.querySelector(".usernameinp");
 let card = document.querySelector(".card");
 
 // Fetch user profile data
-function getProfileData(username) {
-  return fetch(`https://api.github.com/users/${username}`).then((raw) => {
-    if (!raw.ok) throw new Error("User not found");
-    return raw.json();
-  });
+async function getProfileData(username) {
+  try {
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    if (!response.ok) {
+      if (response.status === 403 || response.status === 429) {
+        throw new Error("GitHub API Rate Limit Exceeded. Please try again later.");
+      } else if (response.status === 404) {
+        throw new Error("User not found.");
+      } else {
+        throw new Error("Failed to fetch user data.");
+      }
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    card.innerHTML = `<p class="text-center text-red-400">${error.message}</p>`;
+    throw error;
+  }
 }
 
 // Fetch user repos
-function getRepos(username) {
-  return fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=8`).then(
-    (raw) => {
-      if (!raw.ok) throw new Error("Failed to fetch repos...");
-      return raw.json();
+async function getRepos(username) {
+  try {
+    const response = await fetch(
+      `https://api.github.com/users/${username}/repos?sort=updated&per_page=8`
+    );
+    if (!response.ok) {
+      if (response.status === 403 || response.status === 429) {
+        throw new Error("GitHub API Rate Limit Exceeded. Please try again later.");
+      } else if (response.status === 404) {
+        throw new Error("User not found.");
+      } else {
+        throw new Error("Failed to fetch repositories.");
+      }
     }
-  );
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    card.innerHTML = `<p class="text-center text-red-400">${error.message}</p>`;
+    throw error;
+  }
 }
 
 // Render profile + repos
