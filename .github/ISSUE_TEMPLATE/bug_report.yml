@@ -5,7 +5,7 @@ labels: ["bug"]
 
 body:
 
-* type: textarea
+- type: textarea
   id: bug
   attributes:
   label: Describe the Bug
@@ -13,7 +13,7 @@ body:
   validations:
   required: true
 
-* type: textarea
+- type: textarea
   id: steps
   attributes:
   label: Steps to Reproduce
@@ -24,7 +24,7 @@ body:
   validations:
   required: true
 
-* type: textarea
+- type: textarea
   id: expected
   attributes:
   label: Expected Behavior
