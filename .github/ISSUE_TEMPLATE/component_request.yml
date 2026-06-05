@@ -1,40 +1,40 @@
 name: Component Request
 description: Suggest a new UI component or feature
 title: "[COMPONENT] "
-labels: ["enhancement"]
+labels:
+  - enhancement
 
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest a new component or feature.
 
-* type: markdown
-  attributes:
-  value: |
-  Suggest a new component or feature.
+  - type: input
+    id: component_name
+    attributes:
+      label: Component Name
+      placeholder: Example: Date Picker
+    validations:
+      required: true
 
-* type: input
-  id: component_name
-  attributes:
-  label: Component Name
-  placeholder: Example: Date Picker
-  validations:
-  required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: Describe the component and its purpose
+    validations:
+      required: true
 
-* type: textarea
-  id: description
-  attributes:
-  label: Description
-  placeholder: Describe the component and its purpose
-  validations:
-  required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case
+      placeholder: Why is this component needed?
+    validations:
+      required: true
 
-* type: textarea
-  id: use_case
-  attributes:
-  label: Use Case
-  placeholder: Why is this component needed?
-  validations:
-  required: true
-
-* type: textarea
-  id: additional_info
-  attributes:
-  label: Additional Information
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Additional Information
