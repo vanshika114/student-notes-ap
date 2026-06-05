@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI vs Human — Turing Test</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Syncopate:wght@400;700&display=swap');
+
+        :root {
+            --bg: #050505;
+            --ai-glow: #00f2ff;
+            --human-glow: #ff007a;
+            --surface: #111111;
+            --text: #e0e0e0;
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
         :root {
             --bg: #050505;
@@ -47,7 +57,7 @@
             border: 1px solid var(--border);
             border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -56,14 +66,22 @@
         .glass-panel::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 2px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
             background: linear-gradient(90deg, transparent, var(--ai-glow), transparent);
             animation: scan 3s linear infinite;
         }
 
         @keyframes scan {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         h1 {
@@ -87,7 +105,7 @@
 
         .content-display {
             min-height: 250px;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
             border-radius: 16px;
             display: flex;
@@ -182,16 +200,20 @@
             transition: transform 0.2s;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
+
 <body>
     <div class="ai-grid"></div>
     <div class="container">
         <div class="glass-panel">
             <div id="start-screen" class="overlay">
                 <h1>AI vs Human</h1>
-                <p style="opacity: 0.6; margin-bottom: 30px;">Initialize the Turing sequence to test your perception.</p>
+                <p style="opacity: 0.6; margin-bottom: 30px;">Initialize the Turing sequence to test your perception.
+                </p>
                 <button class="primary-btn" onclick="startGame()">Initialize</button>
             </div>
             <div id="end-screen" class="overlay hidden">
@@ -250,4 +272,5 @@
         }
     </script>
 </body>
+
 </html>
