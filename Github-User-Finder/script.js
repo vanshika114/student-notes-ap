@@ -2,6 +2,17 @@ let searchBtn = document.querySelector(".search");
 let usernameinp = document.querySelector(".usernameinp");
 let card = document.querySelector(".card");
 
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+    }[tag]));
+}
+
 // Fetch user profile data
 async function getProfileData(username) {
   try {
@@ -60,11 +71,11 @@ function decorateProfileData(details, repos) {
       <!-- Info -->
       <div class="flex-1">
         <h2 class="text-3xl font-bold flex items-center gap-2">
-          ${details.name || "No Name"} 
-          <span class="text-sm text-gray-400 font-normal">@${details.login}</span>
+          ${escapeHTML(details.name) || "No Name"} 
+          <span class="text-sm text-gray-400 font-normal">@${escapeHTML(details.login)}</span>
         </h2>
         <p class="mt-2 text-gray-300">
-          ${details.bio || "No bio available."}
+          ${escapeHTML(details.bio) || "No bio available."}
         </p>
 
         <!-- Stats Grid -->
@@ -85,10 +96,10 @@ function decorateProfileData(details, repos) {
 
         <!-- Extra Info -->
         <div class="mt-6 grid sm:grid-cols-2 gap-3 text-sm text-gray-300">
-          <p>📍 Location: ${details.location || "Not available"}</p>
-          <p>🏢 Company: ${details.company || "Not available"}</p>
-          <p>🔗 Blog: <a href="${details.blog || "#"}" target="_blank" class="text-blue-400 hover:underline">
-            ${details.blog || "Not available"}</a></p>
+          <p>📍 Location: ${escapeHTML(details.location) || "Not available"}</p>
+          <p>🏢 Company: ${escapeHTML(details.company) || "Not available"}</p>
+          <p>🔗 Blog: <a href="${escapeHTML(details.blog) || "#"}" target="_blank" class="text-blue-400 hover:underline">
+            ${escapeHTML(details.blog) || "Not available"}</a></p>
           <p>🌐 Profile: <a href="${details.html_url}" target="_blank" class="text-blue-400 hover:underline">
             ${details.html_url}</a></p>
         </div>
@@ -107,8 +118,8 @@ function decorateProfileData(details, repos) {
               (repo) => `
               <a href="${repo.html_url}" target="_blank" 
                  class="px-5 py-4 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 hover:border-blue-500 transition hover:scale-105 hover:shadow-lg w-fit">
-                <h4 class="font-bold text-blue-400">${repo.name}</h4>
-                <p class="text-gray-400 text-xs">${repo.language || "N/A"} • ⭐ ${repo.stargazers_count}</p>
+                <h4 class="font-bold text-blue-400">${escapeHTML(repo.name)}</h4>
+                <p class="text-gray-400 text-xs">${escapeHTML(repo.language) || "N/A"} • ⭐ ${repo.stargazers_count}</p>
               </a>
             `
             )
