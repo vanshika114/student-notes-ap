@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InternCraft | Internship Application Tracker & Placement Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- ChartJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i data-lucide="briefcase"></i>
+        </div>
+        <div class="logo-text">
+          <h1>InternCraft</h1>
+          <span>Application Tracker</span>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Configuration Backup utilities -->
+        <button id="import-btn" class="btn btn-secondary btn-icon" title="Import JSON config">
+          <i data-lucide="upload"></i>
+        </button>
+        <input type="file" id="import-file" accept=".json" style="display: none;">
+        
+        <button id="export-btn" class="btn btn-secondary btn-icon" title="Export JSON config">
+          <i data-lucide="download"></i>
+        </button>
+        
+        <button id="reset-btn" class="btn btn-secondary btn-icon" title="Clear all applications">
+          <i data-lucide="refresh-cw"></i>
+        </button>
+        
+        <div class="divider"></div>
+        
+        <button id="theme-toggle" class="btn btn-icon" title="Toggle theme">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+        </button>
+      </div>
+    </header>
+    
+    <!-- App Main Workspace -->
+    <main class="app-workspace">
+      <!-- Top Section: Analytics Dashboard & Stats Panel -->
+      <section class="analytics-section">
+        <div class="analytics-grid">
+          <!-- Metrics Widgets -->
+          <div class="metrics-container">
+            <div class="metric-card">
+              <span class="metric-label">Total Applied</span>
+              <div class="metric-value" id="metric-total">0</div>
+              <span class="metric-sub" id="metric-wishlist">0 In Wishlist</span>
+            </div>
+            <div class="metric-card interviewing">
+              <span class="metric-label">Interviewing</span>
+              <div class="metric-value" id="metric-interviewing">0</div>
+              <span class="metric-sub" id="metric-interview-rate">0% Conversion</span>
+            </div>
+            <div class="metric-card success">
+              <span class="metric-label">Offers Secured</span>
+              <div class="metric-value" id="metric-offers">0</div>
+              <span class="metric-sub" id="metric-success-rate">0% Success Rate</span>
+            </div>
+          </div>
+          
+          <!-- Visual Charts Panel -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Applications funnel</h3>
+              <div class="chart-controls">
+                <button class="btn btn-sm btn-secondary active" id="chart-btn-funnel">Funnel</button>
+                <button class="btn btn-sm btn-secondary" id="chart-btn-timeline">Timeline</button>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="applicationsChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Middle Section: Search, Filters, & Control Bar -->
+      <section class="control-section">
+        <div class="search-filters-row">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="search-input" placeholder="Search by company, role, or technology...">
+          </div>
+          
+          <div class="filters-group">
+            <select id="filter-stipend">
+              <option value="all">Any Stipend</option>
+              <option value="unpaid">Unpaid / Expenses</option>
+              <option value="paid">Paid Only</option>
+              <option value="high">High Paying (&gt; $2,000/mo)</option>
+            </select>
+            
+            <select id="filter-location">
+              <option value="all">Any Location</option>
+              <option value="remote">Remote Only</option>
+              <option value="onsite">On-Site</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
+          </div>
+        </div>
+        
+        <button id="add-app-btn" class="btn btn-primary btn-icon-text">
+          <i data-lucide="plus"></i>
+          <span>New Application</span>
+        </button>
+      </section>
+      
+      <!-- Bottom Section: Interactive Kanban Board -->
+      <section class="board-section">
+        <div class="kanban-board">
+          <!-- Column: Wishlist / Interested -->
+          <div class="board-column" data-stage="wishlist">
+            <div class="column-header">
+              <div class="col-title-badge color-wishlist"></div>
+              <h3>Wishlist</h3>
+              <span class="cards-count" id="count-wishlist">0</span>
+            </div>
+            <div class="cards-container" id="list-wishlist">
+              <!-- Cards injected dynamically by JS -->
+            </div>
+          </div>
+          
+          <!-- Column: Applied -->
+          <div class="board-column" data-stage="applied">
+            <div class="column-header">
+              <div class="col-title-badge color-applied"></div>
+              <h3>Applied</h3>
+              <span class="cards-count" id="count-applied">0</span>
+            </div>
+            <div class="cards-container" id="list-applied">
+              <!-- Cards injected dynamically by JS -->
+            </div>
+          </div>
+          
+          <!-- Column: Interviewing -->
+          <div class="board-column" data-stage="interviewing">
+            <div class="column-header">
+              <div class="col-title-badge color-interviewing"></div>
+              <h3>Interviewing</h3>
+              <span class="cards-count" id="count-interviewing">0</span>
+            </div>
+            <div class="cards-container" id="list-interviewing">
+              <!-- Cards injected dynamically by JS -->
+            </div>
+          </div>
+          
+          <!-- Column: Offered -->
+          <div class="board-column" data-stage="offered">
+            <div class="column-header">
+              <div class="col-title-badge color-offered"></div>
+              <h3>Offered</h3>
+              <span class="cards-count" id="count-offered">0</span>
+            </div>
+            <div class="cards-container" id="list-offered">
+              <!-- Cards injected dynamically by JS -->
+            </div>
+          </div>
+          
+          <!-- Column: Rejected -->
+          <div class="board-column" data-stage="rejected">
+            <div class="column-header">
+              <div class="col-title-badge color-rejected"></div>
+              <h3>Rejected</h3>
+              <span class="cards-count" id="count-rejected">0</span>
+            </div>
+            <div class="cards-container" id="list-rejected">
+              <!-- Cards injected dynamically by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <!-- ==========================================================================
+         Add / Edit Application Modal Window Overlay
+         ========================================================================== -->
+    <div class="modal-overlay" id="app-modal" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="modal-title">Track New Application</h2>
+          <button class="btn-close" id="modal-close-btn">&times;</button>
+        </div>
+        
+        <form id="app-form" class="modal-form">
+          <input type="hidden" id="edit-app-id">
+          
+          <div class="form-grid">
+            <!-- Company -->
+            <div class="form-group">
+              <label for="form-company">Company *</label>
+              <input type="text" id="form-company" required placeholder="e.g. Google, Stripe, Notion">
+            </div>
+            
+            <!-- Role -->
+            <div class="form-group">
+              <label for="form-role">Internship Role *</label>
+              <input type="text" id="form-role" required placeholder="e.g. Software Engineer Intern">
+            </div>
+            
+            <!-- Location Type -->
+            <div class="form-group col-half">
+              <label for="form-location-type">Location Type</label>
+              <select id="form-location-type">
+                <option value="remote">Remote</option>
+                <option value="onsite">On-Site</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
+            </div>
+            
+            <!-- Stipend -->
+            <div class="form-group col-half">
+              <label for="form-stipend">Stipend / Salary ($ / mo)</label>
+              <input type="number" id="form-stipend" min="0" placeholder="e.g. 3500 (Optional)">
+            </div>
+            
+            <!-- Job Link -->
+            <div class="form-group col-full">
+              <label for="form-job-url">Job Listing / Application URL</label>
+              <input type="url" id="form-job-url" placeholder="https://careers.company.com/jobs/...">
+            </div>
+            
+            <!-- Date Applied -->
+            <div class="form-group col-half">
+              <label for="form-date-applied">Date Applied</label>
+              <input type="date" id="form-date-applied">
+            </div>
+            
+            <!-- Stage -->
+            <div class="form-group col-half">
+              <label for="form-stage">Application Stage</label>
+              <select id="form-stage">
+                <option value="wishlist">Wishlist / Backlog</option>
+                <option value="applied">Applied</option>
+                <option value="interviewing">Interviewing</option>
+                <option value="offered">Offered</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            
+            <!-- Notes -->
+            <div class="form-group col-full">
+              <label for="form-notes">Notes / Requirements</label>
+              <textarea id="form-notes" rows="3" placeholder="Key tech stacks mentioned, recruiters name, application portal details..."></textarea>
+            </div>
+            
+            <!-- Interview Prep Checklist (Conditional display or general) -->
+            <div class="form-group col-full interview-checklist-section">
+              <label>Interview Checklist & Reminders</label>
+              <p class="section-sub-desc">List tasks or milestones (press enter to add)</p>
+              
+              <div class="checklist-input-row">
+                <input type="text" id="checklist-input" placeholder="e.g. Solve 3 LeetCode dynamic programming questions">
+                <button type="button" class="btn btn-secondary btn-sm" id="checklist-add-item-btn">Add</button>
+              </div>
+              
+              <ul id="checklist-list-container" class="checklist-items-ul">
+                <!-- Dynamically added checklist items -->
+              </ul>
+            </div>
+          </div>
+          
+          <div class="form-actions-row">
+            <button type="button" class="btn btn-secondary" id="form-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="form-submit-btn">Save Application</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- App JS Script -->
+  <script src="app.js"></script>
+</body>
+</html>
