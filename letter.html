@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Drop — The Royal Treasury</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@700&display=swap');
+
+        :root {
+            --gold: #facc15;
+            --gold-glow: rgba(250, 204, 21, 0.4);
+            --royal-blue: #1e1b4b;
+            --ruby: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #312e81, #020617);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .game-wrapper {
+            width: 95%;
+            max-width: 600px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Treasury Header */
+        .treasury-header {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-group {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold);
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* The Vault (Game Area) */
+        #vault {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--glass-border);
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .letter-coin {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--gold);
+            box-shadow: 0 0 15px var(--gold-glow);
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            user-select: none;
+            animation: coinSpin 5s linear infinite;
+        }
+
+        @keyframes coinSpin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .letter-coin:hover {
+            background: rgba(250, 204, 21, 0.2);
+            transform: scale(1.1);
+        }
+
+        .letter-coin.selected {
+            background: var(--gold);
+            color: var(--royal-blue);
+            box-shadow: 0 0 25px var(--gold);
+        }
+
+        /* Input Bar */
+        .input-bar {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        #current-word {
+            flex: 1;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-align: center;
+            min-height: 2.2rem;
+            text-transform: uppercase;
+        }
+
+        .btn-royal {
+            background: var(--gold);
+            color: var(--royal-blue);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-royal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--gold-glow);
+        }
+
+        /* Overlays */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hidden { display: none !important; }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            margin: 0;
+            color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-wrapper">
+        <div class="treasury-header">
+            <div class="stat-group">
+                <div class="stat-label">Royal Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-group">
+                <div class="stat-label">Vault Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-group">
+                <div class="stat-label">Letters</div>
+                <div class="stat-value" id="count">0/20</div>
+            </div>
+        </div>
+
+        <div id="vault">
+            <div id="start-overlay" class="overlay">
+                <h1>LETTER DROP</h1>
+                <p style="margin: 1rem 0 2rem; color: #94a3b8;">Form words to clear the vault before it overflows.</p>
+                <button class="btn-royal" onclick="startGame()">Open The Vault</button>
+            </div>
+            <div id="game-over-overlay" class="overlay hidden">
+                <h1 style="color: var(--ruby);">VAULT BREACHED</h1>
+                <p id="final-stats" style="margin: 1rem 0 2rem;"></p>
+                <button class="btn-royal" onclick="startGame()">Try Again</button>
+            </div>
+        </div>
+
+        <div class="input-bar">
+            <div id="current-word"></div>
+            <button class="btn-royal" onclick="clearSelection()">Clear</button>
+            <button class="btn-royal" style="background: var(--text); color: var(--royal-blue);" onclick="submitWord()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        // Simple list of common 3+ letter words for validation
+        const DICTIONARY = ["THE", "AND", "FOR", "ARE", "BUT", "NOT", "YOU", "ALL", "ANY", "CAN", "HAD", "HER", "WAS", "ONE", "OUR", "OUT", "DAY", "GET", "HAS", "HIM", "HIS", "HOW", "MAN", "NEW", "NOW", "OLD", "SEE", "TWO", "WAY", "WHO", "BOY", "DID", "ITS", "LET", "PUT", "SAY", "SHE", "TOO", "USE", "WORD", "TIME", "BACK", "FROM", "GIVE", "GOOD", "HAVE", "LAST", "MADE", "NAME", "NEAR", "SOME", "TAKE", "THAN", "THAT", "THEIR", "THEM", "THEN", "THERE", "THESE", "THEY", "THIS", "THREE", "WANT", "WELL", "WENT", "WERE", "WHAT", "WHEN", "WHICH", "WILL", "WITH", "YOUR", "ABOUT", "AFTER", "AGAIN", "COULD", "EVERY", "FIRST", "GREAT", "HOUSE", "LARGE", "LEARN", "NEVER", "OTHER", "PLACE", "PLANT", "POINT", "RIGHT", "SMALL", "SOUND", "STILL", "STUDY", "THEIR", "THERE", "THESE", "THING", "THINK", "WATER", "WHICH", "WORLD", "WOULD", "WRITE"];
+        
+        let state = {
+            score: 0,
+            level: 1,
+            letters: [],
+            selected: [],
+            isGameOver: false,
+            lastSpawn: 0,
+            spawnRate: 2000
+        };
+
+        const vault = document.getElementById('vault');
+        const currentWordDisplay = document.getElementById('current-word');
+
+        function startGame() {
+            state = {
+                score: 0,
+                level: 1,
+                letters: [],
+                selected: [],
+                isGameOver: false,
+                lastSpawn: 0,
+                spawnRate: 2000
+            };
+            vault.querySelectorAll('.letter-coin').forEach(c => c.remove());
+            document.getElementById('start-overlay').classList.add('hidden');
+            document.getElementById('game-over-overlay').classList.add('hidden');
+            updateUI();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function spawnLetter() {
+            const alphabet = "EEEEEEEEEEAAAAAAAIIIIIOOOOOUUUUNNNNRRRRTTTTLLLLSSSSDDDDGGGBBCCMMPPFFHHVVWWYYJKQX Z";
+            const char = alphabet[Math.floor(Math.random() * alphabet.length)].trim();
+            if (!char) return spawnLetter();
+
+            const coin = document.createElement('div');
+            coin.className = 'letter-coin';
+            coin.innerText = char;
+            coin.style.left = Math.random() * (vault.clientWidth - 60) + 'px';
+            coin.style.top = '-60px';
+            
+            const letterObj = {
+                el: coin,
+                char: char,
+                y: -60,
+                speed: 0.5 + (state.level * 0.2)
+            };
+
+            coin.onclick = () => selectLetter(letterObj);
+            vault.appendChild(coin);
+            state.letters.push(letterObj);
+        }
+
+        function selectLetter(obj) {
+            if (state.selected.includes(obj)) return;
+            obj.el.classList.add('selected');
+            state.selected.push(obj);
+            currentWordDisplay.innerText = state.selected.map(o => o.char).join('');
+        }
+
+        function clearSelection() {
+            state.selected.forEach(o => o.el.classList.remove('selected'));
+            state.selected = [];
+            currentWordDisplay.innerText = '';
+        }
+
+        function submitWord() {
+            const word = state.selected.map(o => o.char).join('');
+            if (word.length < 3) return;
+
+            if (DICTIONARY.includes(word) || word.length > 5) { // Reward longer words even if not in mini-dict
+                state.score += word.length * 10 * state.level;
+                state.selected.forEach(o => {
+                    o.el.remove();
+                    state.letters = state.letters.filter(l => l !== o);
+                });
+                if (state.score > state.level * 500) {
+                    state.level++;
+                    state.spawnRate = Math.max(800, state.spawnRate - 200);
+                }
+                clearSelection();
+                updateUI();
+            } else {
+                clearSelection();
+            }
+        }
+
+        function gameLoop(time) {
+            if (state.isGameOver) return;
+
+            if (time - state.lastSpawn > state.spawnRate) {
+                spawnLetter();
+                state.lastSpawn = time;
+            }
+
+            state.letters.forEach(l => {
+                l.y += l.speed;
+                l.el.style.top = l.y + 'px';
+
+                // Check if stacked too high
+                if (l.y > vault.clientHeight - 60) {
+                    l.y = vault.clientHeight - 60;
+                }
+            });
+
+            if (state.letters.length > 20) {
+                gameOver();
+            }
+
+            document.getElementById('count').innerText = `${state.letters.length}/20`;
+            requestAnimationFrame(gameLoop);
+        }
+
+        function updateUI() {
+            document.getElementById('score').innerText = state.score;
+            document.getElementById('level').innerText = state.level;
+        }
+
+        function gameOver() {
+            state.isGameOver = true;
+            const over = document.getElementById('game-over-overlay');
+            over.classList.remove('hidden');
+            document.getElementById('final-stats').innerText = `You secured ${state.score} coins and reached level ${state.level}.`;
+        }
+    </script>
+</body>
+</html>
