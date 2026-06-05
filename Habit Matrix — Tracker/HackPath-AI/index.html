@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HackPath AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>🛡️ HackPath AI</h1>
+        <p>AI-Powered Cyber Risk Assessment Tool</p>
+
+        <div class="card">
+
+            <label>Company Type</label>
+            <input type="text" id="company" placeholder="Fintech Startup">
+
+            <label>Number of Employees</label>
+            <input type="number" id="employees" placeholder="50">
+
+            <label>Cloud Provider</label>
+            <select id="cloud">
+                <option>AWS</option>
+                <option>Azure</option>
+                <option>Google Cloud</option>
+                <option>None</option>
+            </select>
+
+            <label>Stores Sensitive Data?</label>
+            <select id="data">
+                <option>Yes</option>
+                <option>No</option>
+            </select>
+
+            <button onclick="analyzeRisk()">
+                Analyze Security Risks
+            </button>
+
+        </div>
+
+        <div class="result-card">
+            <div id="result">
+                Fill details and generate report.
+            </div>
+        </div>
+
+    </div>
+
+<script src="apps.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dots & Boxes</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="start-screen" id="startScreen" role="dialog" aria-labelledby="start-title" aria-modal="true">
+
+  <div class="start-box">
+
+    <h1 id="start-title">Dots & Boxes</h1>
+
+    <input
+      type="text"
+      id="player1Name"
+      placeholder="Blue Player Name"
+      maxlength="12"
+      aria-label="Enter name for Blue Player"
+    >
+
+    <input
+      type="text"
+      id="player2Name"
+      placeholder="Red Player Name"
+      maxlength="12"
+      aria-label="Enter name for Red Player"
+    >
+
+    <button id="startGameBtn" aria-label="Start the game">
+      Start Game
+    </button>
+
+  </div>
+
+</main>
+
+  <div class="game-container">
+
+    <h1>Dots & Boxes</h1>
+
+    <div class="top-bar">
+
+      <div class="player-card blue active" id="player1Card" tabindex="0" aria-labelledby="player1DisplayName player1Score">
+
+  <h2 id="player1DisplayName">Blue Player</h2>
+
+  <p id="player1Score" aria-label="Blue Player Score">0</p>
+
+</div>
+
+<div class="status">
+  <h2 id="turnText" aria-live="polite">Blue Player's Turn</h2>
+</div>
+
+<div class="player-card red" id="player2Card" tabindex="0" aria-labelledby="player2DisplayName player2Score">
+
+  <h2 id="player2DisplayName">Red Player</h2>
+
+  <p id="player2Score" aria-label="Red Player Score">0</p>
+
+</div>
+
+    </div>
+
+    <div class="board" id="board" role="grid" aria-label="Dots and Boxes Game Board" tabindex="0"></div>
+
+    <button id="restartBtn" aria-label="Restart the game">Restart Game</button>
+
+  </div>
+  <div class="winner-modal hidden" id="winnerModal" role="alertdialog" aria-labelledby="winnerText" aria-modal="true">
+
+  <div class="winner-box">
+
+    <h1 id="winnerText">Blue Player Wins!</h1>
+
+    <button id="closeModalBtn" aria-label="Play the game again">
+      Play Again
+    </button>
+
+  </div>
+
+</div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
