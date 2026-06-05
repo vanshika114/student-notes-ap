@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspirational Quote Generator | NSOC Contribution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: 0.3s;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #00b4db, #0083b0);
+            box-shadow: 0 0 15px rgba(0,180,219,0.3);
+        }
+
+        .quote-card {
+            background: rgba(0,0,0,0.4);
+            border-radius: 25px;
+            padding: 40px 30px;
+            margin-bottom: 25px;
+            text-align: center;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .quote-icon {
+            font-size: 40px;
+            color: rgba(255,255,255,0.3);
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-size: 22px;
+            color: white;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .quote-author {
+            font-size: 16px;
+            color: #00ffcc;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn.new {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .action-btn.twitter {
+            background: #1DA1F2;
+        }
+
+        .action-btn.copy {
+            background: #28a745;
+        }
+
+        .action-btn.fav {
+            background: #dc3545;
+        }
+
+        .action-btn.fav.active {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .favorites-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .favorites-section h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .favorites-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .favorites-list li {
+            background: rgba(255,255,255,0.05);
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .favorites-list li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .fav-quote-text {
+            color: white;
+            font-size: 12px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .remove-fav {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .daily-reminder {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .reminder-toggle {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .quote-text {
+                font-size: 18px;
+            }
+            .action-btn {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💭 Daily Motivation</h1>
+
+        <div class="category-filter">
+            <button class="filter-btn active" data-cat="all">✨ All</button>
+            <button class="filter-btn" data-cat="motivation">💪 Motivation</button>
+            <button class="filter-btn" data-cat="success">🏆 Success</button>
+            <button class="filter-btn" data-cat="life">🌟 Life</button>
+        </div>
+
+        <div class="quote-card">
+            <div class="quote-icon">"</div>
+            <div class="quote-text" id="quoteText">The only way to do great work is to love what you do.</div>
+            <div class="quote-author" id="quoteAuthor">— Steve Jobs</div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn new" id="newQuoteBtn">✨ New Quote</button>
+            <button class="action-btn twitter" id="twitterBtn">🐦 Share</button>
+            <button class="action-btn copy" id="copyBtn">📋 Copy</button>
+            <button class="action-btn fav" id="favBtn">❤️ Save</button>
+        </div>
+
+        <div class="favorites-section">
+            <h3>⭐ Favorites (<span id="favCount">0</span>)</h3>
+            <ul class="favorites-list" id="favoritesList">
+                <li style="text-align: center; color: rgba(255,255,255,0.5);">No favorites yet. Save some quotes!</li>
+            </ul>
+        </div>
+
+        <div class="daily-reminder">
+            <button class="reminder-toggle" id="reminderToggle">🔔 Enable Daily Reminder</button>
+        </div>
+    </div>
+
+    <script>
+        // Quote database
+        const quotes = {
+            motivation: [
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+                { text: "Your limitation—it's only your imagination.", author: "Unknown" },
+                { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
+                { text: "Great things never come from comfort zones.", author: "Unknown" },
+                { text: "Dream it. Wish it. Do it.", author: "Unknown" },
+                { text: "Stay focused and never give up.", author: "Unknown" }
+            ],
+            success: [
+                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+                { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Unknown" },
+                { text: "Success doesn't come from what you do occasionally, it comes from what you do consistently.", author: "Marie Forleo" },
+                { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+                { text: "The secret of success is to start before you are ready.", author: "Unknown" },
+                { text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill" }
+            ],
+            life: [
+                { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+                { text: "In the end, it's not the years in your life that count. It's the life in your years.", author: "Abraham Lincoln" },
+                { text: "The purpose of our lives is to be happy.", author: "Dalai Lama" },
+                { text: "Life is really simple, but we insist on making it complicated.", author: "Confucius" },
+                { text: "Live for each second without hesitation.", author: "Unknown" },
+                { text: "The good life is one inspired by love and guided by knowledge.", author: "Bertrand Russell" }
+            ]
+        };
+
+        // All quotes combined
+        const allQuotes = [
+            ...quotes.motivation,
+            ...quotes.success,
+            ...quotes.life
+        ];
+
+        let currentCategory = 'all';
+        let currentQuote = null;
+        let favorites = [];
+
+        // DOM Elements
+        const quoteText = document.getElementById('quoteText');
+        const quoteAuthor = document.getElementById('quoteAuthor');
+        const newQuoteBtn = document.getElementById('newQuoteBtn');
+        const twitterBtn = document.getElementById('twitterBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const favBtn = document.getElementById('favBtn');
+        const favoritesList = document.getElementById('favoritesList');
+        const favCount = document.getElementById('favCount');
+        const reminderToggle = document.getElementById('reminderToggle');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // Load favorites from localStorage
+        function loadFavorites() {
+            const saved = localStorage.getItem('favoriteQuotes');
+            if(saved) {
+                favorites = JSON.parse(saved);
+            }
+            updateFavoritesDisplay();
+        }
+
+        // Save favorites to localStorage
+        function saveFavorites() {
+            localStorage.setItem('favoriteQuotes', JSON.stringify(favorites));
+            updateFavoritesDisplay();
+        }
+
+        // Update favorites UI
+        function updateFavoritesDisplay() {
+            favCount.textContent = favorites.length;
+            
+            if(favorites.length === 0) {
+                favoritesList.innerHTML = '<li style="text-align: center; color: rgba(255,255,255,0.5);">No favorites yet. Save some quotes!</li>';
+                return;
+            }
+            
+            favoritesList.innerHTML = '';
+            favorites.forEach((fav, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="fav-quote-text">"${fav.text.substring(0, 50)}${fav.text.length > 50 ? '...' : ''}" — ${fav.author}</span>
+                    <button class="remove-fav" data-index="${index}">🗑️</button>
+                `;
+                li.addEventListener('click', (e) => {
+                    if(e.target.classList.contains('remove-fav')) {
+                        removeFavorite(index);
+                    } else {
+                        displayQuote(fav.text, fav.author);
+                    }
+                });
+                favoritesList.appendChild(li);
+            });
+        }
+
+        // Remove favorite
+        function removeFavorite(index) {
+            favorites.splice(index, 1);
+            saveFavorites();
+            updateFavoriteButton();
+        }
+
+        // Get random quote based on category
+        function getRandomQuote() {
+            let quotePool;
+            if(currentCategory === 'all') {
+                quotePool = allQuotes;
+            } else {
+                quotePool = quotes[currentCategory];
+            }
+            
+            const randomIndex = Math.floor(Math.random() * quotePool.length);
+            return quotePool[randomIndex];
+        }
+
+        // Display quote
+        function displayQuote(text, author) {
+            quoteText.textContent = text;
+            quoteAuthor.textContent = `— ${author}`;
+            currentQuote = { text, author };
+            updateFavoriteButton();
+        }
+
+        // Load new random quote
+        function loadNewQuote() {
+            const quote = getRandomQuote();
+            displayQuote(quote.text, quote.author);
+        }
+
+        // Update favorite button state
+        function updateFavoriteButton() {
+            if(currentQuote && isFavorite(currentQuote)) {
+                favBtn.innerHTML = '❤️ Saved';
+                favBtn.classList.add('active');
+            } else {
+                favBtn.innerHTML = '🤍 Save';
+                favBtn.classList.remove('active');
+            }
+        }
+
+        // Check if quote is favorite
+        function isFavorite(quote) {
+            return favorites.some(fav => fav.text === quote.text && fav.author === quote.author);
+        }
+
+        // Save current quote to favorites
+        function saveCurrentQuote() {
+            if(!currentQuote) return;
+            
+            if(isFavorite(currentQuote)) {
+                alert('Quote already in favorites!');
+                return;
+            }
+            
+            favorites.push(currentQuote);
+            saveFavorites();
+            updateFavoriteButton();
+        }
+
+        // Share on Twitter
+        function shareOnTwitter() {
+            if(!currentQuote) return;
+            const tweetText = `"${currentQuote.text}" — ${currentQuote.author}`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+            window.open(twitterUrl, '_blank');
+        }
+
+        // Copy quote to clipboard
+        async function copyQuote() {
+            if(!currentQuote) return;
+            const quoteString = `"${currentQuote.text}" — ${currentQuote.author}`;
+            
+            try {
+                await navigator.clipboard.writeText(quoteString);
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 1500);
+            } catch(err) {
+                alert('Failed to copy');
+            }
+        }
+
+        // Daily reminder
+        let reminderEnabled = localStorage.getItem('dailyReminder') === 'true';
+        
+        function updateReminderButton() {
+            if(reminderEnabled) {
+                reminderToggle.innerHTML = '🔔 Daily Reminder ON';
+                reminderToggle.style.background = '#28a745';
+            } else {
+                reminderToggle.innerHTML = '🔕 Enable Daily Reminder';
+                reminderToggle.style.background = 'rgba(255,255,255,0.1)';
+            }
+        }
+        
+        function toggleReminder() {
+            reminderEnabled = !reminderEnabled;
+            localStorage.setItem('dailyReminder', reminderEnabled);
+            updateReminderButton();
+            
+            if(reminderEnabled && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+            
+            alert(reminderEnabled ? 'Daily reminder enabled! Check back tomorrow for new motivation.' : 'Daily reminder disabled.');
+        }
+        
+        // Check for daily quote reminder (on page load)
+        function checkDailyReminder() {
+            if(!reminderEnabled) return;
+            
+            const lastVisit = localStorage.getItem('lastVisitDate');
+            const today = new Date().toDateString();
+            
+            if(lastVisit !== today) {
+                setTimeout(() => {
+                    alert('💡 Your daily motivation is ready! Click "New Quote" for inspiration.');
+                }, 1000);
+                localStorage.setItem('lastVisitDate', today);
+            }
+        }
+
+        // Change category
+        function setCategory(category) {
+            currentCategory = category;
+            
+            filterBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.dataset.cat === category) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            loadNewQuote();
+        }
+
+        // Event listeners
+        newQuoteBtn.addEventListener('click', loadNewQuote);
+        twitterBtn.addEventListener('click', shareOnTwitter);
+        copyBtn.addEventListener('click', copyQuote);
+        favBtn.addEventListener('click', saveCurrentQuote);
+        reminderToggle.addEventListener('click', toggleReminder);
+        
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setCategory(btn.dataset.cat);
+            });
+        });
+
+        // Initialize
+        loadFavorites();
+        loadNewQuote();
+        updateReminderButton();
+        checkDailyReminder();
+        
+        // Request notification permission on load
+        if(reminderEnabled && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
