@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="16" fill="#0a0512"/>
+  <g transform="translate(6,6)">
+    <rect x="0" y="0" width="116" height="16" rx="8" fill="rgba(30,41,59,0.4)" stroke="rgba(51,65,85,0.3)" stroke-width="0.5"/>
+    <text x="10" y="11" font-size="4" fill="#475569" font-family="sans-serif" letter-spacing="1">SCORE</text>
+    <text x="10" y="6" font-size="7" fill="#e2e8f0" font-weight="700" font-family="sans-serif">420</text>
+    <text x="42" y="11" font-size="4" fill="#475569" font-family="sans-serif" letter-spacing="1">COMBO</text>
+    <text x="42" y="6" font-size="7" fill="#eab308" font-weight="700" font-family="sans-serif">×5</text>
+    <text x="74" y="11" font-size="4" fill="#475569" font-family="sans-serif" letter-spacing="1">LIVES</text>
+    <text x="74" y="6" font-size="6.5" fill="#e2e8f0" font-family="sans-serif">❤❤♡</text>
+    <text x="98" y="11" font-size="4" fill="#475569" font-family="sans-serif" letter-spacing="1">BEST</text>
+    <text x="98" y="6" font-size="7" fill="#e2e8f0" font-weight="700" font-family="sans-serif">850</text>
+  </g>
+  <g transform="translate(44,26)">
+    <text x="20" y="7" font-size="4" fill="#475569" text-anchor="middle" font-family="sans-serif" letter-spacing="1">CATCH</text>
+    <circle cx="50" cy="5" r="6" fill="#06b6d4" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  </g>
+  <g transform="translate(14,38)">
+    <rect x="0" y="0" width="100" height="62" rx="10" fill="rgba(30,41,59,0.1)" stroke="rgba(51,65,85,0.3)" stroke-width="0.5"/>
+    <!-- Falling blocks -->
+    <rect x="10" y="4" width="14" height="14" rx="3" fill="#06b6d4"/>
+    <rect x="50" y="16" width="14" height="14" rx="3" fill="#d946ef"/>
+    <rect x="30" y="34" width="14" height="14" rx="3" fill="#10b981"/>
+    <rect x="68" y="42" width="14" height="14" rx="3" fill="#eab308"/>
+    <!-- Catcher -->
+    <rect x="24" y="54" width="50" height="6" rx="4" fill="#e2e8f0"/>
+  </g>
+  <text x="64" y="110" font-size="4.5" fill="#475569" text-anchor="middle" font-family="sans-serif">⬅  ➡  arrow keys  |  tap screen halves</text>
+</svg>

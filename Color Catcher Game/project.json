@@ -1,0 +1,17 @@
+{
+  "title": "Color Catcher Game",
+  "description": "A cyberpunk arcade game where colored blocks fall from the sky. Catch blocks matching the target color to score and build combos — catch the wrong color and lose a life. Velocity escalates every 15 seconds.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "arcade",
+    "game",
+    "vanilla-js",
+    "canvas",
+    "cyberpunk"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Catcher Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Telemetry ─── -->
+  <header class="telemetry">
+    <div class="stat-block">
+      <span class="stat-label">Score</span>
+      <span class="stat-value" id="score">0</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">Combo</span>
+      <span class="stat-value accent" id="combo">×1</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">Lives</span>
+      <span class="stat-value" id="lives">❤❤❤</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">Best</span>
+      <span class="stat-value" id="high-score">0</span>
+    </div>
+  </header>
+
+  <!-- ─── Target Color ─── -->
+  <div class="target-bar">
+    <span class="target-label">CATCH</span>
+    <span class="target-swatch" id="target-swatch"></span>
+  </div>
+
+  <!-- ─── Game Canvas ─── -->
+  <main class="game-wrap">
+    <canvas id="canvas"></canvas>
+  </main>
+
+  <!-- ─── Game Over Overlay ─── -->
+  <div class="game-over" id="game-over">
+    <div class="game-over-card">
+      <h2 class="go-title">GAME OVER</h2>
+      <div class="go-stats">
+        <div class="go-row"><span>Final Score</span><span id="go-score">0</span></div>
+        <div class="go-row"><span>Best Score</span><span id="go-best">0</span></div>
+      </div>
+      <button class="btn-restart" id="btn-restart">⟳ Play Again</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
