@@ -4,46 +4,34 @@ let card = document.querySelector(".card");
 
 // Fetch user profile data
 async function getProfileData(username) {
-  try {
-    const response = await fetch(`https://api.github.com/users/${username}`);
-    if (!response.ok) {
-      if (response.status === 403 || response.status === 429) {
-        throw new Error("GitHub API Rate Limit Exceeded. Please try again later.");
-      } else if (response.status === 404) {
-        throw new Error("User not found.");
-      } else {
-        throw new Error("Failed to fetch user data.");
-      }
+  const response = await fetch(`https://api.github.com/users/${username}`);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error("User not found.");
+    } else if (response.status === 403 || response.status === 429) {
+      throw new Error("GitHub API rate limit exceeded. Please try again later.");
+    } else {
+      throw new Error("An unexpected network error occurred.");
     }
-    return await response.json();
-  } catch (error) {
-    console.error(error);
-    card.innerHTML = `<p class="text-center text-red-400">${error.message}</p>`;
-    throw error;
   }
+  return await response.json();
 }
 
 // Fetch user repos
 async function getRepos(username) {
-  try {
-    const response = await fetch(
-      `https://api.github.com/users/${username}/repos?sort=updated&per_page=8`
-    );
-    if (!response.ok) {
-      if (response.status === 403 || response.status === 429) {
-        throw new Error("GitHub API Rate Limit Exceeded. Please try again later.");
-      } else if (response.status === 404) {
-        throw new Error("User not found.");
-      } else {
-        throw new Error("Failed to fetch repositories.");
-      }
+  const response = await fetch(
+    `https://api.github.com/users/${username}/repos?sort=updated&per_page=8`
+  );
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error("User not found.");
+    } else if (response.status === 403 || response.status === 429) {
+      throw new Error("GitHub API rate limit exceeded. Please try again later.");
+    } else {
+      throw new Error("An unexpected network error occurred.");
     }
-    return await response.json();
-  } catch (error) {
-    console.error(error);
-    card.innerHTML = `<p class="text-center text-red-400">${error.message}</p>`;
-    throw error;
   }
+  return await response.json();
 }
 
 // Render profile + repos
@@ -126,12 +114,15 @@ searchBtn.addEventListener("click", function (e) {
   e.preventDefault();
   let username = usernameinp.value.trim();
   if (username.length > 0) {
+    // Show a temporary loading state
+    card.innerHTML = `<p class="text-center text-gray-400">Searching for ${username}...</p>`;
+
     Promise.all([getProfileData(username), getRepos(username)])
       .then(([details, repos]) => {
         decorateProfileData(details, repos);
       })
-      .catch((err) => {
-        card.innerHTML = `<p class="text-center text-red-400">${err.message}</p>`;
+      .catch((error) => {
+        card.innerHTML = `<div class="error-card"><h2>${error.message}</h2></div>`;
       });
   } else {
     alert("Please enter a GitHub username!");
