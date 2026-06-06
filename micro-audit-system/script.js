@@ -67,6 +67,8 @@ const userGreeting = document.getElementById("userGreeting");
 
 const roleBadge = document.getElementById("roleBadge");
 
+const sidebarUserName = document.getElementById("sidebarUserName");
+
 let currentFilter = "all";
 
 let editingAuditId = null;
@@ -95,9 +97,17 @@ const currentUserRole = currentUser
     ? currentUser.role || "User"
     : "";
 
-const isDashboardPage = Boolean(auditList);
+const pageName = document.body.dataset.page || "";
+
+const navLinks = document.querySelectorAll("[data-nav-page]");
+
+const isDashboardPage = pageName === "dashboard" || Boolean(auditList);
+
+const isAnalyticsPage = pageName === "analytics";
 
 const isAuthPage = Boolean(registerForm || loginForm);
+
+const isProtectedPage = isDashboardPage || isAnalyticsPage;
 
 /* Auth Helpers */
 
@@ -143,9 +153,28 @@ function redirectToLogin(){
     window.location.href = "login.html";
 }
 
+function syncActiveNavLink(){
+
+    navLinks.forEach((link)=>{
+
+        const isActive = link.dataset.navPage === pageName;
+
+        link.classList.toggle("active", isActive);
+
+        if(isActive){
+
+            link.setAttribute("aria-current", "page");
+
+        } else {
+
+            link.removeAttribute("aria-current");
+        }
+    });
+}
+
 function protectRoutes(){
 
-    if(isDashboardPage && !currentUser){
+    if(isProtectedPage && !currentUser){
 
         redirectToLogin();
     }
@@ -188,6 +217,11 @@ if(sortSelect){
 if(exportAuditsBtn){
 
     exportAuditsBtn.addEventListener("click", exportAudits);
+}
+
+if(sidebarUserName && currentUser){
+
+    sidebarUserName.textContent = currentUser.username;
 }
 
 if(userGreeting && currentUser){
@@ -1416,3 +1450,5 @@ if(isDashboardPage && currentUser){
 
     renderAudits();
 }
+
+syncActiveNavLink();

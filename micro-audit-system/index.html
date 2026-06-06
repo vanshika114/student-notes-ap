@@ -8,206 +8,221 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body data-page="dashboard" data-requires-auth="true">
 
-    <div class="container">
+    <div class="app-shell">
 
-        <!-- Header -->
+        <aside class="sidebar" aria-label="Primary navigation">
 
-        <div class="header">
-
-            <div>
-                <h1>Micro Audit System</h1>
-                <p>Track and manage audit checkpoints</p>
+            <div class="sidebar-brand">
+                <p class="sidebar-brand-eyebrow">MicroAudit</p>
+                <h2>Committee Tracker</h2>
+                <p>Audit operations workspace</p>
             </div>
 
-            <div class="header-actions">
+            <nav class="sidebar-nav">
+                <a class="sidebar-link active" href="index.html" data-nav-page="dashboard">
+                    Dashboard
+                </a>
 
-                <p id="userGreeting" class="user-greeting">
-                    Welcome
-                </p>
+                <a class="sidebar-link" href="analytics.html" data-nav-page="analytics">
+                    Analytics
+                </a>
 
-                <span id="roleBadge" class="role-badge">
-                    User
-                </span>
+                <span class="sidebar-link muted">Reports</span>
+                <span class="sidebar-link muted">Profile</span>
+            </nav>
 
-                <button id="logoutBtn" class="logout-btn">
-                    Logout
-                </button>
+            <div class="sidebar-footer">
+                <div class="sidebar-avatar">DS</div>
 
-                <button id="themeToggle">
-                    🌙
-                </button>
-
-            </div>
-
-        </div>
-
-        <!-- Audit Form -->
-
-        <div class="audit-form">
-
-            <input 
-                type="text"
-                id="auditInput"
-                placeholder="Enter audit checkpoint..."
-            >
-
-            <textarea
-                id="descriptionInput"
-                placeholder="Add description (optional)..."
-                rows="3"
-            ></textarea>
-
-            <select id="prioritySelect">
-
-                 <option value="Low">
-                 Low Priority
-                 </option>
-
-                <option value="Medium">
-                 Medium Priority
-                </option>
-
-                <option value="High">
-                 High Priority
-                </option>
-
-                </select>
-
-<input
-    type="date"
-    id="dueDateInput"
->
-
-            <div class="image-field">
-
-                <label class="image-label" for="imageInput">
-                    Audit image (optional)
-                </label>
-
-                <input
-                    type="file"
-                    id="imageInput"
-                    class="image-input"
-                    accept="image/jpeg,image/png,image/webp"
-                >
-
-                <p id="imageValidationMessage" class="image-message"></p>
-
-                <div id="imagePreview" class="image-preview hidden">
-                    <img
-                        id="imagePreviewImg"
-                        alt="Selected audit image preview"
-                    >
-                    <div class="image-actions">
-                        <button
-                            type="button"
-                            id="removeImageBtn"
-                            class="remove-image-btn"
-                        >
-                            Remove Image
-                        </button>
-                    </div>
+                <div>
+                    <strong id="sidebarUserName">Dr. Sharma</strong>
+                    <p>Head</p>
                 </div>
             </div>
 
-            <button id="addAuditBtn">
-                Add Audit
-            </button>
+        </aside>
 
-        </div>
+        <main class="page-content">
 
-        <!-- Search + Filters -->
+            <div class="container dashboard-container">
 
-<div class="controls">
+                <div class="header">
 
-    <input 
-        type="text"
-        id="searchInput"
-        placeholder="Search audits..."
-    >
+                    <div>
+                        <h1>Micro Audit System</h1>
+                        <p>Track and manage audit checkpoints</p>
+                    </div>
 
-    <select id="sortSelect">
+                    <div class="header-actions">
 
-        <option value="default">
-            Default
-        </option>
+                        <p id="userGreeting" class="user-greeting">
+                            Welcome
+                        </p>
 
-        <option value="high-low">
-            High → Medium → Low
-        </option>
+                        <span id="roleBadge" class="role-badge">
+                            User
+                        </span>
 
-        <option value="low-high">
-            Low → Medium → High
-        </option>
+                        <button id="logoutBtn" class="logout-btn">
+                            Logout
+                        </button>
 
-    </select>
+                        <button id="themeToggle">
+                            🌙
+                        </button>
 
-    <div class="filter-buttons">
+                    </div>
 
-        <button class="filter-btn active" data-filter="all">
-            All
-        </button>
+                </div>
 
-        <button class="filter-btn" data-filter="pass">
-            Passed
-        </button>
+                <div class="audit-form">
 
-        <button class="filter-btn" data-filter="fail">
-            Failed
-        </button>
+                    <input
+                        type="text"
+                        id="auditInput"
+                        placeholder="Enter audit checkpoint..."
+                    >
 
-        <button class="filter-btn" data-filter="pending">
-            Pending
-        </button>
+                    <textarea
+                        id="descriptionInput"
+                        placeholder="Add description (optional)..."
+                        rows="3"
+                    ></textarea>
 
-    </div>
+                    <select id="prioritySelect">
 
-    <div class="control-actions">
-        <button id="exportAuditsBtn" class="export-btn">
-            Export Audits
-        </button>
-    </div>
+                        <option value="Low">Low Priority</option>
+                        <option value="Medium">Medium Priority</option>
+                        <option value="High">High Priority</option>
 
-</div>
+                    </select>
 
-        <!-- Stats -->
+                    <input type="date" id="dueDateInput">
 
-        <div class="stats-container">
+                    <div class="image-field">
 
-            <div class="stat-card">
-                <h2 id="totalAudits">0</h2>
-                <p>Total</p>
+                        <label class="image-label" for="imageInput">
+                            Audit image (optional)
+                        </label>
+
+                        <input
+                            type="file"
+                            id="imageInput"
+                            class="image-input"
+                            accept="image/jpeg,image/png,image/webp"
+                        >
+
+                        <p id="imageValidationMessage" class="image-message"></p>
+
+                        <div id="imagePreview" class="image-preview hidden">
+                            <img
+                                id="imagePreviewImg"
+                                alt="Selected audit image preview"
+                            >
+                            <div class="image-actions">
+                                <button
+                                    type="button"
+                                    id="removeImageBtn"
+                                    class="remove-image-btn"
+                                >
+                                    Remove Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="addAuditBtn">
+                        Add Audit
+                    </button>
+
+                </div>
+
+                <div class="controls">
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search audits..."
+                    >
+
+                    <select id="sortSelect">
+
+                        <option value="default">Default</option>
+
+                        <option value="high-low">
+                            High → Medium → Low
+                        </option>
+
+                        <option value="low-high">
+                            Low → Medium → High
+                        </option>
+
+                    </select>
+
+                    <div class="filter-buttons">
+
+                        <button class="filter-btn active" data-filter="all">
+                            All
+                        </button>
+
+                        <button class="filter-btn" data-filter="pass">
+                            Passed
+                        </button>
+
+                        <button class="filter-btn" data-filter="fail">
+                            Failed
+                        </button>
+
+                        <button class="filter-btn" data-filter="pending">
+                            Pending
+                        </button>
+
+                    </div>
+
+                    <div class="control-actions">
+                        <button id="exportAuditsBtn" class="export-btn">
+                            Export Audits
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="stats-container">
+
+                    <div class="stat-card">
+                        <h2 id="totalAudits">0</h2>
+                        <p>Total</p>
+                    </div>
+
+                    <div class="stat-card pending">
+                        <h2 id="pendingAudits">0</h2>
+                        <p>Pending Audits</p>
+                    </div>
+
+                    <div class="stat-card pass">
+                        <h2 id="passedAudits">0</h2>
+                        <p>Passed</p>
+                    </div>
+
+                    <div class="stat-card fail">
+                        <h2 id="failedAudits">0</h2>
+                        <p>Failed</p>
+                    </div>
+
+                    <div class="stat-card completion">
+                        <h2 id="completionPercentage">0%</h2>
+                        <p>Completion Percentage</p>
+                    </div>
+
+                </div>
+
+                <div id="auditList" class="audit-list"></div>
+
             </div>
 
-            <div class="stat-card pending">
-                <h2 id="pendingAudits">0</h2>
-                <p>Pending Audits</p>
-            </div>
-
-            <div class="stat-card pass">
-                <h2 id="passedAudits">0</h2>
-                <p>Passed</p>
-            </div>
-
-            <div class="stat-card fail">
-                <h2 id="failedAudits">0</h2>
-                <p>Failed</p>
-            </div>
-
-            <div class="stat-card completion">
-                <h2 id="completionPercentage">0%</h2>
-                <p>Completion Percentage</p>
-            </div>
-
-        </div>
-
-        <!-- Audit List -->
-
-        <div id="auditList" class="audit-list">
-
-        </div>
+        </main>
 
     </div>
 

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard | Micro Audit System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-page="analytics" data-requires-auth="true">
+
+    <div class="app-shell">
+
+        <aside class="sidebar" aria-label="Primary navigation">
+
+            <div class="sidebar-brand">
+                <p class="sidebar-brand-eyebrow">MicroAudit</p>
+                <h2>Committee Tracker</h2>
+                <p>Audit operations workspace</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="sidebar-link" href="index.html" data-nav-page="dashboard">
+                    Dashboard
+                </a>
+
+                <a class="sidebar-link active" href="analytics.html" data-nav-page="analytics">
+                    Analytics
+                </a>
+
+                <span class="sidebar-link muted">Reports</span>
+                <span class="sidebar-link muted">Profile</span>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-avatar">DS</div>
+
+                <div>
+                    <strong id="sidebarUserName">Dr. Sharma</strong>
+                    <p>Head</p>
+                </div>
+            </div>
+
+        </aside>
+
+        <main class="page-content">
+
+            <div class="container analytics-container">
+
+                <div class="page-header analytics-page-header">
+
+                    <div>
+                        <p class="section-eyebrow">Reports & Insights</p>
+                        <h1>Analytics Dashboard</h1>
+                        <p>
+                            Layout scaffold for future analytics modules and
+                            reporting views.
+                        </p>
+                    </div>
+
+                    <div class="header-actions analytics-header-actions">
+                        <a class="secondary-action" href="index.html">
+                            ← Back
+                        </a>
+
+                        <button type="button" class="secondary-action">
+                            Generate Report
+                        </button>
+
+                        <button type="button" class="secondary-action">
+                            Print Report
+                        </button>
+
+                        <button id="themeToggle">
+                            🌙
+                        </button>
+                    </div>
+
+                </div>
+
+                <section class="analytics-summary-grid" aria-label="Summary statistics">
+
+                    <article class="summary-card">
+                        <p class="summary-label">Total Actions</p>
+                        <div class="summary-value">—</div>
+                        <p class="summary-note">Placeholder for overall action count.</p>
+                    </article>
+
+                    <article class="summary-card summary-card--success">
+                        <p class="summary-label">On-Time Actions</p>
+                        <div class="summary-value">—</div>
+                        <p class="summary-note">Placeholder for actions completed on time.</p>
+                    </article>
+
+                    <article class="summary-card summary-card--danger">
+                        <p class="summary-label">Delayed Actions</p>
+                        <div class="summary-value">—</div>
+                        <p class="summary-note">Placeholder for delayed action count.</p>
+                    </article>
+
+                    <article class="summary-card summary-card--accent">
+                        <p class="summary-label">Average Delay</p>
+                        <div class="summary-value">—</div>
+                        <p class="summary-note">Placeholder for average delay metric.</p>
+                    </article>
+
+                </section>
+
+                <section class="analytics-grid" aria-label="Analytics sections">
+
+                    <article class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h2>Status Distribution</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-placeholder analytics-placeholder--center">
+                            Status breakdown will be added in a future update.
+                        </div>
+                    </article>
+
+                    <article class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h2>Committee Performance</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-placeholder analytics-placeholder--bars">
+                            Committee performance visuals go here.
+                        </div>
+                    </article>
+
+                    <article class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h2>Average Delay by Committee</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-placeholder analytics-placeholder--list">
+                            Committee delay summary goes here.
+                        </div>
+                    </article>
+
+                    <article class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h2>On-Time vs Delayed</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-placeholder analytics-placeholder--split">
+                            Timeliness comparison goes here.
+                        </div>
+                    </article>
+
+                    <article class="analytics-card analytics-card--wide">
+                        <div class="analytics-card-header">
+                            <h2>Monthly Action Trend</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-placeholder analytics-placeholder--wide">
+                            A future trend module will use this full-width space.
+                        </div>
+                    </article>
+
+                    <article class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h2>Actions by Priority</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-placeholder analytics-placeholder--list">
+                            Priority breakdown goes here.
+                        </div>
+                    </article>
+
+                    <article class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h2>Member Accountability</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-placeholder analytics-placeholder--list">
+                            Member scorecards will be rendered here.
+                        </div>
+                    </article>
+
+                    <article class="analytics-card analytics-card--wide">
+                        <div class="analytics-card-header">
+                            <h2>Top Delayed Actions</h2>
+                            <span>Placeholder</span>
+                        </div>
+                        <div class="analytics-table">
+                            <div class="analytics-table-row analytics-table-row--head">
+                                <span>ID</span>
+                                <span>Title</span>
+                                <span>Committee</span>
+                                <span>Priority</span>
+                                <span>Status</span>
+                                <span>Delay</span>
+                            </div>
+                            <div class="analytics-table-row">
+                                <span>—</span><span>—</span><span>—</span><span>—</span><span>—</span><span>—</span>
+                            </div>
+                            <div class="analytics-table-row">
+                                <span>—</span><span>—</span><span>—</span><span>—</span><span>—</span><span>—</span>
+                            </div>
+                            <div class="analytics-table-row">
+                                <span>—</span><span>—</span><span>—</span><span>—</span><span>—</span><span>—</span>
+                            </div>
+                        </div>
+                    </article>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
