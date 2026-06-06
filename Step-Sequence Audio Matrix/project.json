@@ -1,0 +1,18 @@
+{
+  "title": "Step-Sequence Audio Matrix",
+  "description": "A 4x16 step sequencer powered by the Web Audio API with look-ahead scheduling, native oscillator synthesizers (Kick, Snare, Hi-Hat, Synth), real-time BPM control, and a visual playhead. Built with vanilla HTML5, CSS3, and JavaScript ES6+.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "audio",
+    "sequencer",
+    "web-audio-api",
+    "vanilla-js",
+    "music",
+    "synth"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}
