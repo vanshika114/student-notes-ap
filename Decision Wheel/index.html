@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Wheel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../global-theme.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="controls">
+      <div class="heading">
+        <h1><span class="emoji">🎯</span> <span class="title-text">Decision Wheel</span></h1>
+        <p align="center">Spin to decide instantly</p>
+      </div>
+      <div class="input-area">
+        <input id="optionInput" placeholder="Enter option name" aria-label="New Option">
+        <button id="addBtn">Add</button>
+      </div>
+      <div id="optionsList" class="options-list"></div>
+      <button id="resetBtn" class="danger-btn">Reset All</button>
+    </div>
+
+    <div class="wheel-section">
+      <div class="wheel-wrapper">
+        <div class="pointer"></div>
+        <canvas id="wheel" width="400" height="400"></canvas>
+      </div>
+      <button id="spinBtn" class="primary-btn">SPIN</button>
+      <h3 id="winnerText">Add options first</h3>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="../global-theme.js"></script>
+</body>
+</html>

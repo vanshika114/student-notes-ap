@@ -217,6 +217,7 @@ This repository already contains a growing collection of projects built by contr
 * Weather Card
 * Utility App
 * Calendar
+* Decision Wheel
 
 ### 📈 Tracking & Monitoring
 
