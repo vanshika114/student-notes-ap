@@ -1,0 +1,17 @@
+{
+  "title": "Balloon Pop Game",
+  "description": "A neon cyberpunk arcade game where colorful balloons float up from the bottom of the screen — pop them before they escape! Features combo multiplier, dynamic difficulty scaling, 45-second rounds, and localStorage high scores. Built with vanilla HTML5, CSS3, and JavaScript ES6+.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "arcade",
+    "game",
+    "balloon-pop",
+    "vanilla-js",
+    "cyberpunk"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}
