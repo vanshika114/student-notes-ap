@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech Reader | NSOC Contribution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .text-input {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: white;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 150px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border: 1px solid #00ffcc;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .control-group label {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            outline: none;
+        }
+
+        select option {
+            background: #1a1a2e;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .value-display {
+            text-align: center;
+            color: #00ffcc;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn.play {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .action-btn.pause {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+        }
+
+        .action-btn.stop {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .action-btn.save {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+        }
+
+        .favorites-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .favorites-section h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .favorites-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .favorites-list li {
+            background: rgba(255,255,255,0.05);
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .favorites-list li:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .fav-text {
+            color: white;
+            font-size: 13px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .remove-fav {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .status {
+            text-align: center;
+            color: #00ffcc;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .action-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔊 Text to Speech Reader</h1>
+
+        <div class="text-input">
+            <label>📝 Enter your text:</label>
+            <textarea id="textInput" placeholder="Type or paste any text here...&#10;&#10;Example: Hello! Welcome to the Text to Speech Reader. You can adjust voice, speed, and pitch."></textarea>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>🗣️ Voice:</label>
+                <select id="voiceSelect"></select>
+            </div>
+            <div class="control-group">
+                <label>⚡ Speed: <span id="rateValue">1.0</span></label>
+                <input type="range" id="rateSlider" min="0.5" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <label>🎵 Pitch: <span id="pitchValue">1.0</span></label>
+                <input type="range" id="pitchSlider" min="0.5" max="2" step="0.1" value="1">
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn play" id="playBtn">▶ Play</button>
+            <button class="action-btn pause" id="pauseBtn">⏸ Pause</button>
+            <button class="action-btn stop" id="stopBtn">⏹ Stop</button>
+            <button class="action-btn save" id="saveBtn">💾 Save Sentence</button>
+        </div>
+
+        <div class="favorites-section">
+            <h3>⭐ Saved Sentences (<span id="favCount">0</span>)</h3>
+            <ul class="favorites-list" id="favoritesList">
+                <li style="text-align: center; color: rgba(255,255,255,0.5);">No saved sentences. Save some!</li>
+            </ul>
+        </div>
+
+        <div class="status" id="status">Ready to speak</div>
+    </div>
+
+    <script>
+        let voices = [];
+        let currentUtterance = null;
+        let favorites = [];
+
+        // DOM Elements
+        const textInput = document.getElementById('textInput');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const rateSlider = document.getElementById('rateSlider');
+        const pitchSlider = document.getElementById('pitchSlider');
+        const rateValue = document.getElementById('rateValue');
+        const pitchValue = document.getElementById('pitchValue');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const favoritesList = document.getElementById('favoritesList');
+        const favCount = document.getElementById('favCount');
+        const statusDiv = document.getElementById('status');
+
+        // Load voices
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+            voiceSelect.innerHTML = '';
+            
+            voices.forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+            
+            // Try to select an English voice by default
+            const defaultVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'));
+            if(defaultVoice) voiceSelect.value = defaultVoice.name;
+        }
+
+        // Speech synthesis on load
+        if(window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        // Update value displays
+        rateSlider.addEventListener('input', () => {
+            rateValue.textContent = rateSlider.value;
+        });
+        
+        pitchSlider.addEventListener('input', () => {
+            pitchValue.textContent = pitchSlider.value;
+        });
+
+        // Stop any ongoing speech
+        function stopSpeech() {
+            if(window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            currentUtterance = null;
+            statusDiv.textContent = 'Stopped';
+        }
+
+        // Play text
+        function playText() {
+            const text = textInput.value.trim();
+            if(!text) {
+                statusDiv.textContent = 'Please enter some text first!';
+                return;
+            }
+            
+            stopSpeech();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Set voice
+            const selectedVoice = voices.find(v => v.name === voiceSelect.value);
+            if(selectedVoice) utterance.voice = selectedVoice;
+            
+            utterance.rate = parseFloat(rateSlider.value);
+            utterance.pitch = parseFloat(pitchSlider.value);
+            
+            utterance.onstart = () => {
+                statusDiv.textContent = '🔊 Speaking...';
+            };
+            
+            utterance.onend = () => {
+                statusDiv.textContent = '✅ Finished speaking';
+                currentUtterance = null;
+            };
+            
+            utterance.onerror = () => {
+                statusDiv.textContent = '❌ Error occurred';
+                currentUtterance = null;
+            };
+            
+            currentUtterance = utterance;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Pause speech
+        function pauseSpeech() {
+            if(window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+                window.speechSynthesis.pause();
+                statusDiv.textContent = '⏸ Paused';
+            } else {
+                statusDiv.textContent = 'Nothing is playing';
+            }
+        }
+
+        // Resume speech
+        function resumeSpeech() {
+            if(window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+                statusDiv.textContent = '🔊 Speaking...';
+            } else {
+                playText();
+            }
+        }
+
+        // Load favorites from localStorage
+        function loadFavorites() {
+            const saved = localStorage.getItem('ttsFavorites');
+            if(saved) {
+                favorites = JSON.parse(saved);
+            }
+            updateFavoritesDisplay();
+        }
+
+        // Save favorites to localStorage
+        function saveFavoritesToStorage() {
+            localStorage.setItem('ttsFavorites', JSON.stringify(favorites));
+            updateFavoritesDisplay();
+        }
+
+        // Update favorites UI
+        function updateFavoritesDisplay() {
+            favCount.textContent = favorites.length;
+            
+            if(favorites.length === 0) {
+                favoritesList.innerHTML = '<li style="text-align: center; color: rgba(255,255,255,0.5);">No saved sentences. Save some!</li>';
+                return;
+            }
+            
+            favoritesList.innerHTML = '';
+            favorites.forEach((fav, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="fav-text">"${fav.substring(0, 60)}${fav.length > 60 ? '...' : ''}"</span>
+                    <button class="remove-fav" data-index="${index}">🗑️</button>
+                `;
+                li.addEventListener('click', (e) => {
+                    if(e.target.classList.contains('remove-fav')) {
+                        removeFavorite(index);
+                    } else {
+                        // Load favorite text
+                        textInput.value = fav;
+                        statusDiv.textContent = 'Loaded saved sentence';
+                        playText();
+                    }
+                });
+                favoritesList.appendChild(li);
+            });
+        }
+
+        // Remove favorite
+        function removeFavorite(index) {
+            favorites.splice(index, 1);
+            saveFavoritesToStorage();
+        }
+
+        // Save current text to favorites
+        function saveCurrentText() {
+            const text = textInput.value.trim();
+            if(!text) {
+                statusDiv.textContent = 'Nothing to save! Enter some text first.';
+                return;
+            }
+            
+            if(favorites.includes(text)) {
+                statusDiv.textContent = 'This sentence is already saved!';
+                return;
+            }
+            
+            favorites.push(text);
+            saveFavoritesToStorage();
+            statusDiv.textContent = '💾 Sentence saved to favorites!';
+        }
+
+        // Play button logic
+        playBtn.addEventListener('click', () => {
+            if(window.speechSynthesis.paused) {
+                resumeSpeech();
+            } else {
+                playText();
+            }
+        });
+        
+        pauseBtn.addEventListener('click', pauseSpeech);
+        stopBtn.addEventListener('click', stopSpeech);
+        saveBtn.addEventListener('click', saveCurrentText);
+
+        // Load favorites on page load
+        loadFavorites();
+
+        // Example text on load
+        if(!textInput.value.trim()) {
+            textInput.value = "Hello! Welcome to the Text to Speech Reader. You can type or paste any text here, choose different voices, adjust speed and pitch, and save your favorite sentences for later.";
+        }
+    </script>
+</body>
+</html>
