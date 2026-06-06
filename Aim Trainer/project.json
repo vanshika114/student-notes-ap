@@ -1,0 +1,17 @@
+{
+  "title": "Aim Trainer",
+  "description": "A tactical aim-training shooting lab with procedurally spawning targets, real-time accuracy tracking, 30-second countdown rounds, and localStorage high-score persistence. Built with vanilla HTML5, CSS3, and JavaScript ES6+.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "aim-trainer",
+    "game",
+    "vanilla-js",
+    "reflex",
+    "tactical"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}

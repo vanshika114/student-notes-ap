@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="16" fill="#050811"/>
+  <!-- Blueprint dots -->
+  <g opacity="0.04">
+    <line x1="0" y1="20" x2="128" y2="20" stroke="#fff" stroke-width="0.3"/>
+    <line x1="0" y1="40" x2="128" y2="40" stroke="#fff" stroke-width="0.3"/>
+    <line x1="0" y1="60" x2="128" y2="60" stroke="#fff" stroke-width="0.3"/>
+    <line x1="0" y1="80" x2="128" y2="80" stroke="#fff" stroke-width="0.3"/>
+    <line x1="0" y1="100" x2="128" y2="100" stroke="#fff" stroke-width="0.3"/>
+    <line x1="20" y1="0" x2="20" y2="128" stroke="#fff" stroke-width="0.3"/>
+    <line x1="40" y1="0" x2="40" y2="128" stroke="#fff" stroke-width="0.3"/>
+    <line x1="60" y1="0" x2="60" y2="128" stroke="#fff" stroke-width="0.3"/>
+    <line x1="80" y1="0" x2="80" y2="128" stroke="#fff" stroke-width="0.3"/>
+    <line x1="100" y1="0" x2="100" y2="128" stroke="#fff" stroke-width="0.3"/>
+  </g>
+  <!-- Dashboard -->
+  <g transform="translate(6,5)">
+    <rect x="0" y="0" width="116" height="14" rx="7" fill="rgba(255,255,255,0.02)" stroke="rgba(51,65,85,0.2)" stroke-width="0.5"/>
+    <text x="10" y="4.5" font-size="3.5" fill="#475569" font-family="monospace" letter-spacing="1">SCORE</text>
+    <text x="8" y="11.5" font-size="6" fill="#e2e8f0" font-family="monospace" font-weight="700">80</text>
+    <text x="36" y="4.5" font-size="3.5" fill="#475569" font-family="monospace" letter-spacing="1">ACC</text>
+    <text x="36" y="11.5" font-size="6" fill="#facc15" font-family="monospace" font-weight="700">67%</text>
+    <text x="64" y="4.5" font-size="3.5" fill="#475569" font-family="monospace" letter-spacing="1">TIME</text>
+    <text x="64" y="11.5" font-size="6" fill="#e2e8f0" font-family="monospace" font-weight="700">18</text>
+    <text x="90" y="4.5" font-size="3.5" fill="#475569" font-family="monospace" letter-spacing="1">BEST</text>
+    <text x="90" y="11.5" font-size="6" fill="#e2e8f0" font-family="monospace" font-weight="700">120</text>
+  </g>
+  <!-- Arena -->
+  <g transform="translate(6,24)">
+    <rect x="0" y="0" width="116" height="84" rx="8" fill="rgba(10,14,26,0.6)" stroke="rgba(51,65,85,0.2)" stroke-width="0.5"/>
+    <!-- Target at upper-left -->
+    <circle cx="28" cy="24" r="10" fill="rgba(250,204,21,0.08)" stroke="rgba(250,204,21,0.4)" stroke-width="1.2"/>
+    <circle cx="28" cy="24" r="7" fill="none" stroke="rgba(250,204,21,0.6)" stroke-width="1.2"/>
+    <circle cx="28" cy="24" r="4" fill="none" stroke="rgba(250,204,21,0.8)" stroke-width="1.5"/>
+    <circle cx="28" cy="24" r="2" fill="#facc15"/>
+    <!-- Target at center -->
+    <circle cx="64" cy="48" r="10" fill="rgba(250,204,21,0.08)" stroke="rgba(250,204,21,0.4)" stroke-width="1.2"/>
+    <circle cx="64" cy="48" r="7" fill="none" stroke="rgba(250,204,21,0.6)" stroke-width="1.2"/>
+    <circle cx="64" cy="48" r="4" fill="none" stroke="rgba(250,204,21,0.8)" stroke-width="1.5"/>
+    <circle cx="64" cy="48" r="2" fill="#facc15"/>
+    <!-- Target at lower-right -->
+    <circle cx="92" cy="68" r="10" fill="rgba(250,204,21,0.08)" stroke="rgba(250,204,21,0.4)" stroke-width="1.2"/>
+    <circle cx="92" cy="68" r="7" fill="none" stroke="rgba(250,204,21,0.6)" stroke-width="1.2"/>
+    <circle cx="92" cy="68" r="4" fill="none" stroke="rgba(250,204,21,0.8)" stroke-width="1.5"/>
+    <circle cx="92" cy="68" r="2" fill="#facc15"/>
+    <!-- Crosshair cursor indicator -->
+    <line x1="0" y1="24" x2="116" y2="24" stroke="rgba(250,204,21,0.06)" stroke-width="0.3"/>
+    <line x1="64" y1="0" x2="64" y2="84" stroke="rgba(250,204,21,0.06)" stroke-width="0.3"/>
+  </g>
+  <text x="64" y="116" font-size="3.5" fill="#475569" text-anchor="middle" font-family="monospace">► Start Round</text>
+</svg>

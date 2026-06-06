@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Aim Trainer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ─── Telemetry ─── -->
+    <header class="dash">
+      <div class="metric">
+        <span class="m-label">Score</span>
+        <span class="m-value" id="score">0</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Accuracy</span>
+        <span class="m-value accent" id="accuracy">—</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Time</span>
+        <span class="m-value" id="timer">30</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Best</span>
+        <span class="m-value" id="best">0</span>
+      </div>
+    </header>
+
+    <!-- ─── Arena ─── -->
+    <div class="arena" id="arena">
+      <!-- targets injected here -->
+      <!-- click trails injected here -->
+    </div>
+
+    <!-- ─── Controls ─── -->
+    <div class="controls">
+      <button class="btn-start primary" id="btn-start">▶ Start Round</button>
+    </div>
+
+    <!-- ─── Game Over ─── -->
+    <div class="modal" id="modal">
+      <div class="modal-card">
+        <h2 class="modal-title">SESSION COMPLETE</h2>
+        <div class="modal-stats">
+          <div class="m-row"><span>Hits</span><span id="m-hits">0</span></div>
+          <div class="m-row"><span>Misses</span><span id="m-misses">0</span></div>
+          <div class="m-row"><span>Accuracy</span><span id="m-acc">0%</span></div>
+          <div class="m-row"><span>Score</span><span id="m-score">0</span></div>
+          <div class="m-row"><span>Best</span><span id="m-best">0</span></div>
+        </div>
+        <button class="btn-restart" id="btn-restart">⟳ Play Again</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
