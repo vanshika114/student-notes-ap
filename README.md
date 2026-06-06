@@ -76,7 +76,11 @@ your-project/
 └── script.js
 ```
 
-### 5. Commit and Create a Pull Request
+### 5. Link your Project to the Main Dashboard
+
+Open the root `index.html` file, locate the `<div class="card-container">` section, and add a new HTML card block that hyperlinks to your newly created folder.
+
+### 6. Commit and Create a Pull Request
 
 Push your changes and open a PR.
 
