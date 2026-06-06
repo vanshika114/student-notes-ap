@@ -1,30 +1,25 @@
 # Pull Request
 
-## Description
+## Related Issue
+Closes #[Issue Number]
 
-Describe the changes made in this PR.
+## Summary
+Brief description of the changes made and the problem solved.
 
-## Type of Change
+## Changes Made
+- [ ] Added new project directory or modified existing files
+- [ ] Integrated global theme variables (`--bg-color`, `--text-color`, etc.)
+- [ ] Checked for merge conflicts and synced with main/master
 
-* [ ] Bug Fix
-* [ ] New Component
-* [ ] Feature Enhancement
-* [ ] Documentation Update
-* [ ] Refactor
-
-## Screenshots
-
-Add screenshots if applicable.
-
-## Testing
-
-* [ ] Tested locally
-* [ ] Existing tests pass
-* [ ] Added new tests (if needed)
+## Testing & Verification
+Please outline how you tested these changes:
+- Tested on Desktop (Chrome/Firefox/Safari)
+- Tested on Mobile / Responsive screens
+- Verified code builds and has no console errors
 
 ## Checklist
-
-* [ ] Code follows project conventions
-* [ ] Documentation updated
-* [ ] No breaking changes
-* [ ] Ready for review
+- [ ] Code follows project standards and styles
+- [ ] Tested locally on multiple browser window sizes
+- [ ] No unrelated files modified
+- [ ] Responsive design verified
+- [ ] Accessibility considered
