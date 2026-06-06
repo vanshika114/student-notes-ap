@@ -1,0 +1,17 @@
+{
+  "title": "Whack-Mole",
+  "description": "A cyberpunk arcade whack-a-mole game with procedural spawning, dynamic difficulty scaling, combo multiplier, and 30-second countdown rounds. Built with vanilla HTML5, CSS3, and JavaScript ES6+.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "arcade",
+    "game",
+    "vanilla-js",
+    "whack-a-mole",
+    "cyberpunk"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}
