@@ -1,0 +1,17 @@
+{
+  "title": "Car Dodger Game",
+  "description": "A synthwave arcade highway-dodging game with parallax road scrolling, procedural traffic spawning, AABB collision detection, and an escalating difficulty curve. Built with HTML5 Canvas, vanilla CSS3, and JavaScript ES6+.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "car-dodger",
+    "game",
+    "canvas",
+    "arcade",
+    "vanilla-js"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}

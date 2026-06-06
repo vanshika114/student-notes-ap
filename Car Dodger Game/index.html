@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Car Dodger</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="telemetry">
+      <div class="stat">
+        <span class="label">TIME</span>
+        <span class="value" id="timeDisplay">00:00</span>
+      </div>
+      <div class="stat">
+        <span class="label">SCORE</span>
+        <span class="value gold" id="scoreDisplay">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">SPEED</span>
+        <span class="value" id="speedDisplay">×1.0</span>
+      </div>
+      <div class="stat">
+        <span class="label">BEST</span>
+        <span class="value" id="bestDisplay">0</span>
+      </div>
+    </div>
+    <div id="canvasWrap">
+      <canvas id="gameCanvas" width="480" height="640"></canvas>
+    </div>
+  </div>
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>GAME OVER</h2>
+      <p class="crash-msg">CRASH!</p>
+      <div class="modal-stats">
+        <div class="modal-stat">
+          <span class="modal-label">SURVIVED</span>
+          <span class="modal-val" id="finalTime">00:00</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-label">SCORE</span>
+          <span class="modal-val gold" id="finalScore">0</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-label">CARS DODGED</span>
+          <span class="modal-val" id="finalDodged">0</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-label">TOP SPEED</span>
+          <span class="modal-val" id="finalSpeed">×1.0</span>
+        </div>
+      </div>
+      <button id="restartBtn">PLAY AGAIN</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
