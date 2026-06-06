@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hex-Code Hues</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Telemetry ─── -->
+  <header class="telemetry">
+    <div class="stat-block">
+      <span class="stat-label">Score</span>
+      <span class="stat-value" id="score">0</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">Streak</span>
+      <span class="stat-value" id="streak">0</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">Best</span>
+      <span class="stat-value" id="best">0</span>
+    </div>
+  </header>
+
+  <!-- ─── Target Hex ─── -->
+  <section class="hex-display">
+    <span class="hex-label">Match this hex code</span>
+    <span class="hex-value" id="hex-value">#22C55E</span>
+  </section>
+
+  <!-- ─── Swatches ─── -->
+  <main class="swatch-grid" id="swatch-grid">
+    <button class="swatch" data-index="0"></button>
+    <button class="swatch" data-index="1"></button>
+    <button class="swatch" data-index="2"></button>
+  </main>
+
+  <!-- ─── Feedback ─── -->
+  <div class="feedback" id="feedback"></div>
+
+  <!-- ─── Controls ─── -->
+  <div class="controls">
+    <button class="btn-control primary" id="btn-next">▶ Next Round</button>
+    <button class="btn-control" id="btn-reset">⟳ New Game</button>
+  </div>
+
+  <!-- ─── Screen Flash ─── -->
+  <div class="screen-flash" id="screen-flash"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
