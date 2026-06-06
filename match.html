@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dumpling Match — Connect the Pairs</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+
+        :root {
+            --bg: #fffcf2;
+            --primary: #ff85a2;
+            --secondary: #ffc2d1;
+            --accent: #b2f2bb;
+            --text: #5e4d52;
+            --line-correct: #4ade80;
+            --line-wrong: #fb7185;
+            --dumpling-skin: #fff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin: 0 0 5px;
+            text-shadow: 3px 3px 0px white;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .game-area {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            z-index: 5;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 140px;
+        }
+
+        .dumpling {
+            background: var(--dumpling-skin);
+            border: 3px solid var(--secondary);
+            border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 0 var(--secondary);
+            transition: all 0.2s;
+            user-select: none;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+
+        .dumpling:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 var(--secondary);
+        }
+
+        .dumpling.selected {
+            border-color: var(--primary);
+            background: #fff0f3;
+        }
+
+        .dumpling.matched {
+            background: #f0fdf4;
+            border-color: var(--line-correct);
+            color: var(--line-correct);
+            pointer-events: none;
+            box-shadow: none;
+            transform: translateY(3px);
+        }
+
+        #line-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.3s;
+        }
+
+        .btn-cute {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 0px #d81b60;
+            transition: 0.1s;
+            margin-top: 20px;
+        }
+
+        .btn-cute:active { transform: translateY(3px); box-shadow: 0 3px 0px #d81b60; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="start-screen" class="overlay">
+            <h1>Dumpling Match 🥟</h1>
+            <p>Draw lines to connect the related dumplings!</p>
+            <button class="btn-cute" onclick="startGame()">Start Game</button>
+        </div>
+
+        <div id="win-screen" class="overlay hidden">
+            <h1 style="font-size: 4rem;">✨ Delicious! ✨</h1>
+            <p id="level-msg">You matched them all!</p>
+            <button class="btn-cute" onclick="nextLevel()">Next Level 🥟</button>
+        </div>
+
+        <div class="stats">
+            <div>Level: <span id="level-val">1</span></div>
+            <div>Matches: <span id="match-val">0</span>/4</div>
+        </div>
+
+        <div class="game-area" id="game-area">
+            <svg id="line-svg"></svg>
+            <div class="column" id="left-col"></div>
+            <div class="column" id="right-col"></div>
+        </div>
+    </div>
+
+    <script>
+        const LEVELS = [
+            {
+                category: "Fruits & Colors",
+                pairs: [
+                    { l: "🍎 Apple", r: "Red", match: "Red" },
+                    { l: "🍌 Banana", r: "Yellow", match: "Yellow" },
+                    { l: "🍇 Grapes", r: "Purple", match: "Purple" },
+                    { l: "🍊 Orange", r: "Orange", match: "Orange" }
+                ]
+            },
+            {
+                category: "Animals & Sounds",
+                pairs: [
+                    { l: "🐱 Cat", r: "Meow", match: "Meow" },
+                    { l: "🐶 Dog", r: "Woof", match: "Woof" },
+                    { l: "🐮 Cow", r: "Moo", match: "Moo" },
+                    { l: "🐷 Pig", r: "Oink", match: "Oink" }
+                ]
+            },
+            {
+                category: "Math Challenges",
+                pairs: [
+                    { l: "2 + 2", r: "4", match: "4" },
+                    { l: "10 / 2", r: "5", match: "5" },
+                    { l: "3 x 3", r: "9", match: "9" },
+                    { l: "15 - 8", r: "7", match: "7" }
+                ]
+            }
+        ];
+
+        let state = {
+            level: 0,
+            matches: 0,
+            activeDumpling: null,
+            isDrawing: false,
+            currentConnections: []
+        };
+
+        const svg = document.getElementById('line-svg');
+        let tempLine = null;
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            loadLevel();
+        }
+
+        function loadLevel() {
+            const levelData = LEVELS[state.level % LEVELS.length];
+            state.matches = 0;
+            state.currentConnections = [];
+            state.activeDumpling = null;
+            
+            document.getElementById('level-val').innerText = state.level + 1;
+            document.getElementById('match-val').innerText = "0";
+            document.getElementById('win-screen').classList.add('hidden');
+            svg.innerHTML = '';
+
+            const leftCol = document.getElementById('left-col');
+            const rightCol = document.getElementById('right-col');
+            leftCol.innerHTML = '';
+            rightCol.innerHTML = '';
+
+            // Shuffle Right column for difficulty
+            const shuffledRight = [...levelData.pairs].sort(() => Math.random() - 0.5);
+
+            levelData.pairs.forEach((p, i) => {
+                leftCol.innerHTML += `<div class="dumpling" data-side="left" data-match="${p.match}" onmousedown="startDraw(event, this)" ontouchstart="startDraw(event, this)">${p.l}</div>`;
+            });
+
+            shuffledRight.forEach((p, i) => {
+                rightCol.innerHTML += `<div class="dumpling" data-side="right" data-val="${p.r}" onmouseup="endDraw(this)" ontouchend="endDraw(this)">${p.r}</div>`;
+            });
+        }
+
+        function startDraw(e, el) {
+            if (el.classList.contains('matched')) return;
+            state.isDrawing = true;
+            state.activeDumpling = el;
+            el.classList.add('selected');
+
+            tempLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tempLine.setAttribute("stroke", "var(--primary)");
+            tempLine.setAttribute("stroke-width", "4");
+            tempLine.setAttribute("stroke-dasharray", "8,4");
+            svg.appendChild(tempLine);
+            moveLine(e);
+        }
+
+        function moveLine(e) {
+            if (!state.isDrawing) return;
+            const rect = svg.getBoundingClientRect();
+            const startRect = state.activeDumpling.getBoundingClientRect();
+            
+            const x1 = startRect.right - rect.left;
+            const y1 = (startRect.top + startRect.height / 2) - rect.top;
+            
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            
+            tempLine.setAttribute("x1", x1);
+            tempLine.setAttribute("y1", y1);
+            tempLine.setAttribute("x2", clientX - rect.left);
+            tempLine.setAttribute("y2", clientY - rect.top);
+        }
+
+        function endDraw(target) {
+            if (!state.isDrawing) return;
+            const isCorrect = target.dataset.side === 'right' && target.dataset.val === state.activeDumpling.dataset.match;
+
+            if (isCorrect) {
+                state.matches++;
+                document.getElementById('match-val').innerText = state.matches;
+                target.classList.add('matched');
+                state.activeDumpling.classList.add('matched');
+                
+                // Make line permanent
+                tempLine.setAttribute("stroke", "var(--line-correct)");
+                tempLine.setAttribute("stroke-dasharray", "0");
+                tempLine = null;
+
+                if (state.matches === 4) {
+                    setTimeout(() => document.getElementById('win-screen').classList.remove('hidden'), 500);
+                }
+            } else {
+                if (tempLine) tempLine.remove();
+            }
+
+            state.isDrawing = false;
+            if (state.activeDumpling) state.activeDumpling.classList.remove('selected');
+        }
+
+        function nextLevel() {
+            state.level++;
+            loadLevel();
+        }
+
+        window.addEventListener('mousemove', moveLine);
+        window.addEventListener('touchmove', moveLine);
+        window.addEventListener('mouseup', () => { if(state.isDrawing) { state.isDrawing = false; if(tempLine) tempLine.remove(); if(state.activeDumpling) state.activeDumpling.classList.remove('selected'); } });
+    </script>
+</body>
+</html>
