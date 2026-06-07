@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flappy Bird — Clone</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-cell">
+        <span class="hud-label">Score</span>
+        <span id="scoreDisplay" class="hud-value">0</span>
+      </div>
+      <div class="hud-cell">
+        <span class="hud-label">Best</span>
+        <span id="bestDisplay" class="hud-value">0</span>
+      </div>
+    </header>
+
+    <div id="canvasWrapper">
+      <canvas id="gameCanvas" width="480" height="640"></canvas>
+
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-box">
+          <h1>FLAPPY BIRD</h1>
+          <p class="sub">Press <kbd>SPACE</kbd> or tap to flap</p>
+          <p class="sub">Navigate through the pipes!</p>
+          <button id="startBtn" class="btn">FLY!</button>
+        </div>
+      </div>
+
+      <div id="gameOverOverlay" class="overlay hidden">
+        <div class="overlay-box">
+          <h2>GAME OVER</h2>
+          <div class="report">
+            <div class="r-row"><span>Score</span><span id="finalScore">0</span></div>
+            <div class="r-row"><span>Best</span><span id="finalBest">0</span></div>
+          </div>
+          <button id="restartBtn" class="btn">FLY AGAIN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
