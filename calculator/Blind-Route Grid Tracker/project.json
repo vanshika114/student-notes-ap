@@ -1,0 +1,17 @@
+{
+  "title": "Blind-Route Grid Tracker",
+  "description": "A cyberpunk memory puzzle on a 5×5 grid. Watch a contiguous path flash in cyan, then repeat it from memory. Paths grow each level; obstacles appear at Level 5+. High scores saved to localStorage.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "memory",
+    "puzzle",
+    "vanilla-js",
+    "cyberpunk",
+    "grid"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}

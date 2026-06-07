@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blind-Route Grid Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Telemetry Header ─── -->
+  <header class="telemetry">
+    <div class="stat-block">
+      <span class="stat-label">Level</span>
+      <span class="stat-value" id="level">1</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">Best</span>
+      <span class="stat-value" id="best">0</span>
+    </div>
+    <div class="stat-block status-block">
+      <span class="status-msg" id="status">Press Start</span>
+    </div>
+  </header>
+
+  <!-- ─── Grid Canvas ─── -->
+  <main class="grid-wrap">
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- ─── Controls ─── -->
+  <div class="controls">
+    <button class="btn-control primary" id="btn-start">▶ Start Round</button>
+    <button class="btn-control" id="btn-reset">⟳ Reset Game</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
