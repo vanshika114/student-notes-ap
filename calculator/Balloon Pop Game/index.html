@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Balloon Pop Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ─── Scorecard ─── -->
+    <header class="dash">
+      <div class="metric">
+        <span class="m-label">Points</span>
+        <span class="m-value" id="score">0</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Multiplier</span>
+        <span class="m-value accent" id="mult">×1</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Time</span>
+        <span class="m-value" id="timer">45</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Best</span>
+        <span class="m-value" id="best">0</span>
+      </div>
+    </header>
+
+    <!-- ─── Sky ─── -->
+    <div class="sky" id="sky">
+      <!-- balloons injected here -->
+    </div>
+
+    <!-- ─── Controls ─── -->
+    <div class="controls">
+      <button class="btn-start primary" id="btn-start">▶ Start Round</button>
+    </div>
+
+    <!-- ─── Modal ─── -->
+    <div class="modal" id="modal">
+      <div class="modal-card">
+        <h2 class="modal-title">GAME OVER</h2>
+        <div class="modal-stats">
+          <div class="m-row"><span>Balloons Popped</span><span id="m-popped">0</span></div>
+          <div class="m-row"><span>Score</span><span id="m-score">0</span></div>
+          <div class="m-row"><span>Best</span><span id="m-best">0</span></div>
+        </div>
+        <button class="btn-restart" id="btn-restart">⟳ Pop Again</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
