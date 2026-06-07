@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OctoTracker | Open Source Contribution Tracker</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- ChartJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    <!-- Sidebar profile and repository manager -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <i data-lucide="git-branch"></i>
+          </div>
+          <div class="logo-text">
+            <h2>OctoTracker</h2>
+            <span>Contribution Hub</span>
+          </div>
+        </div>
+        <button class="btn-sidebar-close" id="sidebar-toggle-close">&times;</button>
+      </div>
+
+      <!-- Contributor Profile Profile Info -->
+      <div class="profile-card">
+        <div class="avatar-wrapper">
+          <img id="profile-avatar" src="https://avatars.githubusercontent.com/u/9919?v=4" alt="Contributor Avatar">
+          <button id="edit-profile-btn" class="btn-edit-avatar" title="Edit Profile">
+            <i data-lucide="edit-2"></i>
+          </button>
+        </div>
+        <h3 id="profile-name">Vishwa Mistry</h3>
+        <span id="profile-bio">Open Source Contributor & Dev</span>
+        
+        <div class="streak-mini-widget">
+          <i data-lucide="flame" class="streak-icon"></i>
+          <div>
+            <span class="lbl">Contribution Streak</span>
+            <span class="val" id="streak-counter">3 Days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tracked Repositories section -->
+      <div class="repo-manager-section">
+        <div class="section-title-row">
+          <h3>Tracked Repositories</h3>
+          <button id="add-repo-btn" class="btn btn-secondary btn-icon btn-sm" title="Add Repository">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+        <div class="repo-add-box" id="repo-add-box" style="display: none;">
+          <input type="text" id="new-repo-name" placeholder="owner/repo-name">
+          <button class="btn btn-primary btn-sm" id="save-repo-btn">Save</button>
+        </div>
+        <ul class="repo-list" id="repo-list-container">
+          <!-- Injected via JS -->
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <div class="workspace-wrapper">
+      <!-- Top header bar -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="btn btn-icon btn-secondary" id="sidebar-toggle-open">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="header-title-wrapper">
+            <h1>Contribution Dashboard</h1>
+            <p>Monitor Pull Requests, issues, and commit analytics</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Backup file controls -->
+          <button id="import-btn" class="btn btn-secondary btn-icon" title="Import JSON Backup">
+            <i data-lucide="upload"></i>
+          </button>
+          <input type="file" id="import-file" accept=".json" style="display: none;">
+
+          <button id="export-btn" class="btn btn-secondary btn-icon" title="Export JSON Backup">
+            <i data-lucide="download"></i>
+          </button>
+
+          <button id="reset-btn" class="btn btn-secondary btn-icon" title="Reset Database">
+            <i data-lucide="refresh-cw"></i>
+          </button>
+
+          <div class="divider"></div>
+
+          <!-- Theme toggle -->
+          <button id="theme-toggle" class="btn btn-icon" title="Toggle Theme">
+            <i data-lucide="sun" class="sun-icon"></i>
+            <i data-lucide="moon" class="moon-icon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable workspace viewports -->
+      <main class="app-workspace">
+        
+        <!-- Top Metrics row -->
+        <section class="stats-row">
+          <div class="stat-card">
+            <span class="label">Total Contributions</span>
+            <span class="value" id="stat-total">0</span>
+            <span class="sub" id="stat-goal-progress">Target: 0%</span>
+          </div>
+
+          <div class="stat-card pr-card">
+            <span class="label">Pull Requests</span>
+            <span class="value" id="stat-prs">0</span>
+            <span class="sub" id="stat-pr-merge-rate">0% Merged</span>
+          </div>
+
+          <div class="stat-card issue-card">
+            <span class="label">Active Issues</span>
+            <span class="value" id="stat-issues">0</span>
+            <span class="sub" id="stat-issues-closed">0 Solved</span>
+          </div>
+
+          <div class="stat-card commit-card">
+            <span class="label">Total Commits</span>
+            <span class="value" id="stat-commits">0</span>
+            <span class="sub" id="stat-weekly-avg">0 / week avg</span>
+          </div>
+        </section>
+
+        <!-- Contribution Calendar Heatmap Section -->
+        <section class="heatmap-panel-card">
+          <div class="panel-header">
+            <h3>Contribution Activity Map</h3>
+            <div class="heatmap-legend">
+              <span>Less</span>
+              <div class="legend-cell level-0"></div>
+              <div class="legend-cell level-1"></div>
+              <div class="legend-cell level-2"></div>
+              <div class="legend-cell level-3"></div>
+              <div class="legend-cell level-4"></div>
+              <span>More</span>
+            </div>
+          </div>
+          <div class="heatmap-scroll-wrapper">
+            <div class="heatmap-grid" id="heatmap-grid-container">
+              <!-- Grid cells injected dynamically by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Charts and Targets Grid -->
+        <section class="dashboard-grid">
+          <!-- Charts Section -->
+          <div class="panel-card col-span-2">
+            <div class="panel-header">
+              <h3>Progress & Analytics</h3>
+              <div class="chart-toggles">
+                <button class="btn btn-sm btn-secondary active" id="btn-chart-types">Activity Distribution</button>
+                <button class="btn btn-sm btn-secondary" id="btn-chart-timeline">Growth Timeline</button>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="contributionChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Goal widget panel -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Monthly Target Goal</h3>
+              <button class="btn btn-secondary btn-icon btn-sm" id="edit-goal-btn" title="Edit Goal Target">
+                <i data-lucide="edit"></i>
+              </button>
+            </div>
+            <div class="goal-widget-content">
+              <div class="goal-numbers">
+                <span class="val" id="goal-current">0</span>
+                <span class="slash">/</span>
+                <span class="target" id="goal-target">15</span>
+              </div>
+              <span class="lbl">Contributions logged in June</span>
+              <div class="goal-bar-container">
+                <div class="goal-bar" id="goal-progress-bar" style="width: 0%;"></div>
+              </div>
+              
+              <!-- Inline goal editor form overlay -->
+              <div class="inline-goal-form" id="inline-goal-form" style="display: none;">
+                <input type="number" id="goal-target-input" min="1" placeholder="Target count">
+                <button class="btn btn-primary btn-sm" id="save-goal-btn">Set</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Achievements Grid Section -->
+        <section class="panel-card">
+          <div class="panel-header">
+            <h3>Achievements & Contribution Badges</h3>
+          </div>
+          <div class="badges-grid" id="badges-grid-container">
+            <!-- Badges injected dynamically by JS -->
+          </div>
+        </section>
+
+        <!-- Logs Lists & Filters Section -->
+        <section class="panel-card">
+          <div class="panel-header flex-column">
+            <div class="filters-row-top">
+              <h3>Contribution Log History</h3>
+              <button class="btn btn-primary btn-icon-text" id="add-contribution-btn">
+                <i data-lucide="plus"></i>
+                <span>Log Contribution</span>
+              </button>
+            </div>
+            <div class="filters-grid">
+              <div class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" id="log-search" placeholder="Search by title, description or hash...">
+              </div>
+              
+              <div class="select-filters">
+                <select id="filter-type">
+                  <option value="all">All Types</option>
+                  <option value="Pull Request">Pull Requests Only</option>
+                  <option value="Issue">Issues Only</option>
+                  <option value="Commit">Commits Only</option>
+                </select>
+
+                <select id="filter-status">
+                  <option value="all">All Statuses</option>
+                  <option value="Merged">Merged</option>
+                  <option value="Open">Open</option>
+                  <option value="Closed">Closed</option>
+                </select>
+
+                <select id="filter-repo">
+                  <option value="all">All Repositories</option>
+                  <!-- Repo options dynamically injected -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="logs-container" id="logs-list-container">
+            <!-- Log cards injected dynamically by JS -->
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADD / EDIT CONTRIBUTION -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="contribution-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-title">Log Open Source Activity</h2>
+        <button class="btn-close" id="modal-close-btn">&times;</button>
+      </div>
+      <form id="contribution-form" class="modal-form">
+        <input type="hidden" id="edit-log-id">
+
+        <div class="form-grid">
+          <div class="form-group col-full">
+            <label for="form-title">Activity Title *</label>
+            <input type="text" id="form-title" required placeholder="e.g. Fix memory leak on router unmount">
+          </div>
+
+          <div class="form-group col-half">
+            <label for="form-type">Contribution Type</label>
+            <select id="form-type">
+              <option value="Pull Request">Pull Request</option>
+              <option value="Issue">Issue</option>
+              <option value="Commit">Commit</option>
+            </select>
+          </div>
+
+          <div class="form-group col-half">
+            <label for="form-status">Status</label>
+            <select id="form-status">
+              <option value="Open">Open</option>
+              <option value="Merged">Merged</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+
+          <div class="form-group col-half">
+            <label for="form-repo">Target Repository *</label>
+            <select id="form-repo" required>
+              <!-- Populated dynamically from tracked repos -->
+            </select>
+          </div>
+
+          <div class="form-group col-half">
+            <label for="form-date">Date Logged</label>
+            <input type="date" id="form-date" required>
+          </div>
+
+          <div class="form-group col-full">
+            <label for="form-url">Reference Link / Commit Hash</label>
+            <input type="text" id="form-url" placeholder="https://github.com/owner/repo/pull/123 or SHA hash">
+          </div>
+
+          <div class="form-group col-full">
+            <label for="form-desc">Description / Contribution Notes</label>
+            <textarea id="form-desc" rows="3" placeholder="Briefly describe what changes were introduced..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Activity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: EDIT PROFILE -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="profile-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Update Contributor Profile</h2>
+        <button class="btn-close" id="profile-modal-close">&times;</button>
+      </div>
+      <form id="profile-form" class="modal-form">
+        <div class="form-group">
+          <label for="form-profile-name">Username / Nickname *</label>
+          <input type="text" id="form-profile-name" required placeholder="e.g. karthik2004-tech">
+        </div>
+
+        <div class="form-group">
+          <label for="form-profile-bio">Bio / Tagline</label>
+          <input type="text" id="form-profile-bio" placeholder="e.g. SaaS Engineer, student-notes contributor">
+        </div>
+
+        <div class="form-group">
+          <label for="form-profile-avatar">Avatar URL</label>
+          <input type="url" id="form-profile-avatar" placeholder="https://avatars.githubusercontent.com/...">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="profile-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
