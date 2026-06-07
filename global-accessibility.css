@@ -1,0 +1,47 @@
+/**
+ * Global Accessibility Styles
+ */
+:root {
+    --a11y-text-scale: 1.0;
+}
+
+/* Base text scaling */
+body, p, span, h1, h2, h3, h4, h5, h6, a, button, input, select, textarea {
+    font-size: calc(1em * var(--a11y-text-scale)) !important;
+}
+
+/* High Contrast Mode Overrides */
+html.high-contrast {
+    filter: contrast(1.4) saturate(1.2) !important;
+}
+html.high-contrast body {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+html.high-contrast .app-card, 
+html.high-contrast .card, 
+html.high-contrast div {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+html.high-contrast a, 
+html.high-contrast button {
+    color: #ffff00 !important;
+    text-decoration: underline !important;
+}
+html.high-contrast input, 
+html.high-contrast select, 
+html.high-contrast textarea {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+
+/* Custom button styles in menu */
+.a11y-menu-btn {
+    transition: background-color 0.15s ease;
+}
+.a11y-menu-btn:hover {
+    background-color: #f1f5f9 !important;
+}
