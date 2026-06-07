@@ -1,0 +1,313 @@
+/* ==========================================================================
+   RESET & SYSTEM CONSTANTS (Vercel / Linear Inspired Dark Palette)
+   ========================================================================== */
+:root {
+  --bg-app: #0b0f19;
+  --bg-panel: #161f30;
+  --bg-element: #1e293b;
+  --bg-element-hover: #26354a;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  
+  --accent-neon: #10b981;
+  --accent-alert: #f43f5e;
+  --accent-gold: #f59e0b;
+  
+  --interactive-blue: #3b82f6;
+  --interactive-glow: rgba(59, 130, 246, 0.25);
+  --border-color: rgba(148, 163, 184, 0.1);
+  --border-focus: rgba(59, 130, 246, 0.6);
+  
+  --font-mono: ui-monospace, Consolas, SFMono-Regular, Menlo, Monaco, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #030712;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.amount-mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+/* ==========================================================================
+   MASTER CONTAINER LAYOUT MODULE
+   ========================================================================== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 480px;
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+  padding: 28px;
+  gap: 24px;
+}
+
+/* ==========================================================================
+   HEADER PARSING SEGMENT
+   ========================================================================== */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, var(--interactive-blue), var(--accent-neon));
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--interactive-glow);
+}
+
+.brand h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.app-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   CONVERTER INTERACTIVE INTERFACE LAYOUT GRID
+   ========================================================================== */
+.converter-core {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-grow: 1;
+}
+
+label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+/* Numeric Text Input Box Styles */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol-addon {
+  position: absolute;
+  left: 14px;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+input[type="number"] {
+  width: 100%;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  padding: 14px 14px 14px 32px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Strip native scroll arrows on desktop targets */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input:focus, .currency-select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px var(--interactive-glow);
+}
+
+/* Axis Matrix Layer Row Grid */
+.currency-matrix-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.dropdown-group {
+  width: calc(50% - 22px);
+}
+
+.currency-select {
+  width: 100%;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none; /* Hide default OS arrows */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  padding-right: 36px;
+  transition: border-color 0.2s;
+}
+
+/* Axis Axis Swap Target Vector Element */
+.btn-swap {
+  background-color: var(--bg-element);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 2px;
+}
+
+.btn-swap:hover {
+  background-color: var(--bg-element-hover);
+  color: var(--text-primary);
+  transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   CONVERSION OUTPUT SUMMARY LEDGER DISPLAY PANEL
+   ========================================================================== */
+.output-display-panel {
+  background-color: rgba(22, 31, 48, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.rate-equation {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.final-conversion-output {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#output-amount-display {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent-neon);
+}
+
+.ticker-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Error banner notifications element states */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.error-banner.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   REAL-TIME APP TICKER RUNTIME STATUS FOOTER
+   ========================================================================== */
+.app-footer {
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+}
+
+.status-indicator-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.status-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-gold);
+}
+
+.status-pulse-dot.online {
+  background-color: var(--accent-neon);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  animation: pulse-glow 2s infinite alternate;
+}
+
+.status-pulse-dot.fallback {
+  background-color: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}

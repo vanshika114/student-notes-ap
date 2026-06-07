@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Currency Converter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- APPLICATION HEADER -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon"></div>
+        <h2>Currency Converter</h2>
+      </div>
+      <p class="app-subtitle">Institutional-grade real-time global exchange liquidity metric tool.</p>
+    </header>
+
+    <!-- EXCHANGE CONTROL CORE MATRIX -->
+    <main class="converter-core">
+      
+      <!-- INPUT AMOUNT -->
+      <div class="form-group">
+        <label for="amount-input">Source Amount</label>
+        <div class="input-wrapper">
+          <span class="currency-symbol-addon" id="source-symbol">$</span>
+          <input type="number" id="amount-input" value="1000" min="0" step="0.01" placeholder="0.00" required>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE SWAP FIELDS MATRIX -->
+      <div class="currency-matrix-row">
+        
+        <!-- FROM CURRENCY -->
+        <div class="form-group dropdown-group">
+          <label for="from-currency">From Currency</label>
+          <select id="from-currency" class="currency-select">
+            <!-- Dynamically populated via JS -->
+          </select>
+        </div>
+
+        <!-- SWAP AXIS INTERACTION LINK -->
+        <button id="btn-swap" class="btn-swap" aria-label="Swap Currency Axes">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4M7 4L3 8M7 4l4 4M17 8v12M17 20l-4-4M17 20l4-4"/></svg>
+        </button>
+
+        <!-- TO CURRENCY -->
+        <div class="form-group dropdown-group">
+          <label for="to-currency">To Currency</label>
+          <select id="to-currency" class="currency-select">
+            <!-- Dynamically populated via JS -->
+          </select>
+        </div>
+
+      </div>
+
+      <!-- CONVERSION LOG METRICS VIEW -->
+      <div class="output-display-panel">
+       <div class="final-conversion-output">
+         <div class="rate-equation text-muted" id="rate-baseline-equation">1 USD = 1.0000 USD</div>
+    
+        </div>
+      </div>
+
+      <!-- ERROR PANEL NOTIFICATION STATE -->
+      <div id="api-error-banner" class="error-banner hidden">
+        <span class="error-icon">⚠️</span>
+        <span id="error-message">Network error fetching ledger tables. Using snapshot fallback.</span>
+      </div>
+
+    </main>
+
+    <!-- LIVE RUNTIME LEDGER STATUS FOOTER -->
+    <footer class="app-footer">
+      <div class="status-indicator-wrap">
+        <div class="status-pulse-dot" id="status-dot"></div>
+        <span id="ledger-timestamp-status">Synchronizing system indices...</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
