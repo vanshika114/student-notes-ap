@@ -16,5 +16,5 @@ app.use('/api', apiRoutes);
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.listen(PORT, () => {
-  console.log(`PatternWise server running on http://localhost:${PORT}`);
+  console.debug(`PatternWise server running on http://localhost:${PORT}`);
 });
