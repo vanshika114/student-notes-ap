@@ -306,7 +306,7 @@ class PomodoroEngine {
       this.config = { ...this.config, ...payload.config };
       this.soundEnabled = payload.soundEnabled;
 
-      console.log('✅ Session restored from localStorage');
+      console.debug('✅ Session restored from localStorage');
     } catch (e) {
       console.error('Failed to hydrate from localStorage:', e);
       localStorage.removeItem('pomodoroState');
@@ -339,7 +339,7 @@ class PomodoroEngine {
    * PERSISTENCE: Resume an interrupted session
    */
   resumeSession() {
-    console.log('🔄 Resuming session from localStorage...');
+    console.debug('🔄 Resuming session from localStorage...');
     // State already restored by hydrate()
     // Just notify listeners
     this.emit('SESSION_RESUMED', { 
@@ -411,4 +411,4 @@ class PomodoroEngine {
 // Initialize global engine instance
 window.pomodoroEngine = new PomodoroEngine();
 
-console.log('🚀 Pomodoro Engine initialized');
+console.debug('🚀 Pomodoro Engine initialized');
