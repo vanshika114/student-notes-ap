@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brick Breaker — Arcade</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="wrapper">
+    <header id="hud">
+      <div class="hud-block">
+        <span class="hud-label">Score</span>
+        <span id="scoreDisplay" class="hud-value">0</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-label">High Score</span>
+        <span id="highDisplay" class="hud-value">0</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-label">Lives</span>
+        <span id="livesDisplay" class="hud-value">3</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-label">Level</span>
+        <span id="levelDisplay" class="hud-value">1</span>
+      </div>
+    </header>
+
+    <div id="canvasWrapper">
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+      <div id="startOverlay" class="overlay">
+        <div class="overlay-box">
+          <h1>BRICK BREAKER</h1>
+          <p class="overlay-sub">Press <kbd>ENTER</kbd> to start</p>
+          <p class="overlay-hint">← → or A/D to move &bull; SPACE to launch</p>
+        </div>
+      </div>
+
+      <div id="pauseOverlay" class="overlay hidden">
+        <div class="overlay-box">
+          <h2>PAUSED</h2>
+          <p class="overlay-sub">Press <kbd>P</kbd> to resume</p>
+        </div>
+      </div>
+
+      <div id="levelOverlay" class="overlay hidden">
+        <div class="overlay-box">
+          <h2>LEVEL CLEAR</h2>
+          <p id="levelMsg" class="overlay-sub">Preparing level 2...</p>
+          <p class="overlay-hint">Press <kbd>ENTER</kbd> to continue</p>
+        </div>
+      </div>
+
+      <div id="gameOverOverlay" class="overlay hidden">
+        <div class="overlay-box">
+          <h2>GAME OVER</h2>
+          <div class="overlay-stats">
+            <div class="stat-row">
+              <span>Final Score</span>
+              <span id="finalScore">0</span>
+            </div>
+            <div class="stat-row">
+              <span>High Score</span>
+              <span id="finalHigh">0</span>
+            </div>
+            <div class="stat-row">
+              <span>Level Reached</span>
+              <span id="finalLevel">1</span>
+            </div>
+          </div>
+          <p class="overlay-sub">Press <kbd>ENTER</kbd> to restart</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
