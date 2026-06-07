@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mistake Notebook | China-Japan Exam Prep Style | NSOC Contribution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255,100,100,0.5);
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px 25px;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Add Mistake Section */
+        .add-mistake-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mistake-input-group {
+            margin-bottom: 15px;
+        }
+
+        .mistake-input-group label {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .mistake-input-group input, 
+        .mistake-input-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 14px;
+            outline: none;
+            resize: vertical;
+        }
+
+        .mistake-input-group textarea {
+            min-height: 80px;
+        }
+
+        .mistake-input-group input:focus, 
+        .mistake-input-group textarea:focus {
+            border: 1px solid #ff6b6b;
+        }
+
+        .add-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #c82333);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,107,107,0.4);
+        }
+
+        /* Revision Mode Button */
+        .revision-mode-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ffd200, #ff9800);
+            color: #333;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .revision-mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,210,0,0.4);
+        }
+
+        /* Mistakes Grid */
+        .mistakes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        /* Mistake Card */
+        .mistake-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Red highlight for unanswered mistakes */
+        .mistake-card.unrevised {
+            border-left: 5px solid #ff6b6b;
+            background: rgba(255,107,107,0.1);
+        }
+
+        /* Green for revised mistakes */
+        .mistake-card.revised {
+            border-left: 5px solid #28a745;
+            background: rgba(40,167,69,0.08);
+            opacity: 0.8;
+        }
+
+        .mistake-question {
+            color: white;
+            font-size: 15px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .mistake-question label {
+            color: rgba(255,255,255,0.6);
+            font-size: 11px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .mistake-answer {
+            color: #00ffcc;
+            font-size: 14px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0,255,204,0.1);
+            border-radius: 12px;
+        }
+
+        .mistake-answer label {
+            color: rgba(255,255,255,0.6);
+            font-size: 11px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .revise-btn {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 20px;
+            background: #28a745;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .delete-btn {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(220,53,69,0.7);
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .revise-btn:hover, .delete-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .mistake-date {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Revision Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #1a1a2e;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-question {
+            color: white;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .check-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        .close-modal {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            background: #dc3545;
+            color: white;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            .mistakes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Mistake Notebook</h1>
+            <div class="subtitle">China-Japan Exam Prep Style | Track & Revise Your Mistakes</div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-number" id="totalMistakes">0</div>
+                <div class="stat-label">Total Mistakes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="unrevisedCount">0</div>
+                <div class="stat-label">To Revise</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="revisedCount">0</div>
+                <div class="stat-label">Revised ✅</div>
+            </div>
+        </div>
+
+        <div class="add-mistake-section">
+            <div class="section-title">
+                <span>✏️ Add Your Mistake</span>
+            </div>
+            <div class="mistake-input-group">
+                <label>❓ Question / Problem</label>
+                <textarea id="questionInput" placeholder="Write the question or problem you got wrong..."></textarea>
+            </div>
+            <div class="mistake-input-group">
+                <label>✅ Correct Answer / Solution</label>
+                <textarea id="answerInput" placeholder="Write the correct answer or solution..."></textarea>
+            </div>
+            <button class="add-btn" id="addMistakeBtn">➕ Add to Mistake Notebook</button>
+        </div>
+
+        <button class="revision-mode-btn" id="revisionModeBtn">🎯 Revise Mistakes (Shuffle & Test)</button>
+
+        <div class="mistakes-grid" id="mistakesGrid">
+            <!-- Mistakes will appear here -->
+        </div>
+    </div>
+
+    <!-- Revision Modal -->
+    <div class="modal" id="revisionModal">
+        <div class="modal-card">
+            <h2 style="color: white;">📖 Revise Your Mistake</h2>
+            <div class="modal-question" id="modalQuestion"></div>
+            <input type="text" class="modal-input" id="modalAnswer" placeholder="Type your answer...">
+            <div class="modal-buttons">
+                <button class="check-btn" id="checkAnswerBtn">Check Answer</button>
+                <button class="close-modal" id="closeModalBtn">Close</button>
+            </div>
+            <div id="modalFeedback" style="color: #ffd200; margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+        let mistakes = [];
+        let currentRevisionQueue = [];
+        let currentRevisionIndex = 0;
+        let revisionModeActive = false;
+
+        // Load from localStorage
+        function loadMistakes() {
+            const saved = localStorage.getItem('mistakeNotebook');
+            if(saved) {
+                mistakes = JSON.parse(saved);
+            } else {
+                // Default mistakes
+                mistakes = [
+                    { id: Date.now() + 1, question: "What is Newton's First Law of Motion?", answer: "An object remains at rest or in uniform motion unless acted by an external force.", revised: false, date: new Date().toLocaleDateString() },
+                    { id: Date.now() + 2, question: "Solve: 2x + 5 = 15", answer: "x = 5", revised: false, date: new Date().toLocaleDateString() },
+                    { id: Date.now() + 3, question: "What is the chemical symbol for Gold?", answer: "Au", revised: true, date: new Date().toLocaleDateString() }
+                ];
+            }
+            renderMistakes();
+            updateStats();
+        }
+
+        // Save to localStorage
+        function saveMistakes() {
+            localStorage.setItem('mistakeNotebook', JSON.stringify(mistakes));
+        }
+
+        // Add mistake
+        function addMistake() {
+            const question = document.getElementById('questionInput').value.trim();
+            const answer = document.getElementById('answerInput').value.trim();
+
+            if(!question || !answer) {
+                alert('Please enter both question and answer!');
+                return;
+            }
+
+            const newMistake = {
+                id: Date.now(),
+                question: question,
+                answer: answer,
+                revised: false,
+                date: new Date().toLocaleDateString()
+            };
+
+            mistakes.unshift(newMistake);
+            saveMistakes();
+            renderMistakes();
+            updateStats();
+
+            // Clear inputs
+            document.getElementById('questionInput').value = '';
+            document.getElementById('answerInput').value = '';
+        }
+
+        // Delete mistake
+        function deleteMistake(id) {
+            if(confirm('Delete this mistake?')) {
+                mistakes = mistakes.filter(m => m.id !== id);
+                saveMistakes();
+                renderMistakes();
+                updateStats();
+            }
+        }
+
+        // Mark as revised
+        function markAsRevised(id) {
+            const mistake = mistakes.find(m => m.id === id);
+            if(mistake) {
+                mistake.revised = true;
+                saveMistakes();
+                renderMistakes();
+                updateStats();
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = mistakes.length;
+            const unrevised = mistakes.filter(m => !m.revised).length;
+            const revised = mistakes.filter(m => m.revised).length;
+
+            document.getElementById('totalMistakes').textContent = total;
+            document.getElementById('unrevisedCount').textContent = unrevised;
+            document.getElementById('revisedCount').textContent = revised;
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render mistakes grid
+        function renderMistakes() {
+            const grid = document.getElementById('mistakesGrid');
+
+            if(mistakes.length === 0) {
+                grid.innerHTML = '<div class="empty-state">📭 No mistakes yet!<br>Add your first mistake to start tracking.</div>';
+                return;
+            }
+
+            grid.innerHTML = mistakes.map(mistake => `
+                <div class="mistake-card ${mistake.revised ? 'revised' : 'unrevised'}">
+                    <div class="mistake-question">
+                        <label>❓ Question:</label>
+                        ${escapeHtml(mistake.question)}
+                    </div>
+                    <div class="mistake-answer">
+                        <label>✅ Correct Answer:</label>
+                        ${escapeHtml(mistake.answer)}
+                    </div>
+                    <div class="card-actions">
+                        ${!mistake.revised ? `<button class="revise-btn" onclick="markAsRevised(${mistake.id})">📖 Mark as Revised</button>` : '<span style="color:#28a745; font-size:12px;">✓ Revised</span>'}
+                        <button class="delete-btn" onclick="deleteMistake(${mistake.id})">🗑️ Delete</button>
+                    </div>
+                    <div class="mistake-date">📅 ${mistake.date}</div>
+                </div>
+            `).join('');
+        }
+
+        // Start revision mode
+        function startRevisionMode() {
+            const unrevisedMistakes = mistakes.filter(m => !m.revised);
+            
+            if(unrevisedMistakes.length === 0) {
+                alert('🎉 No mistakes to revise! All mistakes are revised! Great job!');
+                return;
+            }
+
+            // Shuffle the queue
+            currentRevisionQueue = [...unrevisedMistakes];
+            for(let i = currentRevisionQueue.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentRevisionQueue[i], currentRevisionQueue[j]] = [currentRevisionQueue[j], currentRevisionQueue[i]];
+            }
+            
+            currentRevisionIndex = 0;
+            revisionModeActive = true;
+            
+            showNextRevision();
+        }
+
+        // Show next revision question
+        function showNextRevision() {
+            if(currentRevisionIndex >= currentRevisionQueue.length) {
+                // Revision complete
+                alert('🎉 Revision complete! All mistakes reviewed! Keep up the great work! 🎉');
+                closeRevisionModal();
+                renderMistakes();
+                updateStats();
+                return;
+            }
+
+            const current = currentRevisionQueue[currentRevisionIndex];
+            document.getElementById('modalQuestion').textContent = current.question;
+            document.getElementById('modalAnswer').value = '';
+            document.getElementById('modalFeedback').textContent = '';
+            document.getElementById('revisionModal').classList.add('active');
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const userAnswer = document.getElementById('modalAnswer').value.trim().toLowerCase();
+            const current = currentRevisionQueue[currentRevisionIndex];
+            const correctAnswer = current.answer.toLowerCase();
+            
+            // Simple comparison (can be improved)
+            const isCorrect = userAnswer === correctAnswer || 
+                             userAnswer.includes(correctAnswer) || 
+                             correctAnswer.includes(userAnswer);
+            
+            if(isCorrect) {
+                document.getElementById('modalFeedback').innerHTML = '✅ Correct! Great job! Moving to next...';
+                document.getElementById('modalFeedback').style.color = '#28a745';
+                
+                // Mark as revised
+                const originalMistake = mistakes.find(m => m.id === current.id);
+                if(originalMistake) {
+                    originalMistake.revised = true;
+                    saveMistakes();
+                }
+                
+                setTimeout(() => {
+                    currentRevisionIndex++;
+                    showNextRevision();
+                }, 1500);
+            } else {
+                document.getElementById('modalFeedback').innerHTML = `❌ Wrong! Correct answer: ${current.answer}. Keep practicing!`;
+                document.getElementById('modalFeedback').style.color = '#ff6b6b';
+                
+                // Put it back in queue for another round
+                setTimeout(() => {
+                    currentRevisionQueue.push(current);
+                    currentRevisionIndex++;
+                    showNextRevision();
+                }, 2000);
+            }
+        }
+
+        // Close revision modal
+        function closeRevisionModal() {
+            document.getElementById('revisionModal').classList.remove('active');
+            revisionModeActive = false;
+            renderMistakes();
+            updateStats();
+        }
+
+        // Event listeners
+        document.getElementById('addMistakeBtn').addEventListener('click', addMistake);
+        document.getElementById('revisionModeBtn').addEventListener('click', startRevisionMode);
+        document.getElementById('checkAnswerBtn').addEventListener('click', checkAnswer);
+        document.getElementById('closeModalBtn').addEventListener('click', closeRevisionModal);
+
+        // Enter key in inputs
+        document.getElementById('questionInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter' && e.ctrlKey) addMistake();
+        });
+
+        // Initialize
+        loadMistakes();
+    </script>
+</body>
+</html>
