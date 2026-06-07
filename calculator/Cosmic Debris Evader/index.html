@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Cosmic Debris Evader</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="wrapper">
+
+    <!-- ─── Telemetry ─── -->
+    <header class="dash">
+      <div class="metric">
+        <span class="m-label">Score</span>
+        <span class="m-value" id="score">0</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Shield</span>
+        <span class="m-value accent" id="shield">100</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Field</span>
+        <span class="m-value" id="field-energy">100</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Best</span>
+        <span class="m-value" id="best">0</span>
+      </div>
+    </header>
+
+    <!-- ─── Canvas ─── -->
+    <div class="canvas-wrap">
+      <canvas id="game" width="480" height="640"></canvas>
+    </div>
+
+    <!-- ─── Controls hint ─── -->
+    <div class="hint">
+      <span>← → move  ·  <kbd>Space</kbd> / hold = magnetic field</span>
+    </div>
+
+    <!-- ─── Game Over ─── -->
+    <div class="modal" id="modal">
+      <div class="modal-card">
+        <h2 class="modal-title">SHIELD DOWN</h2>
+        <div class="modal-stats">
+          <div class="m-row"><span>Survival</span><span id="m-time">0s</span></div>
+          <div class="m-row"><span>Score</span><span id="m-score">0</span></div>
+          <div class="m-row"><span>Best</span><span id="m-best">0</span></div>
+        </div>
+        <button class="btn-restart" id="btn-restart">⟳ Launch Again</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

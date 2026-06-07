@@ -1,0 +1,18 @@
+{
+  "title": "Cosmic Debris Evader",
+  "description": "A deep-space arcade survival game with Canvas 2D rendering, circle-to-circle collision detection, magnetic deflection field with energy management, and localStorage high-score persistence. Built with vanilla HTML5, CSS3, and JavaScript ES6+.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "arcade",
+    "game",
+    "canvas",
+    "vanilla-js",
+    "space",
+    "survival"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}
