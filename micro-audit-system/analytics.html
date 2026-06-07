@@ -54,8 +54,7 @@
                         <p class="section-eyebrow">Reports & Insights</p>
                         <h1>Analytics Dashboard</h1>
                         <p>
-                            Layout scaffold for future analytics modules and
-                            reporting views.
+                            Live analytics derived from stored audit records.
                         </p>
                     </div>
 
@@ -82,27 +81,27 @@
                 <section class="analytics-summary-grid" aria-label="Summary statistics">
 
                     <article class="summary-card">
-                        <p class="summary-label">Total Actions</p>
-                        <div class="summary-value">—</div>
-                        <p class="summary-note">Placeholder for overall action count.</p>
+                        <p class="summary-label">Total Audits</p>
+                        <div class="summary-value" id="summaryTotalActions">—</div>
+                        <p class="summary-note">Derived from localStorage audits.</p>
                     </article>
 
                     <article class="summary-card summary-card--success">
-                        <p class="summary-label">On-Time Actions</p>
-                        <div class="summary-value">—</div>
-                        <p class="summary-note">Placeholder for actions completed on time.</p>
+                        <p class="summary-label">Pending Audits</p>
+                        <div class="summary-value" id="summaryOnTimeActions">—</div>
+                        <p class="summary-note">Derived from localStorage audits.</p>
                     </article>
 
                     <article class="summary-card summary-card--danger">
-                        <p class="summary-label">Delayed Actions</p>
-                        <div class="summary-value">—</div>
-                        <p class="summary-note">Placeholder for delayed action count.</p>
+                        <p class="summary-label">Passed Audits</p>
+                        <div class="summary-value" id="summaryDelayedActions">—</div>
+                        <p class="summary-note">Derived from localStorage audits.</p>
                     </article>
 
                     <article class="summary-card summary-card--accent">
-                        <p class="summary-label">Average Delay</p>
-                        <div class="summary-value">—</div>
-                        <p class="summary-note">Placeholder for average delay metric.</p>
+                        <p class="summary-label">Failed Audits</p>
+                        <div class="summary-value" id="summaryAverageDelay">—</div>
+                        <p class="summary-note">Derived from localStorage audits.</p>
                     </article>
 
                 </section>
@@ -112,79 +111,66 @@
                     <article class="analytics-card">
                         <div class="analytics-card-header">
                             <h2>Status Distribution</h2>
-                            <span>Placeholder</span>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-placeholder analytics-placeholder--center">
-                            Status breakdown will be added in a future update.
-                        </div>
+                        <div id="statusDistributionChart" class="analytics-chart analytics-chart--donut" aria-label="Status distribution chart"></div>
+                        <div id="statusDistributionLegend" class="analytics-legend"></div>
                     </article>
 
                     <article class="analytics-card">
                         <div class="analytics-card-header">
-                            <h2>Committee Performance</h2>
-                            <span>Placeholder</span>
+                            <h2>Priority Breakdown</h2>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-placeholder analytics-placeholder--bars">
-                            Committee performance visuals go here.
-                        </div>
+                        <div id="committeePerformanceChart" class="analytics-chart analytics-chart--bars" aria-label="Committee performance chart"></div>
                     </article>
 
                     <article class="analytics-card">
                         <div class="analytics-card-header">
-                            <h2>Average Delay by Committee</h2>
-                            <span>Placeholder</span>
+                            <h2>Average Delay by Priority</h2>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-placeholder analytics-placeholder--list">
-                            Committee delay summary goes here.
-                        </div>
+                        <div id="averageDelayChart" class="analytics-chart analytics-chart--list" aria-label="Average delay by committee chart"></div>
                     </article>
 
                     <article class="analytics-card">
                         <div class="analytics-card-header">
-                            <h2>On-Time vs Delayed</h2>
-                            <span>Placeholder</span>
+                            <h2>Due Date Distribution</h2>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-placeholder analytics-placeholder--split">
-                            Timeliness comparison goes here.
-                        </div>
+                        <div id="timelinessChart" class="analytics-chart analytics-chart--split" aria-label="On-time versus delayed chart"></div>
                     </article>
 
                     <article class="analytics-card analytics-card--wide">
                         <div class="analytics-card-header">
-                            <h2>Monthly Action Trend</h2>
-                            <span>Placeholder</span>
+                            <h2>Monthly Due Date Trend</h2>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-placeholder analytics-placeholder--wide">
-                            A future trend module will use this full-width space.
-                        </div>
+                        <div id="monthlyTrendChart" class="analytics-chart analytics-chart--wide" aria-label="Monthly action trend chart"></div>
                     </article>
 
                     <article class="analytics-card">
                         <div class="analytics-card-header">
-                            <h2>Actions by Priority</h2>
-                            <span>Placeholder</span>
+                            <h2>Audit Coverage</h2>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-placeholder analytics-placeholder--list">
-                            Priority breakdown goes here.
-                        </div>
+                        <div id="priorityChart" class="analytics-chart analytics-chart--list" aria-label="Actions by priority chart"></div>
                     </article>
 
                     <article class="analytics-card">
                         <div class="analytics-card-header">
-                            <h2>Member Accountability</h2>
-                            <span>Placeholder</span>
+                            <h2>Completion Snapshot</h2>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-placeholder analytics-placeholder--list">
-                            Member scorecards will be rendered here.
-                        </div>
+                        <div id="memberAccountabilityChart" class="analytics-chart analytics-chart--list" aria-label="Member accountability chart"></div>
                     </article>
 
                     <article class="analytics-card analytics-card--wide">
                         <div class="analytics-card-header">
-                            <h2>Top Delayed Actions</h2>
-                            <span>Placeholder</span>
+                            <h2>Top Delayed Audits</h2>
+                            <span>Live data</span>
                         </div>
-                        <div class="analytics-table">
+                        <div id="topDelayedActionsTable" class="analytics-table">
                             <div class="analytics-table-row analytics-table-row--head">
                                 <span>ID</span>
                                 <span>Title</span>
