@@ -1,0 +1,276 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f7fb;
+    color: #111827;
+}
+
+.page-shell {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.app-header {
+    margin-bottom: 24px;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: clamp(2rem, 2.5vw, 2.6rem);
+}
+
+.subtitle {
+    margin: 8px 0 0;
+    color: #475569;
+    max-width: 720px;
+}
+
+.top-cards,
+.overview-cards,
+.panel-grid,
+.scenario-summary {
+    display: grid;
+    gap: 16px;
+}
+
+.top-cards,
+.overview-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 24px;
+}
+
+.overview-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stat-card,
+.panel,
+.scenario-card {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    padding: 22px;
+}
+
+.stat-card h2,
+.panel h2,
+.scenario-card span {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+.stat-card .value,
+.scenario-card strong {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+.panel label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.panel input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: #f9fafb;
+    color: #111827;
+}
+
+.panel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 16px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.panel-header h2 {
+    margin: 0;
+}
+
+.panel-description {
+    margin: 8px 0 0;
+    color: #475569;
+    max-width: 720px;
+}
+
+.control-panel button,
+.dashboard-header button,
+.semester-actions button {
+    border: none;
+    background: #2563eb;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.control-panel button.danger,
+.semester-actions .danger {
+    background: #dc2626;
+}
+
+.dashboard-section {
+    margin-top: 28px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.semester-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+}
+
+.semester-card header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.semester-card header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.courses-list {
+    margin-top: 12px;
+}
+
+.course-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.course-row input,
+.course-row select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    background: #f9fafb;
+    color: #111827;
+}
+
+.course-row button {
+    border: none;
+    background: #ef4444;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.semester-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.scenario-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 16px;
+}
+
+.scenario-card {
+    padding: 18px;
+}
+
+.grade-distribution {
+    margin-top: 20px;
+}
+
+.grade-bar {
+    margin-bottom: 14px;
+}
+
+.grade-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    color: #475569;
+}
+
+.grade-track {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    overflow: hidden;
+}
+
+.grade-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 999px;
+}
+
+.import-status {
+    margin-top: 14px;
+    color: #475569;
+}
+
+#projection-output {
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: 16px;
+    background: #eef2ff;
+    color: #1e3a8a;
+    min-height: 56px;
+    line-height: 1.6;
+}
+
+@media (max-width: 980px) {
+    .overview-cards,
+    .scenario-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .top-cards,
+    .overview-cards,
+    .panel-grid,
+    .scenario-summary,
+    .course-row {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header,
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

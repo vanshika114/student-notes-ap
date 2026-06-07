@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced GPA Projection Engine</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <main class="page-shell">
+        <header class="app-header">
+            <div>
+                <h1>Advanced GPA Projection Engine</h1>
+                <p class="subtitle">Multi-semester CGPA planning with projection scenarios, grade distribution, and data export/import.</p>
+            </div>
+        </header>
+
+        <section class="top-cards">
+            <article class="stat-card">
+                <h2>Current CGPA</h2>
+                <div class="value" id="display-cgpa">0.00</div>
+            </article>
+            <article class="stat-card">
+                <h2>Earned Credits</h2>
+                <div class="value" id="display-total-credits">0</div>
+            </article>
+        </section>
+
+        <section class="overview-cards">
+            <article class="stat-card">
+                <h2>Semesters</h2>
+                <div class="value" id="display-semester-count">1</div>
+            </article>
+            <article class="stat-card">
+                <h2>Courses</h2>
+                <div class="value" id="display-course-count">2</div>
+            </article>
+            <article class="stat-card">
+                <h2>Best-case CGPA</h2>
+                <div class="value" id="display-best-case-cgpa">0.00</div>
+            </article>
+            <article class="stat-card">
+                <h2>Safe Scenario</h2>
+                <div class="value" id="display-safe-case-cgpa">0.00</div>
+            </article>
+        </section>
+
+        <section class="panel target-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>🔮 Target CGPA Back-Projection</h2>
+                    <p class="panel-description">Enter a goal and remaining credits to see the required future GPA and progress risk.</p>
+                </div>
+            </div>
+            <div class="panel-grid">
+                <label>
+                    Target CGPA
+                    <input id="input-target-cgpa" type="number" step="0.01" min="0" max="10" placeholder="e.g. 8.50" />
+                </label>
+                <label>
+                    Remaining Credits
+                    <input id="input-remaining-credits" type="number" step="1" min="0" placeholder="e.g. 24" />
+                </label>
+            </div>
+            <div id="projection-output" class="projection-output">Enter valid parameters to compile prediction matrices.</div>
+        </section>
+
+        <section class="panel control-panel">
+            <div class="panel-header">
+                <h2>⚙️ Project Control</h2>
+            </div>
+            <div class="panel-grid">
+                <button id="btn-export">Download JSON</button>
+                <button id="btn-import">Import JSON</button>
+                <button id="btn-reset" class="danger">Reset to Default</button>
+            </div>
+            <input id="import-file" type="file" accept="application/json" hidden />
+            <div id="import-status" class="import-status"></div>
+        </section>
+
+        <section class="panel scenario-panel">
+            <div class="panel-header">
+                <h2>📈 Projection Scenarios</h2>
+            </div>
+            <div class="scenario-summary">
+                <div class="scenario-card">
+                    <span>All S grades</span>
+                    <strong id="display-best-case-cgpa-scenario">0.00</strong>
+                </div>
+                <div class="scenario-card">
+                    <span>All A grades</span>
+                    <strong id="display-strong-case-cgpa">0.00</strong>
+                </div>
+                <div class="scenario-card">
+                    <span>All C grades</span>
+                    <strong id="display-safe-case-cgpa-scenario">0.00</strong>
+                </div>
+            </div>
+            <div class="grade-distribution" id="grade-distribution"></div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="dashboard-header">
+                <div>
+                    <h2>Academic Record Matrix</h2>
+                    <p class="panel-description">Manage semesters, add course rows, and update grades to see live CGPA metrics.</p>
+                </div>
+                <button id="btn-add-semester">+ Add Semester Block</button>
+            </div>
+            <div id="semester-matrix-container"></div>
+        </section>
+    </main>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
