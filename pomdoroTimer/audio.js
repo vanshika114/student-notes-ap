@@ -31,7 +31,7 @@ class AudioController {
     const initOnInteraction = () => {
       if (!this.isInitialized) {
         this.initialize();
-        console.log('🔊 Audio context initialized on first interaction');
+        console.debug('🔊 Audio context initialized on first interaction');
       }
       // Remove listener after first interaction
       document.removeEventListener('click', initOnInteraction);
@@ -86,7 +86,7 @@ class AudioController {
       osc.start(now);
       osc.stop(now + 0.1);
 
-      console.log('🔓 Audio unlock tone played');
+      console.debug('🔓 Audio unlock tone played');
     } catch (e) {
       console.error('Failed to play unlock tone:', e);
     }
@@ -99,7 +99,7 @@ class AudioController {
   playNotification() {
     // Respect user's sound toggle preference
     if (!window.pomodoroEngine || !window.pomodoroEngine.soundEnabled) {
-      console.log('🔇 Sound disabled');
+      console.debug('🔇 Sound disabled');
       return;
     }
 
@@ -210,7 +210,7 @@ class AudioController {
 
     // Check if Speech Synthesis API is available
     if (!('speechSynthesis' in window)) {
-      console.log('Speech Synthesis not supported');
+      console.debug('Speech Synthesis not supported');
       return;
     }
 
@@ -223,7 +223,7 @@ class AudioController {
       window.speechSynthesis.cancel(); // Cancel any ongoing speech
       window.speechSynthesis.speak(utterance);
       
-      console.log('🗣️ Announced:', phaseName);
+      console.debug('🗣️ Announced:', phaseName);
     } catch (e) {
       console.error('Speech synthesis failed:', e);
     }
@@ -235,4 +235,4 @@ class AudioController {
  */
 window.pomodoroAudio = new AudioController();
 
-console.log('🔊 Audio Controller initialized');
+console.debug('🔊 Audio Controller initialized');
