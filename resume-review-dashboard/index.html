@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CVForge | ATS Resume Review Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- ChartJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    <!-- Sidebar profile and readiness tracking -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <i data-lucide="file-check-2"></i>
+          </div>
+          <div class="logo-text">
+            <h2>CVForge</h2>
+            <span>ATS Analytics</span>
+          </div>
+        </div>
+        <button class="btn-sidebar-close" id="sidebar-toggle-close">&times;</button>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="profile-card">
+        <div class="avatar-wrapper">
+          <img id="profile-avatar" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=cvforge" alt="User Avatar">
+          <button id="edit-profile-btn" class="btn-edit-avatar" title="Edit Profile">
+            <i data-lucide="edit-2"></i>
+          </button>
+        </div>
+        <h3 id="profile-name">Vishwa Mistry</h3>
+        <span id="profile-bio">Target: Frontend Developer</span>
+      </div>
+
+      <!-- Career Readiness Checklist -->
+      <div class="readiness-section">
+        <div class="section-title-row">
+          <h3>Career Readiness</h3>
+          <span class="lbl-percent" id="readiness-percent-text">0%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="readiness-progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="readiness-checklist" id="readiness-checklist-container">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <div class="workspace-wrapper">
+      <!-- Top header bar -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="btn btn-icon btn-secondary" id="sidebar-toggle-open">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="header-title-wrapper">
+            <h1>ATS Resume Review Dashboard</h1>
+            <p>Scan resume match rates, identify skill gaps, and track career readiness progress</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Backup file controls -->
+          <button id="import-btn" class="btn btn-secondary btn-icon" title="Import JSON Backup">
+            <i data-lucide="upload"></i>
+          </button>
+          <input type="file" id="import-file" accept=".json" style="display: none;">
+
+          <button id="export-btn" class="btn btn-secondary btn-icon" title="Export JSON Backup">
+            <i data-lucide="download"></i>
+          </button>
+
+          <button id="reset-btn" class="btn btn-secondary btn-icon" title="Reset Database">
+            <i data-lucide="refresh-cw"></i>
+          </button>
+
+          <div class="divider"></div>
+
+          <!-- Theme toggle -->
+          <button id="theme-toggle" class="btn btn-icon" title="Toggle Theme">
+            <i data-lucide="sun" class="sun-icon"></i>
+            <i data-lucide="moon" class="moon-icon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable workspace viewports -->
+      <main class="app-workspace">
+        
+        <!-- Top Summary Cards row -->
+        <section class="stats-row">
+          <!-- ATS Score Gauge -->
+          <div class="stat-card score-card">
+            <span class="label">Overall ATS Score</span>
+            <div class="score-display">
+              <span class="value" id="stat-ats-score">0</span>
+              <span class="max">/ 100</span>
+            </div>
+            <span class="sub" id="stat-ats-grade">Upload & analyze to start</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="label">Format Score</span>
+            <div class="score-display">
+              <span class="value text-primary" id="stat-format-score">0%</span>
+            </div>
+            <span class="sub" id="stat-format-sub">Check contact & education headers</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="label">Keywords Match Rate</span>
+            <div class="score-display">
+              <span class="value text-warning" id="stat-match-rate">0%</span>
+            </div>
+            <span class="sub" id="stat-match-sub">Matches target job description</span>
+          </div>
+
+          <div class="stat-card">
+            <span class="label">Career Readiness</span>
+            <div class="score-display">
+              <span class="value text-success" id="stat-readiness-score">0%</span>
+            </div>
+            <span class="sub" id="stat-readiness-sub">Profile & portfolio readiness</span>
+          </div>
+        </section>
+
+        <!-- Main ATS Scanner Input Section -->
+        <section class="panel-card scanner-panel">
+          <div class="panel-header">
+            <h3>ATS Scanner Terminal</h3>
+            <span class="lbl-status" id="scan-time-label">Ready for upload</span>
+          </div>
+          <form id="ats-scan-form" class="scanner-form">
+            <div class="scanner-inputs-grid">
+              <div class="form-group">
+                <label for="input-job-desc">Target Job Description *</label>
+                <textarea id="input-job-desc" rows="8" required placeholder="Paste the full job description details here... (Scanner will parse technologies & requirements keywords)"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="input-resume-text">Your Resume Content *</label>
+                <textarea id="input-resume-text" rows="8" required placeholder="Paste your raw resume text copy here... (We will scan formatting details, sections, email, and keywords matching)"></textarea>
+              </div>
+            </div>
+            <div class="scanner-actions">
+              <button type="submit" class="btn btn-primary btn-lg" id="scan-submit-btn">
+                <i data-lucide="cpu"></i>
+                <span>Analyze ATS Match</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Analysis Feedback & Analytics Grid -->
+        <section class="dashboard-grid" id="analysis-results-section" style="display: none;">
+          <!-- Keyword Skill Gaps -->
+          <div class="panel-card flex-column">
+            <div class="panel-header">
+              <h3>Keyword & Skills Gap</h3>
+            </div>
+            
+            <div class="feedback-sub-section">
+              <h4 class="text-success"><i data-lucide="check-circle" class="mini-icon"></i> Matched Keywords</h4>
+              <div class="keywords-pill-box" id="matched-keywords-container">
+                <!-- Injected -->
+              </div>
+            </div>
+
+            <div class="feedback-sub-section">
+              <h4 class="text-danger"><i data-lucide="alert-circle" class="mini-icon"></i> Missing Skills / Keywords</h4>
+              <div class="keywords-pill-box" id="missing-keywords-container">
+                <!-- Injected -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Format Alerts & Improvements -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Formatting & Structuring Checks</h3>
+            </div>
+            <div class="checks-list" id="formatting-checks-container">
+              <!-- Injected -->
+            </div>
+          </div>
+
+          <!-- Charts Graphics -->
+          <div class="panel-card col-span-2">
+            <div class="panel-header">
+              <h3>ATS Analytics & Keyword Breakdown</h3>
+              <div class="chart-toggles">
+                <button class="btn btn-sm btn-secondary active" id="btn-chart-categories">Categories Radar</button>
+                <button class="btn btn-sm btn-secondary" id="btn-chart-ratios">Structure Ratios</button>
+                <button class="btn btn-sm btn-secondary" id="btn-chart-history">Optimizations Timeline</button>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="resumeChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- Previous Scan Logs List -->
+        <section class="panel-card">
+          <div class="panel-header">
+            <h3>Optimizations History Logs</h3>
+          </div>
+          <div class="history-list-wrapper" id="history-logs-container">
+            <!-- Injected -->
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: EDIT PROFILE -->
+  <!-- ========================================== -->
+  <div class="modal-overlay" id="profile-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Update Profile Target Career</h2>
+        <button class="btn-close" id="profile-modal-close">&times;</button>
+      </div>
+      <form id="profile-form" class="modal-form">
+        <div class="form-group">
+          <label for="form-profile-name">Username / Nickname *</label>
+          <input type="text" id="form-profile-name" required placeholder="e.g. Vishwa Mistry">
+        </div>
+
+        <div class="form-group">
+          <label for="form-profile-bio">Target Career Role *</label>
+          <input type="text" id="form-profile-bio" required placeholder="e.g. Frontend Developer">
+        </div>
+
+        <div class="form-group">
+          <label for="form-profile-avatar">Avatar URL</label>
+          <input type="url" id="form-profile-avatar" placeholder="https://api.dicebear.com/...">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="profile-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
