@@ -1,0 +1,17 @@
+{
+  "title": "Reflex-Brake Precision Clicker",
+  "description": "A tactical cognitive training game on a 3×3 grid — click GO nodes (emerald) to score with increasing multipliers, avoid STOP nodes (crimson) or face penalties and a red-screen flash. Spawn rate accelerates as score climbs.",
+  "author": {
+    "name": "Girish Madarkar",
+    "github": "Girish0902"
+  },
+  "tags": [
+    "reflex",
+    "game",
+    "vanilla-js",
+    "cyberpunk",
+    "cognitive-training"
+  ],
+  "entry": "index.html",
+  "thumbnail": "thumbnail.svg"
+}

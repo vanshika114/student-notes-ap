@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="16" fill="#060810"/>
+  <g transform="translate(8,8)">
+    <rect x="0" y="0" width="112" height="20" rx="8" fill="rgba(30,41,59,0.3)" stroke="rgba(51,65,85,0.35)" stroke-width="0.5"/>
+    <text x="14" y="14" font-size="5" fill="#475569" font-family="sans-serif" letter-spacing="1">SCORE</text>
+    <text x="14" y="7" font-size="8" fill="#e2e8f0" font-weight="700" font-family="sans-serif">280</text>
+    <text x="48" y="14" font-size="5" fill="#475569" font-family="sans-serif" letter-spacing="1">MULTI</text>
+    <text x="48" y="7" font-size="8" fill="#10b981" font-weight="700" font-family="sans-serif" text-shadow="0 0 6px rgba(16,185,129,0.4)">×4</text>
+    <text x="82" y="14" font-size="5" fill="#475569" font-family="sans-serif" letter-spacing="1">HIGH</text>
+    <text x="82" y="7" font-size="8" fill="#e2e8f0" font-weight="700" font-family="sans-serif">520</text>
+  </g>
+  <g transform="translate(14,38)">
+    <rect x="0" y="0" width="100" height="62" rx="11" fill="rgba(30,41,59,0.3)" stroke="rgba(51,65,85,0.35)" stroke-width="0.8"/>
+    <g transform="translate(5,5)">
+      <rect x="0" y="0" width="26" height="26" rx="7" fill="rgba(30,41,59,0.25)" stroke="rgba(51,65,85,0.35)" stroke-width="0.5"/>
+      <rect x="29" y="0" width="26" height="26" rx="7" fill="rgba(30,41,59,0.25)" stroke="rgba(51,65,85,0.35)" stroke-width="0.5"/>
+      <rect x="58" y="0" width="26" height="26" rx="7" fill="rgba(30,41,59,0.25)" stroke="rgba(51,65,85,0.35)" stroke-width="0.5"/>
+      <rect x="0" y="29" width="26" height="26" rx="7" fill="#10b981" stroke="#10b981" stroke-width="0.8"/>
+      <rect x="29" y="29" width="26" height="26" rx="7" fill="rgba(30,41,59,0.25)" stroke="rgba(51,65,85,0.35)" stroke-width="0.5"/>
+      <rect x="58" y="29" width="26" height="26" rx="7" fill="#ef4444" stroke="#ef4444" stroke-width="0.8"/>
+      <text x="71" y="48" font-size="10" fill="rgba(255,255,255,0.7)" text-anchor="middle" font-weight="700" font-family="sans-serif">✕</text>
+    </g>
+  </g>
+  <g transform="translate(22,112)">
+    <rect x="0" y="0" width="42" height="10" rx="5" fill="#10b981"/>
+    <text x="21" y="7" font-size="4.5" fill="#fff" text-anchor="middle" font-family="sans-serif" font-weight="600">▶ START</text>
+  </g>
+  <g transform="translate(68,112)">
+    <rect x="0" y="0" width="42" height="10" rx="5" fill="rgba(30,41,59,0.3)" stroke="rgba(51,65,85,0.35)" stroke-width="0.5"/>
+    <text x="21" y="7" font-size="4.5" fill="#94a3b8" text-anchor="middle" font-family="sans-serif">⟳ RESET</text>
+  </g>
+</svg>

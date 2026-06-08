@@ -1,0 +1,289 @@
+/* ═══════════════════════════════════════════════════════
+   Reflex-Brake Precision Clicker — Tactical Cyberpunk
+   ═══════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-body: #060810;
+  --bg-surface: rgba(30, 41, 59, 0.3);
+  --bg-cell: rgba(30, 41, 59, 0.25);
+  --border: rgba(51, 65, 85, 0.35);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --emerald: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.35);
+  --crimson: #ef4444;
+  --crimson-glow: rgba(239, 68, 68, 0.35);
+  --cell-size: 18vmin;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg-body);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-image:
+    radial-gradient(ellipse at 50% 20%, rgba(16, 185, 129, 0.015) 0%, transparent 40%);
+}
+
+/* ─── Dashboard ─── */
+.dashboard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 440px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  min-width: 55px;
+}
+
+.stat-label {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.stat-value.accent {
+  color: var(--emerald);
+  text-shadow: 0 0 10px var(--emerald-glow);
+}
+
+/* ─── Grid ─── */
+.grid-wrap {
+  margin-top: 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, var(--cell-size));
+  grid-template-rows: repeat(3, var(--cell-size));
+  gap: 8px;
+  padding: 10px;
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.cell {
+  background: var(--bg-cell);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell:hover:not(.locked):not(.active) {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(148, 163, 184, 0.15);
+}
+
+/* ─── Radial timer ring ─── */
+.cell::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  transition: border-color 0.2s ease;
+  pointer-events: none;
+}
+
+/* ─── Active GO state (Emerald) ─── */
+.cell.go {
+  background: var(--emerald);
+  border-color: var(--emerald);
+  box-shadow: 0 0 24px var(--emerald-glow), inset 0 0 20px rgba(255,255,255,0.08);
+  animation: cellPopIn 0.2s ease;
+  cursor: pointer;
+}
+
+.cell.go::before {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  animation: timerSpin 0.8s linear infinite;
+}
+
+.cell.go::after {
+  content: 'GO';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--cell-size) * 0.25);
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 2px;
+  pointer-events: none;
+}
+
+/* ─── Active STOP state (Crimson) ─── */
+.cell.stop {
+  background: var(--crimson);
+  border-color: var(--crimson);
+  box-shadow: 0 0 24px var(--crimson-glow), inset 0 0 20px rgba(255,255,255,0.08);
+  animation: cellPopIn 0.2s ease;
+  cursor: pointer;
+}
+
+.cell.stop::before {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  animation: timerSpin 0.8s linear infinite;
+}
+
+.cell.stop::after {
+  content: '✕';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--cell-size) * 0.35);
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+/* ─── Cell clicked / expired ─── */
+.cell.hit {
+  transform: scale(0.85);
+  transition: transform 0.15s ease;
+}
+
+.cell.expired {
+  background: rgba(30, 41, 59, 0.15);
+  border-color: rgba(51, 65, 85, 0.2);
+}
+
+@keyframes cellPopIn {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes timerSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ─── Locked state ─── */
+.cell.locked {
+  pointer-events: none;
+}
+
+/* ─── Screen Flash ─── */
+.screen-flash {
+  position: fixed;
+  inset: 0;
+  background: rgba(239, 68, 68, 0.15);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: 100;
+}
+
+.screen-flash.active {
+  opacity: 1;
+}
+
+/* ─── Controls ─── */
+.controls {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-control {
+  background: var(--bg-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 22px;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-family: var(--font);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+}
+
+.btn-control:hover {
+  border-color: rgba(148, 163, 184, 0.3);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.btn-control:active {
+  transform: scale(0.97);
+}
+
+.btn-control.primary {
+  background: var(--emerald);
+  color: #fff;
+  border-color: var(--emerald);
+}
+
+.btn-control.primary:hover {
+  box-shadow: 0 4px 16px var(--emerald-glow);
+  filter: brightness(1.1);
+}
+
+.btn-control:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 460px) {
+  body { padding: 14px; justify-content: flex-start; padding-top: 24px; }
+  .dashboard { gap: 8px; padding: 10px 14px; }
+  .stat-value { font-size: 1rem; }
+  .stat-block { min-width: 45px; }
+  .controls { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (min-width: 800px) {
+  :root { --cell-size: 150px; }
+}

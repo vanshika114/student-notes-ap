@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reflex-Brake Precision Clicker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Stats Dashboard ─── -->
+  <header class="dashboard">
+    <div class="stat-block">
+      <span class="stat-label">Score</span>
+      <span class="stat-value" id="score">0</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">Multiplier</span>
+      <span class="stat-value accent" id="multiplier">×1</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-label">High Score</span>
+      <span class="stat-value" id="high-score">0</span>
+    </div>
+    <div class="stat-block round-block">
+      <span class="stat-label">Round</span>
+      <span class="stat-value" id="round">1</span>
+    </div>
+  </header>
+
+  <!-- ─── Grid ─── -->
+  <main class="grid-wrap">
+    <div class="grid" id="grid">
+      <div class="cell" data-index="0"></div>
+      <div class="cell" data-index="1"></div>
+      <div class="cell" data-index="2"></div>
+      <div class="cell" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell" data-index="5"></div>
+      <div class="cell" data-index="6"></div>
+      <div class="cell" data-index="7"></div>
+      <div class="cell" data-index="8"></div>
+    </div>
+  </main>
+
+  <!-- ─── Controls ─── -->
+  <div class="controls">
+    <button class="btn-control primary" id="btn-start">▶ Start Test</button>
+    <button class="btn-control" id="btn-reset">⟳ Reset Board</button>
+  </div>
+
+  <!-- ─── Screen Flash overlay ─── -->
+  <div class="screen-flash" id="screen-flash"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
