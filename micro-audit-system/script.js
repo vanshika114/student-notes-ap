@@ -248,10 +248,10 @@ function buildAnalyticsSnapshot(audits){
     const failRate = total ? Math.round((failed.length / total) * 100) : 0;
     const pendingRate = total ? Math.round((pending.length / total) * 100) : 0;
 
-    const statusDistribution = [
-        { label: "Pending", value: pending.length, color: "#f59e0b" },
-        { label: "Passed", value: passed.length, color: "#16a34a" },
-        { label: "Failed", value: failed.length, color: "#dc2626" }
+        const statusDistribution = [
+        { label: "Pending", value: pending.length, color: "#f59e0b", percent: pendingRate },
+        { label: "Passed", value: passed.length, color: "#16a34a", percent: passRate },
+        { label: "Failed", value: failed.length, color: "#dc2626", percent: failRate }
     ];
 
     const priorityOrder = ["High", "Medium", "Low"];
@@ -334,6 +334,7 @@ function buildAnalyticsSnapshot(audits){
         pendingRate,
         statusDistribution,
         priorityDistribution,
+        priorityAnalytics: priorityDistribution,
         dueDateDistribution: [
             { label: "Overdue", value: dueCounts.overdue, color: "#dc2626" },
             { label: "Due Today", value: dueCounts.today, color: "#2563eb" },
@@ -695,21 +696,37 @@ function renderAnalyticsDashboard(){
     if(analyticsSummaryPassed) analyticsSummaryPassed.textContent = snapshot.passed;
     if(analyticsSummaryFailed) analyticsSummaryFailed.textContent = snapshot.failed;
 
-    if(statusDistributionChart && statusDistributionLegend){
-        if(!snapshot.statusDistribution.some((item)=> item.value)){
+        if(statusDistributionChart && statusDistributionLegend){
+        const totalAudits = snapshot.total;
+        if(totalAudits === 0){
             statusDistributionChart.innerHTML = '<div class="analytics-placeholder analytics-placeholder--donut">No audit status data yet.</div>';
-            statusDistributionLegend.innerHTML = "";
+            statusDistributionLegend.innerHTML = snapshot.statusDistribution.map((item)=> `
+                <div class="analytics-legend-item">
+                    <div class="analytics-legend-label">
+                        <span class="analytics-legend-swatch" style="background:${item.color};"></span>
+                        <span>${item.label}</span>
+                    </div>
+                    <span class="analytics-legend-value">0 (0%)</span>
+                </div>
+            `).join("");
         }else{
             let running = 0;
-            const total = snapshot.statusDistribution.reduce((sum, item)=> sum + item.value, 0);
             const segments = snapshot.statusDistribution.map((item)=> {
-                const start = (running / total) * 100;
+                const start = (running / totalAudits) * 100;
                 running += item.value;
-                const end = (running / total) * 100;
+                const end = (running / totalAudits) * 100;
                 return `${item.color} ${start}% ${end}%`;
             });
-            statusDistributionChart.innerHTML = `<div class="analytics-donut" style="background:conic-gradient(${segments.join(", ")});"><div class="analytics-donut-center"><strong>${total}</strong><span>Total</span></div></div>`;
-            statusDistributionLegend.innerHTML = snapshot.statusDistribution.map((item)=> `<div class="analytics-legend-item"><div class="analytics-legend-label"><span class="analytics-legend-swatch" style="background:${item.color};"></span><span>${item.label}</span></div><span class="analytics-legend-value">${item.value}</span></div>`).join("");
+            statusDistributionChart.innerHTML = `<div class="analytics-donut" style="background:conic-gradient(${segments.join(", ")});"><div class="analytics-donut-center"><strong>${totalAudits}</strong><span>Total</span></div></div>`;
+            statusDistributionLegend.innerHTML = snapshot.statusDistribution.map((item)=> `
+                <div class="analytics-legend-item">
+                    <div class="analytics-legend-label">
+                        <span class="analytics-legend-swatch" style="background:${item.color};"></span>
+                        <span>${item.label}</span>
+                    </div>
+                    <span class="analytics-legend-value">${item.value} (${item.percent}%)</span>
+                </div>
+            `).join("");
         }
     }
 
@@ -753,8 +770,14 @@ function renderAnalyticsDashboard(){
     }
 
     if(priorityChart){
-        const items = snapshot.dataCoverage;
-        priorityChart.innerHTML = `<div class="analytics-bar-list">${items.map((item)=> `<div class="analytics-bar-item"><div class="analytics-bar-head"><span>${item.label}</span><span>${item.value}%</span></div><div class="analytics-bar-track"><div class="analytics-bar-fill" style="width:${item.value}%; background:${item.color};"></div></div></div>`).join("")}</div>`;
+        const items = snapshot.priorityAnalytics || [];
+        const totalAudits = snapshot.total || 0;
+
+        if(totalAudits === 0){
+            priorityChart.innerHTML = '<div class="analytics-placeholder analytics-placeholder--bars">No priority analytics data yet.</div>';
+        }else{
+            priorityChart.innerHTML = `<div class="analytics-bar-list">${items.map((item)=> `<div class="analytics-bar-item"><div class="analytics-bar-head"><span>${item.label}</span><span>${item.value} audits (${item.percent}%)</span></div><div class="analytics-bar-track"><div class="analytics-bar-fill" style="width:${item.percent}%; background:${item.color};"></div></div></div>`).join("")}</div>`;
+        }
     }
 
     if(memberAccountabilityChart){
