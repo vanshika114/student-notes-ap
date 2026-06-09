@@ -10,5 +10,6 @@
   { "name": "Decision Wheel", "path": "Decision Wheel/index.html", "icon": "fas fa-sync", "tag": "Utility" },
   { "name": "Digital Diary", "path": "Digital Diary/diary.html", "icon": "fas fa-book", "tag": "Utility" },
   { "name": "Dual N-Back Lite App", "path": "Dual N-Back Lite App/index.html", "icon": "fas fa-brain", "tag": "Utility" },
-  { "name": "DevVault Resource Organizer", "path": "developer-resource-vault/index.html", "icon": "fas fa-shield-alt", "tag": "Utility" }
+  { "name": "DevVault Resource Organizer", "path": "developer-resource-vault/index.html", "icon": "fas fa-shield-alt", "tag": "Utility" },
+  { "name": "OS Contribution Journey", "path": "open-source-contribution-journey/index.html", "icon": "fas fa-route", "tag": "Utility" }
 ]
