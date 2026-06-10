@@ -265,15 +265,27 @@ function buildAnalyticsSnapshot(audits){
         };
     });
 
-    const dueCounts = { overdue: 0, today: 0, soon: 0, future: 0 };
+    const dueDateCounts = { overdue: 0, today: 0, soon: 0, future: 0 };
     const overdueByPriority = { High: [], Medium: [], Low: [] };
     const delayedAudits = [];
 
     normalized.forEach((audit)=> {
+        const dueDate = parseLocalDate(audit.dueDate);
+        if(audit.status === "pending" && dueDate){
+            const diff = Math.round((dueDate - getToday()) / 86400000);
+            if(diff < 0){
+                dueDateCounts.overdue += 1;
+            }else if(diff === 0){
+                dueDateCounts.today += 1;
+            }else if(diff <= 7){
+                dueDateCounts.soon += 1;
+            }else{
+                dueDateCounts.future += 1;
+            }
+        }
+
         const info = getDueDateInfo(audit);
         if(info.state === "overdue"){
-            dueCounts.overdue += 1;
-            const dueDate = parseLocalDate(audit.dueDate);
             const delayDays = Math.abs(Math.round((dueDate - getToday()) / 86400000));
             overdueByPriority[audit.priority].push(delayDays);
             delayedAudits.push({
@@ -285,14 +297,15 @@ function buildAnalyticsSnapshot(audits){
                 delayDays,
                 dueDate: audit.dueDate || ""
             });
-        } else if(info.state === "today"){
-            dueCounts.today += 1;
-        } else if(info.state === "soon"){
-            dueCounts.soon += 1;
-        } else if(audit.dueDate){
-            dueCounts.future += 1;
         }
     });
+
+    const dueDateAnalytics = [
+        { label: "Overdue", value: dueDateCounts.overdue, color: "#dc2626" },
+        { label: "Due Today", value: dueDateCounts.today, color: "#2563eb" },
+        { label: "Due Soon", value: dueDateCounts.soon, color: "#f59e0b" },
+        { label: "Future", value: dueDateCounts.future, color: "#16a34a" }
+    ];
 
     const averageOverdueByPriority = priorityOrder.map((priority)=> {
         const values = overdueByPriority[priority];
@@ -335,12 +348,12 @@ function buildAnalyticsSnapshot(audits){
         statusDistribution,
         priorityDistribution,
         priorityAnalytics: priorityDistribution,
-        dueDateDistribution: [
-            { label: "Overdue", value: dueCounts.overdue, color: "#dc2626" },
-            { label: "Due Today", value: dueCounts.today, color: "#2563eb" },
-            { label: "Due Soon", value: dueCounts.soon, color: "#f59e0b" },
-            { label: "Future", value: dueCounts.future, color: "#16a34a" }
-        ],
+        overdueCount: dueDateCounts.overdue,
+        dueTodayCount: dueDateCounts.today,
+        dueSoonCount: dueDateCounts.soon,
+        futureCount: dueDateCounts.future,
+        dueDateAnalytics,
+        dueDateDistribution: dueDateAnalytics,
         delayedAudits: delayedAudits.sort((first, second)=> second.delayDays - first.delayDays).slice(0, 5),
         averageOverdueByPriority,
         dueMonthTrend: monthlyTrend,
@@ -751,9 +764,9 @@ function renderAnalyticsDashboard(){
     }
 
     if(timelinessChart){
-        const items = snapshot.dueDateDistribution;
+        const items = snapshot.dueDateAnalytics || [];
         if(!items.some((item)=> item.value)){
-            timelinessChart.innerHTML = '<div class="analytics-placeholder analytics-placeholder--split">No due date information available.</div>';
+            timelinessChart.innerHTML = '<div class="analytics-placeholder analytics-placeholder--split">No due date analytics available yet.</div>';
         }else{
             const total = items.reduce((sum, item)=> sum + item.value, 0);
             timelinessChart.innerHTML = `<div class="analytics-score-list">${items.map((item)=> `<div class="analytics-score-item"><div class="analytics-score-head"><span>${item.label}</span><span>${item.value}</span></div><div class="analytics-progress-track"><div class="analytics-progress-fill" style="width:${total ? (item.value / total) * 100 : 0}%; background:${item.color};"></div></div><span class="analytics-score-caption">${item.label} audits</span></div>`).join("")}</div>`;
@@ -883,6 +896,8 @@ function init(){
     if(isDashboardPage) initDashboard();
     if(isAnalyticsPage) initAnalytics();
     updateFilterButtons(currentFilter);
+}
+
 function getAuditActions(id){
 
     if(!isAdmin()){
@@ -1147,9 +1162,9 @@ function markPass(id){
         return;
     }
 
-    audits = audits.map((audit)=>{
+    const updatedAudits = loadAudits().map((audit)=>{
 
-        if(audit.id === id){
+        if(String(audit.id) === String(id)){
 
             audit.status = "pass";
         }
@@ -1157,9 +1172,7 @@ function markPass(id){
         return audit;
     });
 
-    saveAudits();
-
-    renderAudits();
+    saveAudits(updatedAudits);
 }
 
 /* Mark Fail */
@@ -1173,9 +1186,9 @@ function markFail(id){
         return;
     }
 
-    audits = audits.map((audit)=>{
+    const updatedAudits = loadAudits().map((audit)=>{
 
-        if(audit.id === id){
+        if(String(audit.id) === String(id)){
 
             audit.status = "fail";
         }
@@ -1183,9 +1196,7 @@ function markFail(id){
         return audit;
     });
 
-    saveAudits();
-
-    renderAudits();
+    saveAudits(updatedAudits);
 }
 
 /* Delete Audit */
@@ -1199,11 +1210,11 @@ function deleteAudit(id){
         return;
     }
 
-    audits = audits.filter((audit)=> audit.id !== id);
+    const updatedAudits = loadAudits().filter(
+        (audit)=> String(audit.id) !== String(id)
+    );
 
-    saveAudits();
-
-    renderAudits();
+    saveAudits(updatedAudits);
 }
 
 /* Update Stats */
@@ -1241,12 +1252,14 @@ function updateStats(){
 
 /* Save Local Storage */
 
-function saveAudits(){
+function saveAudits(auditsToSave){
 
     localStorage.setItem(
         "audits",
-        JSON.stringify(audits)
+        JSON.stringify(auditsToSave || [])
     );
+
+    refreshVisiblePage();
 }
 
 function getAuditsForExport(){
