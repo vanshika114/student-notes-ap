@@ -11,5 +11,6 @@
   { "name": "Digital Diary", "path": "Digital Diary/diary.html", "icon": "fas fa-book", "tag": "Utility" },
   { "name": "Dual N-Back Lite App", "path": "Dual N-Back Lite App/index.html", "icon": "fas fa-brain", "tag": "Utility" },
   { "name": "Spaced-Repetition Flashcards", "path": "spaced-repetition-flashcards/index.html", "icon": "fas fa-clone", "tag": "Utility" },
+  { "name": "Connected Mind Maps", "path": "mind-map-svg-connections/index.html", "icon": "fas fa-project-diagram", "tag": "Academic" },
   { "name": "OS Contribution Journey", "path": "open-source-contribution-journey/index.html", "icon": "fas fa-route", "tag": "Utility" }
 ]
