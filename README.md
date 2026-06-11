@@ -84,6 +84,14 @@ Push your changes and open a PR.
 To prevent severe Git merge conflicts, **DO NOT modify `index.html` directly!** As multiple contributors submit projects simultaneously, directly editing the main HTML file will cause your Pull Request to conflict and fail. 
 * **To add your project to the main showcase:** Please add a new entry to the `projects.json` file (or follow the repository's designated safe-linking process). 
 
+### Backend Setup
+If you are working with the Node.js backend components, you will need to install the dependencies and start the local server. Run the following commands:
+```bash
+cd calculator/patternwise-app/backend
+npm install
+npm start
+```
+
 ---
 
 ## 📂 Project Structure
