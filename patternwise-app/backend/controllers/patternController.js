@@ -138,7 +138,9 @@ exports.getPatternDetails = async (req, res) => {
     const response = formatSuccess(fullPattern);
     res.status(200).json(response);
   } catch (err) {
-    console.error(`Error in getPatternDetails for pattern ${id}:`, err.message);
+    // Unexpected error (shouldn't happen with Promise.allSettled, but just in case)
+    console.error(`[PATTERN_DETAILS] Unexpected error for pattern ${id}:`, err.message);
+
     const response = formatError(
       ErrorCodes.LEETCODE_FETCH_FAILED,
       'Failed to fetch problem statistics from LeetCode',
