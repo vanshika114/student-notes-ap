@@ -59,11 +59,41 @@ function generateExcuse(){
 }
 
 function copyText(){
-    let text = document.getElementById("result");
+    let text = document.getElementById("result").value;
 
-    navigator.clipboard.writeText(text.value);
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                alert("Copied Successfully!");
+            })
+            .catch(err => {
+                console.error("Clipboard API failed: ", err);
+                fallbackCopy(text);
+            });
+    } else {
+        fallbackCopy(text);
+    }
+}
 
-    alert("Copied Successfully!");
+function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "absolute";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            alert("Copied Successfully!");
+        } else {
+            alert("Unable to copy. Please copy manually.");
+        }
+    } catch (err) {
+        console.error("Fallback copy failed: ", err);
+        alert("Unable to copy. Please copy manually.");
+    }
+    document.body.removeChild(textarea);
 }
 
 function downloadText(){
